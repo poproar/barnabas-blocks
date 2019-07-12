@@ -1,0 +1,155 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Barnabas Blocks</title>
+  <script type="text/javascript" src="/js/blockly/blockly_compressed.js"></script>
+  <script type="text/javascript" src="/js/blockly/blocks_compressed.js"></script>
+  <script type="text/javascript" src="/js/blockly/arduino_compressed.js"></script>
+  <script type="text/javascript" src="/js/msg/js/en.js"></script>
+  <script type="text/javascript" src="/js/Blob.js"></script>
+  <script type="text/javascript" src="/js/FileSaver.min.js"></script>
+  <script type="text/javascript" src="/js/blockly_helper.js"></script>
+  <script type="text/javascript" src="/js/spin.js"></script>
+  <link rel="stylesheet" href="/css/blocklyduino.css">
+</head>
+
+<body onload="init()">
+  <table height="100%" width="100%">
+    <tr>
+      <td>
+        <h1><a href="https://github.com/poproar/barnabas-blocks" target="_blank">Barnabas Blocks</a> &gt; web-based visual programming editor for arduino</h1>
+        <h3>Forked from 
+          <a href="https://github.com/gasolin/BlocklyDuino/wiki" target="_blank">BlocklyDuino</a> and mixed with some 
+          <a href="https://github.com/spaceneedle/Chromeduino" target="_blank">ChromeDuino</a>
+          </h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table width="100%">
+          <tr id="tabRow" height="1em">
+            <td id="tab_blocks" class="tabon" onclick="tabClick('blocks')">Blocks</td>
+            <td class="tabmin">&nbsp;</td>
+            <!--td id="tab_javascript" class="taboff" onclick="tabClick(this.id)">JavaScript</td>
+            <td class="tabmin">&nbsp;</td-->
+            <!--td id="tab_dart" class="taboff" onclick="tabClick(this.id)">Dart</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_python" class="taboff" onclick="tabClick(this.id)">Python</td>
+            <td class="tabmin">&nbsp;</td-->
+            <td id="tab_arduino" class="taboff" onclick="tabClick('arduino')">Arduino</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_xml" class="taboff" onclick="tabClick('xml')">XML</td>
+            <td class="tabmax">
+              <button type="button" onclick="uploadClick()">Upload</button>
+              <button type="button" onclick="resetClick()">Reset</button>
+              <button onclick="discard()">Discard</button>
+              <button onclick="saveCode()">Save Arduino Code</button>
+              <button onclick="save()">Save XML</button>
+              <button id="fakeload">Load XML</button>
+              <input type="file" id="load" style="display: none;"/>
+              <!--button class="launch" onclick="runJS()">Run Program</button-->
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td height="99%" id="content_area"></td>
+    </tr>
+  </table>
+  <div id="content_blocks" class="content"></div>
+  <textarea id="content_arduino" class="content" readonly wrap="off"></textarea>
+  <textarea id="content_xml" class="content" wrap="off"></textarea>
+
+  <xml id="toolbox" style="display: none">
+    <category name="Logic">
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_null"></block>
+    </category>
+    <category name="Control">
+      <block type="base_delay">
+        <value name="DELAY_TIME">
+          <block type="math_number">
+            <field name="NUM">1000</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_for">
+        <value name="FROM">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+        <value name="TO">
+          <block type="math_number">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_whileUntil"></block>
+    </category>
+    <category name="Math">
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="base_map">
+        <value name="DMAX">
+          <block type="math_number">
+            <field name="NUM">180</field>
+          </block>
+        </value>
+      </block>
+    </category>
+    <category name="Text">
+      <block type="text"></block>
+    </category>
+    <category name="Variables" custom="VARIABLE"></category>
+    <category name="Functions" custom="PROCEDURE"></category>
+    <sep></sep>
+    <category name="Input/Output">
+      <block type="inout_highlow"></block>
+      <block type="inout_digital_write"></block>
+      <block type="inout_digital_read"></block>
+      <block type="inout_analog_write">
+        <value name="NUM">
+          <block type="math_number">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+      </block>
+      <block type="inout_analog_read"></block>
+      <block type="serial_print">
+        <value name="CONTENT">
+          <block type="text">
+            <field name="TEXT"></field>
+          </block>
+        </value>
+      </block>
+      <block type="inout_tone">
+        <value name="NUM">
+          <block type="math_number">
+            <field name="NUM">440</field>
+          </block>
+        </value>
+      </block>
+      <block type="inout_notone"></block>
+      <block type="inout_buildin_led"></block>
+    </category>
+    <category name="Servo">
+      <block type="servo_move">
+        <value name="DEGREE">
+          <block type="math_number">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+      </block>
+      <block type="servo_read_degrees"></block>
+    </category>
+  </xml>
+
+  <script type="text/javascript" src="/js/blocklyduino.js"></script>
+
+</body>
+</html>
