@@ -141,22 +141,25 @@ function init() {
 function buildtoolBox() {
   var loadIds;
   var base = "";
+  base += "category_initializes,";
+  base += "category_time,";
+  base += "category_inout,";
   base += "category_loops,";
   base += "category_logic,";
-  base += "category_array,";
+  base += "category_sep,";
+  // base += "category_array,";
   base += "category_math,";
   base += "category_text,";
+  base += "category_serial,";
   base += "category_variables,";
   base += "category_functions,";
-  base += "category_sep,";
-  base += "category_initializes,";
-  base += "category_inout,";
-  base += "category_time,";
-  base += "category_serial,";
-  base += "category_interrupts,";
+  // base += "category_interrupts,";
   base += "category_sep";
 
   var option = window.localStorage.toolboxids;
+  if (option === undefined){
+    change_lang();
+  }
 
   // set the default toolbox if none
   if (option === undefined || option === "") {
