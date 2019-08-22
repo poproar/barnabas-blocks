@@ -51,10 +51,12 @@ function save() {
   var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
   var data = Blockly.Xml.domToText(xml);
   var fileName = window.prompt('What would you like to name your file?', 'BlocklyDuino');
+
   // Store data in blob.
   // var builder = new BlobBuilder();
   // builder.append(data);
   // saveAs(builder.getBlob('text/plain;charset=utf-8'), 'blockduino.xml');
+  console.log("saving blob");
   if(fileName){
     var blob = new Blob([data], {type: 'text/xml'});
     saveAs(blob, fileName + ".xml");
@@ -81,10 +83,12 @@ function load(event) {
         var xml = Blockly.Xml.textToDom(target.result);
       } catch (e) {
         alert('Error parsing XML:\n' + e);
+        Materialize.toast(Blockly.Msg.ERROR_PARSING_XML + ':\n' + e);
+        //alert('Error parsing XML:\n' + e);
         return;
       }
       var count = Blockly.mainWorkspace.getAllBlocks().length;
-      if (count && confirm('Replace existing blocks?\n"Cancel" will merge.')) {
+      if (count && confirm(Blockly.Msg.REPLACE_TEXT1 + '\n' +Blockly.Msg.REPLACE_TEXT2)) {
         Blockly.mainWorkspace.clear();
       }
       Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
@@ -101,7 +105,7 @@ function load(event) {
  */
 function discard() {
   var count = Blockly.mainWorkspace.getAllBlocks().length;
-  if (count < 2 || window.confirm('Delete all ' + count + ' blocks?')) {
+  if (count < 2 || window.confirm(Blockly.Msg.DELETE_ALL1 + count + Blockly.Msg.DELETE_ALL2)) {
     Blockly.mainWorkspace.clear();
     renderContent();
   }
@@ -185,23 +189,23 @@ function onSuccess() {
 function load_by_url(uri) {
   ajax = createAJAX();
   if (!ajax) {
-　　   alert ('Not compatible with XMLHttpRequest');
-　　   return 0;
-　  }
+    alert ('Not compatible with XMLHttpRequest');
+    return 0;
+  }
   if (ajax.overrideMimeType) {
     ajax.overrideMimeType('text/xml');
   }
 
-　　ajax.onreadystatechange = onSuccess;
-　　ajax.open ("GET", uri, true);
-　　ajax.send ("");
+  ajax.onreadystatechange = onSuccess;
+  ajax.open ("GET", uri, true);
+  ajax.send ("");
 }
 
 function uploadCode(code, callback) {
     var target = document.getElementById('content_arduino');
     var spinner = new Spinner().spin(target);
 
-    var url = "";
+    var url = "http://127.0.0.1:8080/";
     var method = "POST";
 
     // You REALLY want async = true.
@@ -251,8 +255,9 @@ function uploadCode(code, callback) {
 
 function uploadClick() {
     var code = Blockly.Arduino.workspaceToCode();
+    // var code = document.getElementById('textarea_arduino').value;
 
-    alert("Ready to upload to Arduino.");
+    alert("Ready to upload to Arduino.\n\nNote: this only works on Mac OS X and Linux at this time.");
     
     uploadCode(code, function(status, errorInfo) {
         if (status == 200) {
