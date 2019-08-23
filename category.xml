@@ -2,7 +2,6 @@
     <block type="initializes_setup"></block>
 </category>
 <category id="category_inout" colour="210">
-    <category id="category_digital" colour="210">
         <block type="inout_highlow"></block>
         <block type="inout_digitalpin"></block>
         <block type="inout_digital_write"></block>
@@ -19,8 +18,6 @@
             </value>
         </block>
         <block type="inout_digital_read"></block>
-    </category>
-    <category id="category_analog" colour="210">
         <block type="inout_analog_write">
             <value name="NUM">
                 <block type="math_number">
@@ -29,8 +26,6 @@
             </value>
         </block>
         <block type="inout_analog_read"></block>
-    </category>
-    <category id="category_others" colour="210">
         <block type="pulsein"></block>
         <block type="tone"></block>
         <block type="custom_tone">
@@ -40,7 +35,6 @@
                 </block>
             </value>
         </block>
-    </category>
 </category>
 <category id="category_serial" colour="210">
     <block type="serial_available"></block>
