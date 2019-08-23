@@ -31,135 +31,224 @@ goog.provide('Blockly.Blocks.grove');
 
 goog.require('Blockly.Blocks');
 
+Blockly.Blocks.grove.HUE = 190;
+
+Blockly.Blocks.grove.led_image = filepath.media+'/grove_led.jpg';
+Blockly.Blocks.grove.button_image = filepath.media+'/grove_button.jpg';
+Blockly.Blocks.grove.touch_image = filepath.media+'/grove_touch.jpg';
+Blockly.Blocks.grove.rotary_angle_image = filepath.media+'/grove_rotary_angle.jpg';
+Blockly.Blocks.grove.relay_image = filepath.media+'/grove_relay.jpg';
+Blockly.Blocks.grove.temperature_sensor_image = filepath.media+'/grove_temperature_sensor.jpg';
+Blockly.Blocks.grove.light_sensor_image = filepath.media+'/grove_light_sensor.jpg';
+Blockly.Blocks.grove.rgb_lcd_image = filepath.media+'/grove_rgb_lcd.jpg';
+Blockly.Blocks.grove.buzzer_image = filepath.media+'/grove_buzzer.jpg';
+Blockly.Blocks.grove.sound_sensor_image = filepath.media+'/grove_sound_sensor.jpg';
+Blockly.Blocks.grove.ir_receiver_image = filepath.media+'/grove_ir_receiver.jpg';
+Blockly.Blocks.grove.ir_emitter_image = filepath.media+'/grove_ir_emitter.jpg';
+
+Blockly.Blocks.grove.rgb_lcd_checkBlocks = function(obj) {
+  var legal = null;
+  var current = obj.type;
+  var blocks = obj.workspace.getAllBlocks();
+  for (var i = 0; i < blocks.length; i++) {
+    if ((blocks[i].type == 'grove_rgb_lcd_setcolor' ||
+         blocks[i].type == 'grove_rgb_lcd_print' ||
+         blocks[i].type == 'grove_rgb_lcd_setcursor' ||
+         blocks[i].type == 'grove_rgb_lcd_custom_setcursor' ||
+         blocks[i].type == 'grove_rgb_lcd_clear' ||
+         blocks[i].type == 'grove_rgb_lcd_scrolldisplayleft' ||
+         blocks[i].type == 'grove_rgb_lcd_scrolldisplayright' ||
+         blocks[i].type == 'grove_rgb_lcd_switch_scroll' ||
+         blocks[i].type == 'grove_rgb_lcd_autoscroll' ||
+         blocks[i].type == 'grove_rgb_lcd_noautoscroll' ||
+         blocks[i].type == 'grove_rgb_lcd_lefttoright' ||
+         blocks[i].type == 'grove_rgb_lcd_righttoleft') &&
+        legal == null){
+      if (blocks[i].type != current)  legal = true;
+      else  legal = false;
+    }
+    if(blocks[i].type == 'grove_rgb_lcd_begin'){
+      return true;
+    }
+  }
+  return legal;
+};
+
+Blockly.Blocks.grove.grove_ir_receiver_checkBlocks = function(obj) {
+  var legal = null;
+  var current = obj.type;
+  var blocks = obj.workspace.getAllBlocks();
+  for (var i = 0; i < blocks.length; i++) {
+    if ((blocks[i].type == 'grove_ir_receiver_check_data' ||
+         blocks[i].type == 'grove_ir_receiver_receive' ||
+         blocks[i].type == 'grove_ir_receiver_data') &&
+        legal == null){
+      if (blocks[i].type != current)  legal = true;
+      else  legal = false;
+    }
+    if(blocks[i].type == 'grove_ir_receiver_init'){
+      return true;
+    }
+  }
+  return legal;
+};
 
 Blockly.Blocks['grove_led'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#LED',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl(Blockly.Msg.GROVE_LED_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("LED")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/product/groveblue%20white.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN")
-        .appendField("stat")
-        .appendField(new Blockly.FieldDropdown([["HIGH", "HIGH"], ["LOW", "LOW"]]), "STAT");
+      .appendField(Blockly.Msg.GROVE_LED_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.led_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN")
+      .appendField(Blockly.Msg.GROVE_LED_STAT)
+      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.INOUT_HIGH, "HIGH"], [Blockly.Msg.INOUT_LOW, "LOW"]]), "STAT");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setTooltip('green LED');
+    this.setTooltip(Blockly.Msg.GROVE_LED_TOOLTIP);
   }
 };
 
 Blockly.Blocks['grove_button'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#Button',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl(Blockly.Msg.GROVE_BUTTON_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Button")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/product/bgpushb1.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+      .appendField(Blockly.Msg.GROVE_BUTTON_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.button_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN");
     this.setOutput(true, 'Boolean');
-    this.setTooltip('Basic digital input');
+    this.setTooltip(Blockly.Msg.GROVE_BUTTON_TOOLTIP);
+  }
+};
+
+Blockly.Blocks['grove_touch'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_TOUCH_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_TOUCH_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.touch_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN");
+    this.setOutput(true, 'Boolean');
+    this.setTooltip(Blockly.Msg.GROVE_TOUCH_TOOLTIP);
+  }
+};
+
+Blockly.Blocks['grove_light_sensor'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_LIGHT_SENSOR_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_LIGHT_SENSOR_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.light_sensor_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_analog), "PIN");
+    this.setOutput(true, 'Number');
+    this.setTooltip(Blockly.Msg.GROVE_LIGHT_SENSOR_TOOLTIP);
   }
 };
 
 Blockly.Blocks['grove_rotary_angle'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#Potentiometer',
   init: function() {
-    this.setColour(10);
+    this.setHelpUrl(Blockly.Msg.GROVE_ROTARY_ANGLE_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Rotary Angle")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/product/GroveRotaryP.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.analog), "PIN");
+      .appendField(Blockly.Msg.GROVE_ROTARY_ANGLE_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rotary_angle_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_analog), "PIN");
     this.setOutput(true, 'Number');
-    this.setTooltip('Analog output between 0 and Vcc');
+    this.setTooltip(Blockly.Msg.GROVE_ROTARY_ANGLE_TOOLTIP);
   }
 };
 
 Blockly.Blocks['grove_tilt_switch'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#Tilt_switch',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl('http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#Tilt_switch');
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Tilt Switch")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/product/gbtlt.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+      .appendField(Blockly.Msg.GROVE_TILT_SWITCH_TITLE)
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/9/95/Tilt1.jpg/400px-Tilt1.jpg", 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN");
     this.setOutput(true, 'Boolean');
-    this.setTooltip('When the switch is level it is open, and when tilted, the switch closes.');
+    this.setTooltip(Blockly.Msg.GROVE_TILT_SWITCH_TOOLTIP);
   }
 };
 
-Blockly.Blocks['grove_piezo_buzzer'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/GROVE_-_Starter_Kit_V1.1b#Grove_.E2.80.93_Buzzer',
+Blockly.Blocks['grove_buzzer'] = {
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl(Blockly.Msg.GROVE_BUZZER_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Piezo Buzzer")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/107020000%201.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN")
-        .appendField("stat")
-        .appendField(new Blockly.FieldDropdown([["HIGH", "HIGH"], ["LOW", "LOW"]]), "STAT");
+      .appendField(Blockly.Msg.GROVE_BUZZER_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.buzzer_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN")
+      .appendField(Blockly.Msg.GROVE_STAT)
+      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.INOUT_HIGH, "HIGH"], [Blockly.Msg.INOUT_LOW, "LOW"]]), "STAT");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setTooltip('Emit a tone when the output is high');
+    this.setTooltip(Blockly.Msg.GROVE_BUZZER_TOOLTIP);
   }
 };
 
 Blockly.Blocks['grove_relay'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/Grove_-_Relay',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl(Blockly.Msg.GROVE_RELAY_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Relay")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/1030200051.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN")
-        .appendField("stat")
-        .appendField(new Blockly.FieldDropdown([["HIGH", "HIGH"], ["LOW", "LOW"]]), "STAT");
+      .appendField(Blockly.Msg.GROVE_RELAY_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.relay_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN")
+      .appendField(Blockly.Msg.GROVE_STAT)
+      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.INOUT_HIGH, "HIGH"], [Blockly.Msg.INOUT_LOW, "LOW"]]), "STAT");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setTooltip('capable of switching a much higher voltages and currents. The maximum voltage and current that can be controlled by this module upto 250V at 10 amps.');
+    this.setTooltip(Blockly.Msg.GROVE_RELAY_TOOLTIP);
   }
 };
 
 Blockly.Blocks['grove_temporature_sensor'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/Project_Seven_-_Temperature',
   init: function() {
-    this.setColour(10);
+    this.setHelpUrl(Blockly.Msg.GROVE_TEMP_SENSOR_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Temporature Sensor")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/101020015%201.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.analog), "PIN")
+      .appendField(Blockly.Msg.GROVE_TEMP_SENSOR_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.temperature_sensor_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_analog), "PIN")
     this.setOutput(true, 'Number');
-    this.setTooltip('return number of ambient temperature in ℃');
+    this.setTooltip(Blockly.Msg.GROVE_TEMP_SENSOR_TOOLTIP);
   }
 };
 
 Blockly.Blocks['grove_serial_lcd_print'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#Serial_LCD',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl('http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#Serial_LCD');
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Serial LCD")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/product/Serial%20LCD.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+      .appendField("Serial LCD")
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/6/6a/LCD1.jpg/400px-LCD1.jpg", 64, 64))
+      .appendField("PIN#")
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN");
     this.appendValueInput("TEXT", 'String')
-        .setCheck('String')
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("print line1");
+      .setCheck('String')
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField("print line1");
     this.appendValueInput("TEXT2", 'String')
-        .setCheck('String')
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("print line2")
+      .setCheck('String')
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField("print line2")
     this.appendValueInput("DELAY_TIME", 'Number')
-        .setCheck('Number')
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Delay");
+      .setCheck('Number')
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField("Delay");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('print text on an 16 character by 2 line LCD.');
@@ -170,16 +259,16 @@ Blockly.Blocks['grove_serial_lcd_print'] = {
 Blockly.Blocks['grove_serial_lcd_power'] = {
   helpUrl: 'http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#LED',
   init: function() {
-    this.setColour(190);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Serial LCD")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/product/Serial%20LCD.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+      .appendField("Serial LCD")
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/6/6a/LCD1.jpg/400px-LCD1.jpg", 64, 64))
+      .appendField("PIN#")
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN");
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Power")
-        .appendField(new Blockly.FieldDropdown([["ON", "ON"], ["OFF", "OFF"]]), "STAT");
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField("Power")
+      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.INPUT_ON, "ON"], [Blockly.Msg.INPUT_OFF, "OFF"]]), "STAT");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('Turn LCD power on/off');
@@ -188,18 +277,18 @@ Blockly.Blocks['grove_serial_lcd_power'] = {
 
 //scroll left/right/no scroll/blink/noblink
 Blockly.Blocks['grove_serial_lcd_effect'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#LED',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl('http://www.seeedstudio.com/wiki/index.php?title=GROVE_-_Starter_Bundle_V1.0b#LED');
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Serial LCD")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/product/Serial%20LCD.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+      .appendField("Serial LCD")
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/6/6a/LCD1.jpg/400px-LCD1.jpg", 64, 64))
+      .appendField("PIN#")
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN");
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Effect")
-        .appendField(new Blockly.FieldDropdown([["Scroll Left", "LEFT"], ["Scroll Right", "RIGHT"], ["Scroll Auto", "AUTO"]]), "STAT");
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField("Effect")
+      .appendField(new Blockly.FieldDropdown([["Scroll Left", "LEFT"], ["Scroll Right", "RIGHT"], ["Scroll Auto", "AUTO"]]), "STAT");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('Turn LCD power on/off');
@@ -207,71 +296,71 @@ Blockly.Blocks['grove_serial_lcd_effect'] = {
 };
 
 Blockly.Blocks['grove_sound_sensor'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/Grove_-_Sound_Sensor',
   init: function() {
-    this.setColour(10);
+    this.setHelpUrl(Blockly.Msg.GROVE_SOUND_SENSOR_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Sound Sensor")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/seeed/img/2017-02/fhpNt4QmMYZRtWvB40LIiMrw.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.analog), "PIN")
+      .appendField(Blockly.Msg.GROVE_SOUND_SENSOR_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.sound_sensor_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_analog), "PIN")
     this.setOutput(true, 'Number');
-    this.setTooltip('Detect the sound strength of the environment');
+    this.setTooltip(Blockly.Msg.GROVE_SOUND_SENSOR_TOOLTIP);
   }
 };
 
 Blockly.Blocks['grove_pir_motion_sensor'] = {
   helpUrl: 'http://www.seeedstudio.com/wiki/Grove_-_PIR_Motion_Sensor',
   init: function() {
-    this.setColour(190);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("PIR Motion Sensor")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/product/Grove%20-%20PIR%20Motion%20Sensor.jpg", 64, 64))
-        .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN")
+      .appendField("PIR Motion Sensor")
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/f/fd/Twig-PIR_Motion_Sensor.jpg/400px-Twig-PIR_Motion_Sensor.jpg", 64, 64))
+      .appendField("PIN#")
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN")
     this.setOutput(true, 'Number');
     this.setTooltip('When anyone moves in it\'s detecting range, the sensor outputs HIGH.');
   }
 };
 
 Blockly.Blocks['grove_line_finder'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/Grove_-_Line_Finder',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl('http://www.seeedstudio.com/wiki/Grove_-_Line_Finder');
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Line Finder")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/seeed/img/2016-09/WcjECS8Y4O8dSFI1TxymsAtg.jpg", 64, 64))
-	      .appendField("PIN#")
-	      .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+      .appendField("Line Finder")
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/8/82/Grovelinefinder1.jpg/400px-Grovelinefinder1.jpg", 64, 64))
+      .appendField("PIN#")
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN");
     this.setOutput(true, 'Boolean');
     this.setTooltip('Output digital signal so the robot can reliably follow a black line on a white background');
   }
 };
 
 Blockly.Blocks['grove_ultrasonic_ranger'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/Grove_-_Ultrasonic_Ranger',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl('http://www.seeedstudio.com/wiki/Grove_-_Ultrasonic_Ranger');
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-	      .appendField("Ultrasonic Ranger")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/seeed/img/2016-09/kIyY21sbC6ct7JYzCWf1mAPs.jpg", 64, 64))
-	      .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN")
-        .appendField("unit")
-        .appendField(new Blockly.FieldDropdown([["cm", "cm"],  ["inch", "inch"]]), "UNIT");
-    this.setOutput(true, 'Number');
+      .appendField("Ultrasonic Ranger")
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/b/b0/Twig_-_Ultrasonic_Ranger2.jpg/200px-Twig_-_Ultrasonic_Ranger2.jpg", 64, 64))
+      .appendField("PIN#")
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN")
+      .appendField("unit")
+      .appendField(new Blockly.FieldDropdown([["cm", "cm"],  ["inch", "inch"]]), "UNIT");
+    this.setOutput(true, 'Boolean');
     this.setTooltip('Non-contact distance measurement module');
   }
 };
 
 Blockly.Blocks['grove_motor_shield'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/Motor_Shield',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl('http://www.seeedstudio.com/wiki/Motor_Shield');
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Motor")
-        .appendField(new Blockly.FieldImage("http://wiki.seeedstudio.com/images/4/4d/Smotoshield2.jpg", 64, 64))
-        .appendField(new Blockly.FieldDropdown([["Stop", "stop"], ["Forward", "forward"], ["Right", "right"], ["Left", "left"], ["Backward", "backward"]]), "DIRECTION");
+      .appendField("Motor")
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/4/4d/Smotoshield2.jpg/400px-Smotoshield2.jpg", 64, 64))
+      .appendField(new Blockly.FieldDropdown([["Stop", "stop"], ["Forward", "forward"], ["Right", "right"], ["Left", "left"], ["Backward", "backward"]]), "DIRECTION");
     /*this.appendValueInput("SPEED", 'Number')
         .setCheck('Number')
         .setAlign(Blockly.ALIGN_RIGHT)
@@ -283,34 +372,34 @@ Blockly.Blocks['grove_motor_shield'] = {
 };
 
 Blockly.Blocks['grove_thumb_joystick'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/Grove_-_Thumb_Joystick',
   init: function() {
-    this.setColour(10);
+    this.setHelpUrl('http://www.seeedstudio.com/wiki/Grove_-_Thumb_Joystick');
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-	.appendField("Thumb Joystick")
-        .appendField(new Blockly.FieldImage("https://statics3.seeedstudio.com/images/product/bgjoy1.jpg", 64, 64))
-	.appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.analog), "PIN")
-        .appendField("axis")
-        .appendField(new Blockly.FieldDropdown([["x", "x"],  ["y", "y"]]), "AXIS");
+      .appendField("Thumb Joystick")
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/images/thumb/e/e0/Twig_-_Thumb_Joystick_v0.9b.jpg/200px-Twig_-_Thumb_Joystick_v0.9b.jpg", 64, 64))
+      .appendField("PIN#")
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_analog), "PIN")
+      .appendField("axis")
+      .appendField(new Blockly.FieldDropdown([["x", "x"],  ["y", "y"]]), "AXIS");
     this.setOutput(true, 'Number');
-this.setTooltip('output two analog values(200~800) representing two directions');
+    this.setTooltip('output two analog values(200~800) representing two directions');
   }
 };
 
 Blockly.Blocks['grove_rgb_led'] = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/index.php?title=Twig_-_Chainable_RGB_LED',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl('http://www.seeedstudio.com/wiki/index.php?title=Twig_-_Chainable_RGB_LED');
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-  .appendField("Chainable RGB LED")
-        .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/depot/images/product/chanbalelednb1.jpg", 64, 64))
-  .appendField("PIN#")
-        .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN")
+      .appendField("Chainable RGB LED")
+      .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/depot/images/product/chanbalelednb1.jpg", 64, 64))
+      .appendField("PIN#")
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN")
     this.appendDummyInput("COLOR0")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Color 1")
-        .appendField(new Blockly.FieldColour("#00ff00"), "RGB0");
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField("Color 1")
+      .appendField(new Blockly.FieldColour("#00ff00"), "RGB0");
     this.setMutator(new Blockly.Mutator(['grove_rgb_led_item']));
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -336,16 +425,16 @@ Blockly.Blocks['grove_rgb_led'] = {
       var color = window.parseInt(xmlElement.getAttribute('RGB'+x), "#00ff00");
       var input = this.appendDummyInput('COLOR' + x);
       //if (x == 0) {
-        input.setAlign(Blockly.ALIGN_RIGHT)
-             .appendField("Color "+(x+1))
-             .appendField(new Blockly.FieldColour(color), "RGB" + x);
+      input.setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Color "+(x+1))
+        .appendField(new Blockly.FieldColour(color), "RGB" + x);
       //}
     }
     if (this.itemCount_ == 0) {
       this.appendDummyInput('COLOR0')
-          .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Color 1")
-          .appendField(new Blockly.FieldColour("#00ff00"), "RGB0");
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Color 1")
+        .appendField(new Blockly.FieldColour("#00ff00"), "RGB0");
     }
   },
   decompose: function(workspace) {
@@ -384,7 +473,7 @@ Blockly.Blocks['grove_rgb_led'] = {
     while (itemBlock) {
       var colour_rgb = this.getFieldValue('RGB' + this.itemCount_);
       if(colour_rgb==null){
-          colour_rgb = "00ff00";
+        colour_rgb = "00ff00";
       }
       //console.log("blk:"+this.itemCount_);
       /*if(top>this.itemCount_){
@@ -392,9 +481,9 @@ Blockly.Blocks['grove_rgb_led'] = {
       }*/
       var input = this.appendDummyInput('COLOR' + this.itemCount_);
       //if (this.itemCount_ == 0) {
-        input.setAlign(Blockly.ALIGN_RIGHT)
-             .appendField("Color " + (this.itemCount_+1))
-             .appendField(new Blockly.FieldColour(colour_rgb), "RGB" + this.itemCount_);
+      input.setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Color " + (this.itemCount_+1))
+        .appendField(new Blockly.FieldColour(colour_rgb), "RGB" + this.itemCount_);
       //}
       // Reconnect any child blocks.
       if (itemBlock.valueConnection_) {
@@ -402,13 +491,13 @@ Blockly.Blocks['grove_rgb_led'] = {
       }
       this.itemCount_++;
       itemBlock = itemBlock.nextConnection &&
-          itemBlock.nextConnection.targetBlock();
+        itemBlock.nextConnection.targetBlock();
     }
     if (this.itemCount_ == 0) {
       this.appendDummyInput('COLOR0')
-          .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Color 1")
-          .appendField(new Blockly.FieldColour("#00ff00"), "RGB0");
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Color 1")
+        .appendField(new Blockly.FieldColour("#00ff00"), "RGB0");
     }
   }
   /*saveConnections: function(containerBlock) {
@@ -428,9 +517,9 @@ Blockly.Blocks['grove_rgb_led'] = {
 Blockly.Blocks['grove_rgb_led_container'] = {
   // Container.
   init: function() {
-    this.setColour(190);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Container");
+      .appendField("Container");
     this.appendStatementInput('STACK');
     this.setTooltip("Add, remove items to reconfigure this chain");
     this.contextMenu = false;
@@ -440,9 +529,9 @@ Blockly.Blocks['grove_rgb_led_container'] = {
 Blockly.Blocks['grove_rgb_led_item'] = {
   // Add items.
   init: function() {
-    this.setColour(190);
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
-        .appendField("Item");
+      .appendField("Item");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip("Add an item to the chain");
@@ -452,14 +541,14 @@ Blockly.Blocks['grove_rgb_led_item'] = {
 
 Blockly.Blocks['grove_bluetooth_slave'] = {
   category: 'Network',
-  helpUrl: 'http://www.seeedstudio.com/wiki/Grove_-_Serial_Bluetooth',
   init: function() {
-    this.setColour(190);
+    this.setHelpUrl('http://www.seeedstudio.com/wiki/Grove_-_Serial_Bluetooth');
+    this.setColour(Blockly.Blocks.grove.HUE);
     this.appendDummyInput()
       .appendField("Bluetooth Slave")
       .appendField(new Blockly.FieldImage("http://www.seeedstudio.com/wiki/File:Twigbt00.jpg", 64, 64))
       .appendField("PIN#")
-      .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN")
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN")
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField("Name")
@@ -487,19 +576,496 @@ Blockly.Blocks['grove_bluetooth_slave'] = {
 /*
 void setup()
 {
-	pinMode( 3 , OUTPUT);
-	pinMode( 1 , INPUT);
+  pinMode( 3 , OUTPUT);
+  pinMode( 1 , INPUT);
 }
 
 void loop()
 {
-	if (digitalRead( 1))
-	{
-		digitalWrite( 3 , HIGH);
-	}
-	else
-	{
-		digitalWrite( 1 , LOW);
-	}
+  if (digitalRead( 1))
+  {
+    digitalWrite( 3 , HIGH);
+  }
+  else
+  {
+    digitalWrite( 1 , LOW);
+  }
 }
 */
+
+Blockly.Blocks['grove_rgb_lcd_setcolor'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.COLOR)
+      .appendField(new Blockly.FieldColour("#00ff00"), "RGB");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_SETCOLOR_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_begin'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_BEGIN_TITLE)
+      .appendField(Blockly.Msg.COL)
+      .appendField(new Blockly.FieldTextInput("16"),"COLS");
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ROW)
+      .appendField(new Blockly.FieldTextInput("2"),"ROWS");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_BEGIN_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has been deleted.
+      return;
+    }
+    this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_BEGIN_WARNING);
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_print'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendValueInput("PRINT")
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_PRINT_TITLE);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_PRINT_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_setcursor'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_SETCURSOR_TITLE)
+      .appendField(Blockly.Msg.COL)
+      .appendField(new Blockly.FieldTextInput("0"),"COL");
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ROW)
+      .appendField(new Blockly.FieldTextInput("0"),"ROW");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_SETCURSOR_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_custom_setcursor'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_SETCURSOR_TITLE);
+    this.appendValueInput("COL")
+      .setCheck('Number')
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField(Blockly.Msg.COL);
+    this.appendValueInput("ROW")
+      .setCheck('Number')
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField(Blockly.Msg.ROW);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_SETCURSOR_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_clear'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_CLEAR_TITLE);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_CLEAR_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_scrolldisplayleft'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_SCROLL_DISPLAY_LEFT_TITLE);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_SCROLL_DISPLAY_LEFT_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_scrolldisplayright'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_LCD_SCROLL_DISPLAY_RIGHT_TITLE);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_LCD_SCROLL_DISPLAY_RIGHT_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_switch_scroll'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_AUTOSCROLL_TITLE)
+      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.ON,"1"],[Blockly.Msg.OFF,"0"]]), 'SW');
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_AUTOSCROLL_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_autoscroll'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_AUTOSCROLL_TITLE);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_AUTOSCROLL_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_noautoscroll'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_NOAUTOSCROLL_TITLE);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_NOAUTOSCROLL_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_lefttoright'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_RGB_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_LEFTTORIGHT_TITLE);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_LEFTTORIGHT_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_rgb_lcd_righttoleft'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_LCD_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.rgb_lcd_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_RGB_LCD_RIGHTTOLEFT_TITLE);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_RGB_LCD_RIGHTTOLEFT_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.rgb_lcd_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_RGB_LCD_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_ir_receiver_init'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_IR_RECEIVER_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_IR_RECEIVER_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.ir_receiver_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_IR_RECEIVER_INIT_TITLE)
+      .appendField(Blockly.Msg.PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.grove_digital), "PIN");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_IR_REVEIVER_INIT_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has been deleted.
+      return;
+    }
+    this.setWarningText(Blockly.Msg.GROVE_IR_RECEIVER_INIT_WARNING);
+  }
+};
+
+Blockly.Blocks['grove_ir_receiver_check_data'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_IR_RECEIVER_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_IR_RECEIVER_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.ir_receiver_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_IR_RECEIVER_CHECK_DATA_TITLE);
+    this.setOutput(true);
+    this.setTooltip(Blockly.Msg.GROVE_IR_RECEIVER_CHECK_DATA_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.grove_ir_receiver_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_IR_RECEIVER_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_ir_receiver_receive'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_IR_RECEIVER_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_IR_RECEIVER_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.ir_receiver_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_IR_RECEIVER_RECEIVE_TITLE);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_IR_RECEIVER_RECEIVE_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.grove_ir_receiver_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_IR_RECEIVER_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_ir_receiver_data'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_IR_RECEIVER_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_IR_RECEIVER_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.ir_receiver_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_IR_RECEIVER_DATA_TITLE);
+    this.setInputsInline(true);
+    this.setOutput(true);
+    this.setTooltip(Blockly.Msg.GROVE_IR_RECEIVER_DATA_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has en deleted.
+      return;
+    }
+    if (!Blockly.Blocks.grove.grove_ir_receiver_checkBlocks(this)) {
+      this.setWarningText(Blockly.Msg.GROVE_IR_RECEIVER_WARNING);
+    } else {
+      this.setWarningText(null);
+    }
+  }
+};
+
+Blockly.Blocks['grove_ir_emitter_send'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.GROVE_IR_EMITTER_HELPURL);
+    this.setColour(Blockly.Blocks.grove.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.GROVE_IR_EMITTER_TITLE)
+      .appendField(new Blockly.FieldImage(Blockly.Blocks.grove.ir_emitter_image, 64, 64))
+      .appendField(Blockly.Msg.GROVE_IR_EMITTER_SEND_TITLE);
+    this.appendValueInput("DATA")
+      .setCheck("Number")
+      .appendField(Blockly.Msg.DATA);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.GROVE_IR_EMMITER_SEND_TOOLTIP);
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has been deleted.
+      return;
+    }
+    this.setWarningText(Blockly.Msg.GROVE_IR_EMITTER_WARNING);
+  }
+};
