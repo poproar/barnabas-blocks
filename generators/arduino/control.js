@@ -27,7 +27,6 @@ goog.provide('Blockly.Arduino.loops');
 
 goog.require('Blockly.Arduino');
 
-
 Blockly.Arduino.controls_for = function() {
   // For loop.
   var variable0 = Blockly.Arduino.variableDB_.getName(
@@ -71,24 +70,57 @@ Blockly.Arduino.controls_for = function() {
         variable0 + ' >= ' + endVar + ';\n' +
         '    ' + variable0 + ' += (' + startVar + ' <= ' + endVar +
             ') ? 1 : -1) {\n' +
-        branch + '}\n';
+        branch0 + '}\n';
   }
   return code;
 };
 
-Blockly.Arduino.controls_whileUntil = function() {
+Blockly.Arduino['controls_whileUntil'] = function(block) {
   // Do while/until loop.
-  var until = this.getFieldValue('MODE') == 'UNTIL';
-  var argument0 = Blockly.Arduino.valueToCode(this, 'BOOL',
-      until ? Blockly.Arduino.ORDER_LOGICAL_NOT :
-      Blockly.Arduino.ORDER_NONE) || 'false';
-  var branch = Blockly.Arduino.statementToCode(this, 'DO');
-  if (Blockly.Arduino.INFINITE_LOOP_TRAP) {
-    branch = Blockly.Arduino.INFINITE_LOOP_TRAP.replace(/%1/g,
-        '\'' + this.id + '\'') + branch;
-  }
+  var until = block.getFieldValue('MODE') == 'UNTIL';
+  var argument0 = Blockly.Arduino.valueToCode(block, 'BOOL', Blockly.Arduino.ORDER_NONE) || 'false';
+  var branch = Blockly.Arduino.statementToCode(block, 'DO');
+  branch = Blockly.Arduino.addLoopTrap(branch, block.id);
   if (until) {
     argument0 = '!' + argument0;
   }
   return 'while (' + argument0 + ') {\n' + branch + '}\n';
-}
+};
+
+Blockly.Arduino['controls_while'] = function(block) {
+  // Do while/until loop.
+  var argument0 = Blockly.Arduino.valueToCode(block, 'BOOL', Blockly.Arduino.ORDER_NONE) || 'false';
+  var branch = Blockly.Arduino.statementToCode(block, 'DO');
+  branch = Blockly.Arduino.addLoopTrap(branch, block.id);
+  return 'while (' + argument0 + ') {\n' + branch + '}\n';
+};
+
+Blockly.Arduino['controls_repeat'] = function(block){
+  // Repeat n times (internal number).
+  var repeats = Number(block.getFieldValue('TIMES'));
+  var branch = Blockly.Arduino.statementToCode(block, 'DO');
+  branch = Blockly.Arduino.addLoopTrap(branch, block.id);
+  var loopVar = Blockly.Arduino.variableDB_.getDistinctName(
+  'count', Blockly.Variables.NAME_TYPE);
+  var code = 'for (int ' + loopVar + ' = 0; ' +
+  loopVar + ' < ' + repeats + '; ' +
+  loopVar + '++) {\n' +
+  branch + '}\n';
+  return code;
+};
+
+Blockly.Arduino['controls_flow_statements'] = function(block) {
+  // Flow statements: continue, break.
+  switch (block.getFieldValue('FLOW')) {
+    case 'BREAK':
+      return 'break;\n';
+    case 'CONTINUE':
+      return 'continue;\n';
+  }
+  throw 'Unknown flow statement.';
+};
+
+Blockly.Arduino['controls_return'] = function(block) {
+  var value = Blockly.Arduino.valueToCode(block, 'VAL', Blockly.Arduino.ORDER_NONE) || '';
+  return 'return ' + value +';\n';
+};

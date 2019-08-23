@@ -65,6 +65,10 @@ Blockly.Arduino.ORDER_LOGICAL_AND = 11;   // &&
 Blockly.Arduino.ORDER_LOGICAL_OR = 12;    // ||
 Blockly.Arduino.ORDER_CONDITIONAL = 13;   // expr ? expr : expr
 Blockly.Arduino.ORDER_ASSIGNMENT = 14;    // = *= /= ~/= %= += -= <<= >>= &= ^= |=
+Blockly.Arduino.ORDER_COMMA = 15;         //,
+Blockly.Arduino.ORDER_UNARY_NEGATION = 16;  //-
+Blockly.Arduino.ORDER_MEMBER = 17;              // . []
+Blockly.Arduino.ORDER_FUNCTION_CALL = 18;  // ()
 Blockly.Arduino.ORDER_NONE = 99;          // (...)
 
 /*
@@ -72,11 +76,26 @@ Blockly.Arduino.ORDER_NONE = 99;          // (...)
  *
  */
 var profile = {
+  common:{
+    number_type: ["Number","Byte","Unsigned_Int","Long","Unsigned_Long","Word","Char","Float","Double","Volatile_Int"]
+  },
   arduino: {
     description: "Arduino standard-compatible board",
-    digital: [["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"], ["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["A5", "A5"]],
+    digital: [["0","0"],["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"], ["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["A5", "A5"]],
+    grove_digital: [["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"]],
     analog: [["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["A5", "A5"]],
-    serial: 9600
+    grove_analog: [["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"]],
+    pwm: [["3", "3"], ["5", "5"], ["6", "6"], ["9", "9"], ["10", "10"], ["11", "11"]],
+    serial: 9600,
+    tone:[["C:ド","262"],["D:レ","294"],["E:ミ","330"],["F:ファ","349"],["G:ソ","392"],["A:ラ","440"],["B:シ","494"],["C:ド","523"]],
+    lcd: [["-","-"],["0","0"],["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"], ["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["A5", "A5"]],
+    dht:[["DHT11","DHT11"],["DHT21","DHT21"],["DHT22","DHT22"]],
+    i2c_matrix_type: [["8x8","8x8matrix"],["16x8","8x16matrix"],["bi_color8x8","BicolorMatrix"]],
+    led_backpack_address: [["0x70","0x70"],["0x71","0x71"],["0x72","0x72"],["0x73","0x73"]],
+    blynk_merge_index: [["0","0"],["1","1"],["2","2"]],
+    grove_digital: [["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"]],
+    shield_bot_sensor: [["1","1"],["2","2"],["3","3"],["4","4"],["5","5"]],
+    interrupt:[["2","0"],["3","1"]]
   },
   arduino_mega: {
     description: "Arduino Mega-compatible board"
@@ -86,7 +105,6 @@ var profile = {
 };
 //set default profile to arduino standard-compatible board
 profile["default"] = profile["arduino"];
-//alert(profile.default.digital[0]);
 
 /**
  * Initialise the database of variable names.
@@ -98,21 +116,33 @@ Blockly.Arduino.init = function(workspace) {
   // Create a dictionary of setups to be printed before the code.
   Blockly.Arduino.setups_ = Object.create(null);
 
-	if (!Blockly.Arduino.variableDB_) {
-		Blockly.Arduino.variableDB_ =
-				new Blockly.Names(Blockly.Arduino.RESERVED_WORDS_);
-	} else {
-		Blockly.Arduino.variableDB_.reset();
-	}
+  if (!Blockly.Arduino.variableDB_) {
+    Blockly.Arduino.variableDB_ =
+        new Blockly.Names(Blockly.Arduino.RESERVED_WORDS_);
+  } else {
+    Blockly.Arduino.variableDB_.reset();
+  }
 
-	var defvars = [];
-	var variables = Blockly.Variables.allVariables(workspace);
-	for (var x = 0; x < variables.length; x++) {
-		defvars[x] = 'int ' +
-				Blockly.Arduino.variableDB_.getName(variables[x],
-				Blockly.Variables.NAME_TYPE) + ';\n';
-	}
-	Blockly.Arduino.definitions_['variables'] = defvars.join('\n');
+  var defvars = [];
+//  var variables = Blockly.Variables.allVariables(workspace);
+  var variables = Blockly.Variables.allVariablesAndTypes(workspace);
+  var datatype = {Number:'int',Long:'long',Float:'float',Byte:'byte',Boolean:'boolean',Char:'char',String:'String',Array:'int',Volatile_Int:'volatile int',Word:'word',Double:'double',Unsigned_Int:'unsigned int',Unsigned_Long:'unsigned long'};
+  for (var x = 0; x < variables.length; x++) {
+    if(variables[x][1] == ""){
+      defvars[x] = 'int ' + ' ' + variables[x][0] + ';\n';
+      //Blockly.Arduino.variableDB_.getName(variables[x],
+      //Blockly.Variables.NAME_TYPE) + ';\n';
+      Blockly.Arduino.definitions_[variables[x][0]] = defvars[x];
+    }else{
+      //defvars[x] = 'int ' +
+      defvars[x] = datatype[variables[x][1]]
+        + ' ' + variables[x][0] + ';\n';
+        //Blockly.Arduino.variableDB_.getName(variables[x],
+        //Blockly.Variables.NAME_TYPE) + ';\n';
+      Blockly.Arduino.definitions_[variables[x][0]] = defvars[x];
+    }
+  }
+  //Blockly.Arduino.definitions_['variables'] = defvars.join('\n');
 };
 
 /**

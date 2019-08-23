@@ -28,14 +28,14 @@ goog.provide('Blockly.Arduino.variables');
 goog.require('Blockly.Arduino');
 
 
-Blockly.Arduino.variables_get = function() {
+Blockly.Arduino['variables_get'] = function(block) {
   // Variable getter.
   var code = Blockly.Arduino.variableDB_.getName(this.getFieldValue('VAR'),
       Blockly.Variables.NAME_TYPE);
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
-
-Blockly.Arduino.variables_declare = function() {
+/*
+Blockly.Arduino['variables_declare'] = function() {
   // Variable setter.
   var dropdown_type = this.getFieldValue('TYPE');
   //TODO: settype to variable
@@ -46,12 +46,25 @@ Blockly.Arduino.variables_declare = function() {
   Blockly.Arduino.setups_['setup_var' + varName] = varName + ' = ' + argument0 + ';\n';
   return '';
 };
+*/
 
-Blockly.Arduino.variables_set = function() {
+Blockly.Arduino['variables_set'] = function(block) {
   // Variable setter.
-  var argument0 = Blockly.Arduino.valueToCode(this, 'VALUE',
+  var argument0 = Blockly.Arduino.valueToCode(block, 'VALUE',
       Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
   var varName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('VAR'),
       Blockly.Variables.NAME_TYPE);
+  var variables = Blockly.Variables.allVariablesAndTypes(this.workspace);
+  var code;
+  for (var x = 0; x < variables.length; x++) {
+    if(variables[x][0] == varName && variables[x][1] == 'Array'){
+      code = 'int ' + variables[x][0] + '[] = ' + argument0 + ';\n';
+      //Blockly.Arduino.variableDB_.getName(variables[x],
+      //Blockly.Variables.NAME_TYPE) + ';\n';
+      Blockly.Arduino.definitions_[variables[x][0]] = code;
+      return "";
+    }
+  }
   return varName + ' = ' + argument0 + ';\n';
+
 };

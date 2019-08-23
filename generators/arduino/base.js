@@ -79,25 +79,35 @@ Blockly.Arduino.inout_analog_read = function() {
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
-Blockly.Arduino.inout_tone = function() {
-  var dropdown_pin = this.getFieldValue("PIN");
-  var value_num = Blockly.Arduino.valueToCode(this, "NUM", Blockly.Arduino.ORDER_ATOMIC);
-  Blockly.Arduino.setups_['setup_output'+dropdown_pin] = 'pinMode('+dropdown_pin+', OUTPUT);';
-  var code = "tone(" + dropdown_pin + ", " + value_num + ");\n";
-  return code;
-};
-
-Blockly.Arduino.inout_notone = function() {
-  var dropdown_pin = this.getFieldValue("PIN");
-  Blockly.Arduino.setups_['setup_output'+dropdown_pin] = 'pinMode('+dropdown_pin+', OUTPUT);';
-  var code = "noTone(" + dropdown_pin + ");\n";
-  return code;
-};
-
 Blockly.Arduino.inout_highlow = function() {
   // Boolean values HIGH and LOW.
   var code = (this.getFieldValue('BOOL') == 'HIGH') ? 'HIGH' : 'LOW';
   return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino.pulsein = function() {
+  var code;
+  var value_pin = this.getFieldValue('pin');
+  var value_timeout = Blockly.Arduino.valueToCode(this, 'timeout', Blockly.Arduino.ORDER_ATOMIC) || '-1';
+  var dropdown_type = (this.getFieldValue('type') == 'HIGH') ? 'HIGH' : 'LOW';
+  console.log(value_timeout);
+  if(value_timeout > 0){
+    code = 'pulseIn(' + value_pin + ',' + dropdown_type +',' + value_timeout + ')';
+  }else{
+    code = 'pulseIn(' + value_pin + ',' + dropdown_type + ')';
+  }
+  // TODO: Change ORDER_NONE to the correct strength.
+  Blockly.Arduino.setups_['setup_output_'+ value_pin] = 'pinMode('+value_pin+', INPUT);';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino.tone = function() {
+  var value_pin = this.getFieldValue('pin');
+  var value_freq = Blockly.Arduino.valueToCode(this, 'freq', Blockly.Arduino.ORDER_ATOMIC) || '262';  //262 = C
+  var value_duration = Blockly.Arduino.valueToCode(this, 'duration', Blockly.Arduino.ORDER_ATOMIC) || '1000';
+  var code = 'tone(' + value_pin + ',' + value_freq +',' + value_duration + ');\n';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return code;
 };
 
 /*
@@ -112,39 +122,34 @@ void setup() {
 
 void loop() {
 servo_11.write(0);
+delay(2000);
 
 servo_11.write(150); //0~180
+delay(2000);
 }
 */
 Blockly.Arduino.servo_move = function() {
   var dropdown_pin = this.getFieldValue('PIN');
   var value_degree = Blockly.Arduino.valueToCode(this, 'DEGREE', Blockly.Arduino.ORDER_ATOMIC);
+  //value_degree = value_degree.replace('(','').replace(')','')
+  var delay_time = Blockly.Arduino.valueToCode(this, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC) || '1000'
+  //delay_time = delay_time.replace('(','').replace(')','');
 
   Blockly.Arduino.definitions_['define_servo'] = '#include <Servo.h>\n';
   Blockly.Arduino.definitions_['var_servo' + dropdown_pin] = 'Servo servo_' + dropdown_pin + ';\n';
   Blockly.Arduino.setups_['setup_servo_' + dropdown_pin] = 'servo_' + dropdown_pin + '.attach(' + dropdown_pin + ');\n';
 
-  var code = 'servo_' + dropdown_pin + '.write(' + value_degree + ');\n';
+  var code = 'servo_' + dropdown_pin + '.write(' + value_degree + ');\n' + 'delay(' + delay_time + ');\n';
   return code;
 };
 
 Blockly.Arduino.servo_read_degrees = function() {
   var dropdown_pin = this.getFieldValue('PIN');
 
-  Blockly.Arduino.definitions_['define_servo'] = '#include <Servo.h>\n';
+  Blockly.Arduino.definitions_['define_servo'] = '#include &lt;Servo.h&gt;\n';
   Blockly.Arduino.definitions_['var_servo' + dropdown_pin] = 'Servo servo_'+dropdown_pin+';\n';
   Blockly.Arduino.setups_['setup_servo_' + dropdown_pin] = 'servo_' + dropdown_pin + '.attach(' + dropdown_pin + ');\n';
 
   var code = 'servo_' + dropdown_pin + '.read()';
-  return code;
-};
-
-Blockly.Arduino.serial_print = function() {
-  var content = Blockly.Arduino.valueToCode(this, 'CONTENT', Blockly.Arduino.ORDER_ATOMIC) || '0'
-  //content = content.replace('(','').replace(')','');
-
-  Blockly.Arduino.setups_['setup_serial_' + profile.default.serial] = 'Serial.begin(' + profile.default.serial + ');\n';
-
-  var code = 'Serial.println(' + content + ');\n';
   return code;
 };
