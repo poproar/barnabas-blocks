@@ -112,6 +112,21 @@ input.blocklyhtmlinput {
   overflow: scroll;
 }
 
+#content_hex {
+  background-color: #ddd8d5;
+  color: #66BB6A;
+  resize: none;
+  outline: none;
+  border: none;
+  font-family: monospace;
+  overflow: scroll;
+  font-size: 12px;
+  line-height: 12px;
+  word-break: break-all;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
 #content_arduino {
   resize: none;
   outline: none;

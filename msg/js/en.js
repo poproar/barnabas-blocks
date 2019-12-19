@@ -33,6 +33,7 @@ Blockly.Msg.AEROBOT_TURN_LEFT = "TurnLeft";
 Blockly.Msg.AEROBOT_TURN_RIGHT = "TurnRight";
 Blockly.Msg.AEROBOT_WARNING = "Need to install AERobot library";
 Blockly.Msg.ARDUINO = "Arduino";
+Blockly.Msg.HEX = "Hex";
 Blockly.Msg.ARRAY_CREATE_WITH_CONTAINER_TITLE_ADD = "array";
 Blockly.Msg.ARRAY_CREATE_WITH_CONTAINER_TOOLTIP = "Add, remove, or reorder sections to reconfigure this array block.";
 Blockly.Msg.ARRAY_CREATE_WITH_HELPURL = "";

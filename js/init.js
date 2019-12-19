@@ -5,7 +5,7 @@
 
 'use strict';
 
-var TABS_ = ['blocks', 'arduino'];
+var TABS_ = ['blocks', 'arduino', 'hex'];
 
 var selected = 'blocks';
 
@@ -306,6 +306,8 @@ function setCharacter() {
 
   $("#tab_blocks").text(Blockly.Msg.BLOCKS);
   $("#tab_arduino").text(Blockly.Msg.ARDUINO);
+  $("#tab_hex").text(Blockly.Msg.HEX);
+
 
   $("#get-app").attr("data-tooltip", "Upload to Bot");// Blockly.Msg.DOWNLOAD_CHROME_APP
   $("#go-to-sample").attr("data-tooltip", Blockly.Msg.GO_TO_SAMPLE);

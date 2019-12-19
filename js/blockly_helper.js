@@ -1,3 +1,5 @@
+var COMPILE_URL="http://compile.barnabasrobotics.com"
+var OTHR_URL="http://chromeduino.3mr.fr"
 /**
  * Execute the user's code.
  * Just a quick and dirty eval.  No checks for infinite loops, etc.
@@ -205,7 +207,7 @@ function uploadCode(code, callback) {
     var target = document.getElementById('content_arduino');
     var spinner = new Spinner().spin(target);
 
-    var url = "http://127.0.0.1:8080/";
+    var url = COMPILE_URL + "/compile";
     var method = "POST";
 
     // You REALLY want async = true.
@@ -220,11 +222,14 @@ function uploadCode(code, callback) {
         }
         
         spinner.stop();
-        console.log(request.responseText);
+
+        var data=JSON.parse(request.responseText);
         var status = parseInt(request.status); // HTTP response status, e.g., 200 for "200 OK"
         var errorInfo = null;
         switch (status) {
         case 200:
+            errorInfo = data.stdout + "\n\n" + data.stderr;
+            document.getElementById('content_hex').innerHTML = data.hex;
             break;
         case 0:
             errorInfo = "code 0\n\nCould not connect to server at " + url + ".  Is the local web server running?";
@@ -246,8 +251,6 @@ function uploadCode(code, callback) {
         callback(status, errorInfo);
     };
 
-
-
     request.open(method, url, async);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send(encodeURI("sketch="+code+"&board=arduino:avr:nano:cpu=atmega328"));	     
@@ -257,11 +260,11 @@ function uploadClick() {
     var code = Blockly.Arduino.workspaceToCode();
     // var code = document.getElementById('textarea_arduino').value;
 
-    alert("Ready to upload to Arduino.\n\nNote: this only works on Mac OS X and Linux at this time.");
+    alert(`Sending to ${COMPILE_URL}`);
     
     uploadCode(code, function(status, errorInfo) {
         if (status == 200) {
-            alert("Program uploaded ok");
+            alert(errorInfo);
         } else {
             alert("Error uploading program: " + errorInfo);
         }

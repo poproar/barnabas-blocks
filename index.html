@@ -29,12 +29,12 @@
         <div class="nav-wrapper green lighten-1">
             <a href="./" class="brand-logo">Barnabas Blocks</a>
             <ul class="right show-on-small">
-                <!-- <li>
-                    <a class="tooltipped" href="" target="_blank" id="get-app" data-tooltip="I am tooltip">
+                <li>
+                    <a class="waves-effect waves-light modal-trigger tooltipped" href="#modal_up" id="get-app" data-tooltip="I am tooltip">
                         <i class="material-icons">usb</i>
                     </a>
                 </li>
-                <li>
+                <!-- <li>
                     <a class="dropdown-button tooltipped" href="#" data-activates="dropdown2" data-tooltip="Select a dev board">
                         <i class="material-icons md-light">developer_board</i>
                     </a>
@@ -132,6 +132,18 @@
         </div>
     </div>
 
+    <div id="modal_up" class="modal">
+        <div class="modal-content">
+            <div class="input-field">
+                We are going to push this to the server and expect a hex string back that we can push to arduino
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="uploadClick()">OK</a>
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">CANCEL</a>
+        </div>
+    </div>
+
     <!-- modal_varialble Structure -->
     <div id="modal_variable" class="modal">
         <div class="modal-content">
@@ -203,6 +215,8 @@
                         <td class="tabmin"> </td>
                         <td id="tab_arduino" class="taboff" onclick="tabClick('arduino')"></td>
                         <td class="tabmin"> </td>
+                        <td id="tab_hex" class="taboff" onclick="tabClick('hex')"></td>
+                        <td class="tabmin"> </td>
                         <td class="tabmax">
                             <a href="#" class="hide-link tooltipped" id="copy-button" data-tooltip="I am tooltip" data-clipboard-target="#content_arduino">
                                 <i class="small material-icons">content_copy</i>
@@ -231,6 +245,8 @@
     </table>
     <div id="content_blocks" class="content"></div>
     <textarea id="content_arduino" class="content" readonly wrap="off"></textarea>
+    <textarea id="content_hex" class="content" readonly wrap="on"></textarea>
+
 
 <xml id="toolbox" style="display: none">
 <category id="category_initializes" colour="360">
