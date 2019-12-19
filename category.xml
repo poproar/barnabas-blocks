@@ -2,39 +2,39 @@
     <block type="initializes_setup"></block>
 </category>
 <category id="category_inout" colour="210">
-        <block type="inout_highlow"></block>
-        <block type="inout_digitalpin"></block>
-        <block type="inout_digital_write"></block>
-        <block type="inout_custom_digital_write">
-            <value name="PIN">
-                <block type="inout_digitalpin">
-                    <field name="PIN">1</field>
-                </block>
-            </value>
-            <value name="STAT">
-                <block type="inout_highlow">
-                    <field name="BOOL">HIGH</field>
-                </block>
-            </value>
-        </block>
-        <block type="inout_digital_read"></block>
-        <block type="inout_analog_write">
-            <value name="NUM">
-                <block type="math_number">
-                    <field name="NUM">255</field>
-                </block>
-            </value>
-        </block>
-        <block type="inout_analog_read"></block>
-        <block type="pulsein"></block>
-        <block type="tone"></block>
-        <block type="custom_tone">
-            <value name="FREQ">
-                <block type="math_number">
-                    <field name="NUM">255</field>
-                </block>
-            </value>
-        </block>
+    <block type="inout_highlow"></block>
+    <block type="inout_digitalpin"></block>
+    <block type="inout_digital_write"></block>
+    <block type="inout_custom_digital_write">
+        <value name="PIN">
+            <block type="inout_digitalpin">
+                <field name="PIN">1</field>
+            </block>
+        </value>
+        <value name="STAT">
+            <block type="inout_highlow">
+                <field name="BOOL">HIGH</field>
+            </block>
+        </value>
+    </block>
+    <block type="inout_digital_read"></block>
+    <block type="inout_analog_write">
+        <value name="NUM">
+            <block type="math_number">
+                <field name="NUM">255</field>
+            </block>
+        </value>
+    </block>
+    <block type="inout_analog_read"></block>
+    <block type="pulsein"></block>
+    <block type="tone"></block>
+    <block type="custom_tone">
+        <value name="FREQ">
+            <block type="math_number">
+                <field name="NUM">255</field>
+            </block>
+        </value>
+    </block>
 </category>
 <category id="category_serial" colour="210">
     <block type="serial_available"></block>
@@ -714,9 +714,9 @@
 <category id="category_variables" colour="210" custom="VARIABLE"></category>
 <category id="category_functions" colour="210" custom="PROCEDURE"></category>
 <sep></sep>
-<!--category id="category_involt" colour="210">
-<block type="involt_directmode"></block>
-<block type="involt_chromereceive"></block>
-<block type="involt_sendvalue"></block>
-<block type="involt_receivevalue"></block>
+    <!--category id="category_involt" colour="210">
+    <block type="involt_directmode"></block>
+    <block type="involt_chromereceive"></block>
+    <block type="involt_sendvalue"></block>
+    <block type="involt_receivevalue"></block>
 </category-->
