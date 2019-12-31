@@ -229,7 +229,23 @@ function uploadCode(code, callback) {
         switch (status) {
         case 200:
             errorInfo = data.stdout + "\n\n" + data.stderr;
-            document.getElementById('content_hex').innerHTML = data.hex;
+            document.getElementById('content_hex').innerHTML = atob(data.hex);
+            
+            hexfile = "";
+            buffer = atob(data.hex).split("\n");
+            for(x = 0; x < buffer.length; x++) {
+                size = parseInt(buffer[x].substr(1,2),16);
+                console.log('size = '+size);
+                if(size == 0) {
+                    console.info('size is 0');
+                    return;
+                }
+                for(y = 0; y < (size * 2); y = y + 2){
+                    console.log(buffer[x].substr(y+9,2));
+                    hexfile += String.fromCharCode(parseInt(buffer[x].substr(y+9,2),16));
+                    console.info(hexfile);
+                }
+            }
             break;
         case 0:
             errorInfo = "code 0\n\nCould not connect to server at " + url + ".  Is the local web server running?";
