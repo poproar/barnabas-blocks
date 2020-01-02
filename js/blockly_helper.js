@@ -231,20 +231,20 @@ function uploadCode(code, callback) {
             errorInfo = data.stdout + "\n\n" + data.stderr;
             document.getElementById('content_hex').innerHTML = atob(data.hex);
             
-            hexfile = "";
-            buffer = atob(data.hex).split("\n");
-            for(x = 0; x < buffer.length; x++) {
-                size = parseInt(buffer[x].substr(1,2),16);
-                console.log('size = '+size);
-                if(size == 0) {
-                    console.info('size is 0');
-                    return;
-                }
-                for(y = 0; y < (size * 2); y = y + 2){
-                    // console.log(buffer[x].substr(y+9,2));
-                    hexfile += String.fromCharCode(parseInt(buffer[x].substr(y+9,2),16));
-                }
-            }
+            // hexfile = "";
+            // buffer = atob(data.hex).split("\n");
+            // for(x = 0; x < buffer.length; x++) {
+            //     size = parseInt(buffer[x].substr(1,2),16);
+            //     console.log('size = '+size);
+            //     if(size == 0) {
+            //         console.info('size is 0');
+            //         return;
+            //     }
+            //     for(y = 0; y < (size * 2); y = y + 2){
+            //         // console.log(buffer[x].substr(y+9,2));
+            //         hexfile += String.fromCharCode(parseInt(buffer[x].substr(y+9,2),16));
+            //     }
+            // }
             break;
         case 0:
             errorInfo = "code 0\n\nCould not connect to server at " + url + ".  Is the local web server running?";
@@ -275,7 +275,7 @@ function uploadClick() {
     var code = Blockly.Arduino.workspaceToCode();
     // var code = document.getElementById('textarea_arduino').value;
 
-    alert(`Sending to ${COMPILE_URL}`);
+    alert(`Hello Ed, Sending to ${COMPILE_URL}`);
     
     uploadCode(code, function(status, errorInfo) {
         if (status == 200) {
@@ -284,6 +284,13 @@ function uploadClick() {
             alert("Error uploading program: " + errorInfo);
         }
     });
+}
+
+function iamEd() {
+  // for testing
+  window.ed = true;
+  window.tabClick('hex');
+  uploadClick();
 }
 
 function resetClick() {

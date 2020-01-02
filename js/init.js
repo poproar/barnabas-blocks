@@ -8,6 +8,7 @@
 var TABS_ = ['blocks', 'arduino', 'hex'];
 
 var selected = 'blocks';
+var ed = false;
 
 /**
  * Switch the visible pane when a tab is clicked.
@@ -18,6 +19,10 @@ function tabClick(clickedName) {
   for (var i = 0; i < TABS_.length; i++) {
     var name = TABS_[i];
     document.getElementById('tab_' + name).className = 'taboff';
+    // remove this after testing
+    if (!ed) {
+      document.getElementById('tab_hex').className = 'taboff hide';
+    }
     document.getElementById('content_' + name).style.visibility = 'hidden';
   }
 
