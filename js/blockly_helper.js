@@ -1,4 +1,4 @@
-var COMPILE_URL="http://compile.barnabasrobotics.com"
+var COMPILE_URL="https://compile.barnabasrobotics.com"
 var OTHR_URL="http://chromeduino.3mr.fr"
 /**
  * Execute the user's code.
@@ -241,9 +241,8 @@ function uploadCode(code, callback) {
                     return;
                 }
                 for(y = 0; y < (size * 2); y = y + 2){
-                    console.log(buffer[x].substr(y+9,2));
+                    // console.log(buffer[x].substr(y+9,2));
                     hexfile += String.fromCharCode(parseInt(buffer[x].substr(y+9,2),16));
-                    console.info(hexfile);
                 }
             }
             break;
