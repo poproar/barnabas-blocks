@@ -286,13 +286,6 @@ function uploadClick() {
     });
 }
 
-function iamEd() {
-  // for testing
-  window.ed = true;
-  window.tabClick('hex');
-  uploadClick();
-}
-
 function resetClick() {
     var code = "void setup() {} void loop() {}";
 

@@ -29,11 +29,11 @@
         <div class="nav-wrapper green lighten-1">
             <a href="./" class="brand-logo">Barnabas Blocks</a>
             <ul class="right show-on-small">
-                <!--li>
-                    <a class="waves-effect waves-light modal-trigger tooltipped" href="#modal_up" id="get-app" data-tooltip="I am tooltip">
+                <li>
+                    <a class="waves-effect waves-light modal-trigger tooltipped hide" href="#modal_up" id="get-hex" data-tooltip="I am tooltip">
                         <i class="material-icons">usb</i>
                     </a>
-                </li-->
+                </li>
                 <!-- <li>
                     <a class="dropdown-button tooltipped" href="#" data-activates="dropdown2" data-tooltip="Select a dev board">
                         <i class="material-icons md-light">developer_board</i>
@@ -116,15 +116,28 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input type="checkbox" class="filled-in" id="chbox_category_other_sensor" value="category_other_sensor">
-                                    <label for="chbox_category_other_sensor">other sensor</label>
+                                    <!-- <input type="checkbox" class="filled-in" id="chbox_category_other_sensor" value="category_other_sensor">
+                                    <label for="chbox_category_other_sensor">other sensor</label> -->
                                 </td>
                                 <td></td>
                                 <td></td>
                             </tr>
                         </tbody>
                     </table>
-                
+                    <p id="dialog-block-title">Developer Mode</p>
+                <p>
+                    </p><table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                <div class = "switch">
+                                    <label>Off<input id="devMode" type="checkbox">
+                                   <span class = "lever"></span>On</label>
+                                </div> 
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
             </form>
         </div>
         <div class="modal-footer">

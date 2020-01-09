@@ -20,7 +20,7 @@ function tabClick(clickedName) {
     var name = TABS_[i];
     document.getElementById('tab_' + name).className = 'taboff';
     // remove this after testing
-    if (!ed) {
+    if (window.localStorage.devMode === 'undefined') {
       document.getElementById('tab_hex').className = 'taboff hide';
     }
     document.getElementById('content_' + name).style.visibility = 'hidden';
@@ -195,6 +195,11 @@ function setCheckbox() {
       $('#chbox_' + options[i]).prop('checked', true);
     }
   }
+  var dev = window.localStorage.devMode;
+  if (dev == 'on') {
+    $('#devMode').prop('checked', true);
+    $('#get-hex').removeClass('hide');
+  }
 }
 
 function loadxml() {
@@ -363,6 +368,9 @@ function change_lang() {
   $.cookie("lang", val, {
     expires: 7
   });
+
+  window.localStorage.devMode = $('#devMode:checked').val();
+  
   var loc = window.location;
   window.location = loc.protocol + '//' + loc.host + loc.pathname + '?lang=' + val;
 }
