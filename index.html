@@ -264,7 +264,7 @@
 <xml id="toolbox" style="display: none">
 <category id="category_initializes" colour="360">
     <block type="arduino_setup"></block>
-    <block type="initializes_setup"></block>
+    <!--block type="initializes_setup"></block-->
 </category>
 <category id="category_inout" colour="210">
         <block type="inout_highlow"></block>
@@ -832,6 +832,7 @@
     </category>
 </category>
 <category id="category_servo" colour="210">
+    <block type="servo_move"></block>
     <block type="servo_write">
         <value name="ANGLE">
             <block type="math_number">
