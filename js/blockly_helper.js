@@ -295,3 +295,27 @@ function resetClick() {
         }
     });
 }
+
+Blockly.Blocks['arduino_setup'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('void setup()');
+    this.appendStatementInput("voidSetup");
+    this.appendDummyInput()
+        .appendField('void loop()');
+    this.appendStatementInput("voidLoop");
+    this.setTooltip('');
+    this.setHelpUrl('https://www.arduino.cc/reference/en/#stucture');
+    this.setDeletable(true);
+  }
+};
+
+Blockly.Arduino['arduino_setup'] = function(block) {
+  var statements_setup = Blockly.Arduino.statementToCode(block, 'voidSetup');
+  var statements_loop = Blockly.Arduino.statementToCode(block, 'voidLoop');
+ 
+  Blockly.Arduino.setups_['setup'] = statements_setup;
+ 
+  var code = statements_loop;
+  return code;
+};
