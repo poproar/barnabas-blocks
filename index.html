@@ -11,6 +11,8 @@
 
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="header.js"></script>
+    <script type="text/javascript" src="js/programmer.js"></script>
+
     <!-- <script src="https://unpkg.com/blockly/blockly.min.js"></script> -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
@@ -231,6 +233,9 @@
                         <td id="tab_hex" class="hide taboff " onclick="tabClick('hex')"></td>
                         <td class="tabmin"> </td>
                         <td class="tabmax">
+                            <a href="#" class="hide-link tooltipped" id="flash-button" onclick="flashHex()" data-tooltip="flash to device" data-clipboard-target="#content_hex">
+                                <i class="small material-icons">developer_board</i>
+                            </a>
                             <a href="#" class="hide-link tooltipped" id="copy-button" data-tooltip="I am tooltip" data-clipboard-target="#content_arduino">
                                 <i class="small material-icons">content_copy</i>
                             </a>
@@ -832,7 +837,18 @@
     </category>
 </category>
 <category id="category_servo" colour="210">
-    <block type="servo_move"></block>
+    <block type="servo_move">
+        <value name="DEGREE">
+            <block type="math_number">
+                <field name="NUM">180</field>
+            </block>
+        </value>
+        <value name="DELAY_TIME">
+            <block type="math_number">
+                <field name="NUM">0</field>
+            </block>
+        </value>
+    </block>
     <block type="servo_write">
         <value name="ANGLE">
             <block type="math_number">
