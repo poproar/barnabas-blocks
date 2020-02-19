@@ -1,6 +1,6 @@
-//http://www.seeedstudio.com/wiki/GROVE_System
-//http://www.seeedstudio.com/depot/index.php?main_page=advanced_search_result&search_in_description=1&keyword=grovefamily
-//support starter bundle example http://www.seeedstudio.com/wiki/GROVE_-_Starter_Kit_V1.1b
+// http://www.seeedstudio.com/wiki/GROVE_System
+// http://www.seeedstudio.com/depot/index.php?main_page=advanced_search_result&search_in_description=1&keyword=grovefamily
+// support starter bundle example http://www.seeedstudio.com/wiki/GROVE_-_Starter_Kit_V1.1b
 
 /**
  * @license
@@ -33,7 +33,7 @@ goog.require('Blockly.Blocks');
 
 Blockly.Blocks.aerobot.HUE = 200;
 
-Blockly.Blocks.aerobot.image = filepath.media + '/aerobot.jpg';
+Blockly.Blocks.aerobot.image = '/media/aerobot.jpg';
 
 Blockly.Blocks.aerobot.checkBlocks = function(obj) {
   var legal = false;
@@ -60,15 +60,15 @@ Blockly.Blocks['aerobot_move'] = {
     this.setHelpUrl(Blockly.Msg.AEROBOT_HELPURL);
     this.setColour(Blockly.Blocks.aerobot.HUE);
     this.appendDummyInput()
-      .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
-      .appendField(Blockly.Msg.AEROBOT_MOVE_TITLE)
-      .appendField(new Blockly.FieldDropdown([
-      [Blockly.Msg.AEROBOT_FORWARD, "forward"],
-      [Blockly.Msg.AEROBOT_BACKWARD, "backward"],
-      [Blockly.Msg.AEROBOT_STOP, "stop"],
-      [Blockly.Msg.AEROBOT_TURN_LEFT, "cw"],
-      [Blockly.Msg.AEROBOT_TURN_RIGHT, "ccw"]
-    ]), "DIRECTION");
+        .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
+        .appendField(Blockly.Msg.AEROBOT_MOVE_TITLE)
+        .appendField(new Blockly.FieldDropdown([
+          [Blockly.Msg.AEROBOT_FORWARD, "forward"],
+          [Blockly.Msg.AEROBOT_BACKWARD, "backward"],
+          [Blockly.Msg.AEROBOT_STOP, "stop"],
+          [Blockly.Msg.AEROBOT_TURN_LEFT, "cw"],
+          [Blockly.Msg.AEROBOT_TURN_RIGHT, "ccw"]
+        ]), "DIRECTION");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.AEROBOT_MOVE_TOOLTIP);
@@ -91,12 +91,12 @@ Blockly.Blocks['aerobot_rotate'] = {
     this.setHelpUrl(Blockly.Msg.AEROBOT_HELPURL);
     this.setColour(Blockly.Blocks.aerobot.HUE);
     this.appendDummyInput()
-      .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
-      .appendField(Blockly.Msg.AEROBOT_ROTATE_TITLE)
-      .appendField(new Blockly.FieldDropdown([
-      [Blockly.Msg.AEROBOT_ROTATE_LEFT, "cw"],
-      [Blockly.Msg.AEROBOT_ROTATE_RIGHT, "ccw"]
-    ]), "DIRECTION");
+        .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
+        .appendField(Blockly.Msg.AEROBOT_ROTATE_TITLE)
+        .appendField(new Blockly.FieldDropdown([
+          [Blockly.Msg.AEROBOT_ROTATE_LEFT, "cw"],
+          [Blockly.Msg.AEROBOT_ROTATE_RIGHT, "ccw"]
+        ]), "DIRECTION");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.AEROBOT_ROTATE_TOOLTIP);
@@ -119,13 +119,13 @@ Blockly.Blocks['aerobot_lightsens'] = {
     this.setHelpUrl(Blockly.Msg.AEROBOT_HELPURL);
     this.setColour(Blockly.Blocks.aerobot.HUE);
     this.appendDummyInput()
-      .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
-      .appendField(Blockly.Msg.AEROBOT_LIGHTSENS_TITLE)
-      .appendField(new Blockly.FieldDropdown([
-      [Blockly.Msg.AEROBOT_CENTER, "CENTER"],
-      [Blockly.Msg.AEROBOT_RIGHT, "RIGHT"],
-      [Blockly.Msg.AEROBOT_LEFT, "LEFT"]
-    ]), "SENS");
+        .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
+        .appendField(Blockly.Msg.AEROBOT_LIGHTSENS_TITLE)
+        .appendField(new Blockly.FieldDropdown([
+          [Blockly.Msg.AEROBOT_CENTER, "CENTER"],
+          [Blockly.Msg.AEROBOT_RIGHT, "RIGHT"],
+          [Blockly.Msg.AEROBOT_LEFT, "LEFT"]
+        ]), "SENS");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.AEROBOT_LIGHTSENS_TOOLTIP);
@@ -148,13 +148,13 @@ Blockly.Blocks['aerobot_distsens'] = {
     this.setHelpUrl(Blockly.Msg.AEROBOT_HELPURL);
     this.setColour(Blockly.Blocks.aerobot.HUE);
     this.appendDummyInput()
-      .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
-      .appendField(Blockly.Msg.AEROBOT_DISTSENS_TITLE)
-      .appendField(new Blockly.FieldDropdown([
-      [Blockly.Msg.AEROBOT_CENTER, "CENTER"],
-      [Blockly.Msg.AEROBOT_RIGHT, "RIGHT"],
-      [Blockly.Msg.AEROBOT_LEFT, "LEFT"]
-    ]), "SENS");
+        .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
+        .appendField(Blockly.Msg.AEROBOT_DISTSENS_TITLE)
+        .appendField(new Blockly.FieldDropdown([
+          [Blockly.Msg.AEROBOT_CENTER, "CENTER"],
+          [Blockly.Msg.AEROBOT_RIGHT, "RIGHT"],
+          [Blockly.Msg.AEROBOT_LEFT, "LEFT"]
+        ]), "SENS");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.AEROBOT_LIGHTSENS_TOOLTIP);
@@ -177,14 +177,14 @@ Blockly.Blocks['aerobot_linesens'] = {
     this.setHelpUrl(Blockly.Msg.AEROBOT_HELPURL);
     this.setColour(Blockly.Blocks.aerobot.HUE);
     this.appendDummyInput()
-      .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
-      .appendField(Blockly.Msg.AEROBOT_LINESENS_TITLE)
-      .appendField(new Blockly.FieldDropdown([
-      [Blockly.Msg.AEROBOT_CENTER, "CENTER"],
-      [Blockly.Msg.AEROBOT_RIGHT, "RIGHT"],
-      [Blockly.Msg.AEROBOT_LEFT, "LEFT"],
-      [Blockly.Msg.AEROBOT_NONE, "NONE"]
-    ]), "SENS");
+        .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
+        .appendField(Blockly.Msg.AEROBOT_LINESENS_TITLE)
+        .appendField(new Blockly.FieldDropdown([
+          [Blockly.Msg.AEROBOT_CENTER, "CENTER"],
+          [Blockly.Msg.AEROBOT_RIGHT, "RIGHT"],
+          [Blockly.Msg.AEROBOT_LEFT, "LEFT"],
+          [Blockly.Msg.AEROBOT_NONE, "NONE"]
+        ]), "SENS");
     this.setInputsInline(true);
     this.setOutput(true, 'Number');
     this.setTooltip(Blockly.Msg.AEROBOT_LINESENS_TOOLTIP);
@@ -207,12 +207,12 @@ Blockly.Blocks['aerobot_setled'] = {
     this.setHelpUrl(Blockly.Msg.AEROBOT_HELPURL);
     this.setColour(Blockly.Blocks.aerobot.HUE);
     this.appendDummyInput()
-      .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
-      .appendField(Blockly.Msg.AEROBOT_SETLED_TITLE)
+        .appendField(new Blockly.FieldImage(Blockly.Blocks.aerobot.image, 64, 64))
+        .appendField(Blockly.Msg.AEROBOT_SETLED_TITLE);
     this.appendDummyInput()
-      .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(Blockly.Msg.COLOR)
-      .appendField(new Blockly.FieldColour("#00ff00"), "RGB");
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField(Blockly.Msg.COLOR)
+        .appendField(new Blockly.FieldColour("#00ff00"), "RGB");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.AEROBOT_SETLED_TOOLTIP);
