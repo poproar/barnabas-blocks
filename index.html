@@ -275,7 +275,7 @@
         <block type="inout_highlow"></block>
         <block type="inout_digitalpin"></block>
         <block type="inout_digital_write"></block>
-        <block type="inout_custom_digital_write">
+        <!-- <block type="inout_custom_digital_write">
             <value name="PIN">
                 <block type="inout_digitalpin">
                     <field name="PIN">1</field>
@@ -284,6 +284,13 @@
             <value name="STAT">
                 <block type="inout_highlow">
                     <field name="BOOL">HIGH</field>
+                </block>
+            </value>
+        </block> -->
+        <block type="custom_tone">
+            <value name="FREQ">
+                <block type="math_number">
+                    <field name="NUM">255</field>
                 </block>
             </value>
         </block>
@@ -297,13 +304,6 @@
         </block>
         <block type="inout_analog_read"></block>
         <block type="pulsein"></block>
-        <block type="custom_tone">
-            <value name="FREQ">
-                <block type="math_number">
-                    <field name="NUM">255</field>
-                </block>
-            </value>
-        </block>
 </category>
 <category id="category_serial" colour="210">
     <block type="serial_available"></block>

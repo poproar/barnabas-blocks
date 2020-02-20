@@ -163,9 +163,6 @@ Blockly.Blocks['custom_tone'] = {
     this.appendValueInput("FREQ")
       .setCheck("Number")
       .appendField(Blockly.Msg.INOUT_TONE_APPENDTEXT_FREQ);
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.INOUT_TONE_APPENDTEXT_DURATION)
-      .appendField(new Blockly.FieldTextInput("300"),"DURATION");
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);

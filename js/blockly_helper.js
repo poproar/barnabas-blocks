@@ -275,11 +275,12 @@ function uploadClick() {
     var code = Blockly.Arduino.workspaceToCode();
     // var code = document.getElementById('textarea_arduino').value;
 
-    alert(`Hello Ed, Sending to ${COMPILE_URL}`);
+    // alert(`Hello Ed, Sending to ${COMPILE_URL}`);
     
     uploadCode(code, function(status, errorInfo) {
         if (status == 200) {
             alert(errorInfo);
+            console.log('show upload button if hex code is not null');
         } else {
             alert("Error uploading program: " + errorInfo);
         }
