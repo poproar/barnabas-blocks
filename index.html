@@ -233,8 +233,11 @@
                         <td id="tab_hex" class="hide taboff " onclick="tabClick('hex')"></td>
                         <td class="tabmin"> </td>
                         <td class="tabmax">
-                            <a href="#" class="hide-link tooltipped" id="flash-button" onclick="flashHex()" data-tooltip="flash to device" data-clipboard-target="#content_hex">
+                            <!-- <a href="#" class="hide-link tooltipped" id="flash-button" onclick="flashHex()" data-tooltip="flash to device" data-clipboard-target="#content_hex">
                                 <i class="small material-icons">developer_board</i>
+                            </a> -->
+                            <a href="#" class="hide-link tooltipped" id="verify-button" onclick="verify()" data-tooltip="Test Code">
+                                <i class="small material-icons">bug_report</i>
                             </a>
                             <a href="#" class="hide-link tooltipped" id="copy-button" data-tooltip="I am tooltip" data-clipboard-target="#content_arduino">
                                 <i class="small material-icons">content_copy</i>
@@ -262,7 +265,7 @@
         </tr>
     </table>
     <div id="content_blocks" class="content"></div>
-    <textarea id="content_arduino" class="content" readonly wrap="off"></textarea>
+    <textarea id="content_arduino" class="content" wrap="off"></textarea>
     <textarea id="content_hex" class="content" readonly wrap="on"></textarea>
 
 
