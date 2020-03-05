@@ -102,6 +102,41 @@ function load(event) {
   reader.readAsText(files[0]);
 }
 
+function flashHex() {
+  let hex = `
+  :100000000C9434000C9446000C9446000C9446006A
+  :100010000C9446000C9446000C9446000C94460048
+  :100020000C9446000C9446000C9446000C94460038
+  :100030000C9446000C9446000C9446000C94460028
+  :100040000C9448000C9446000C9446000C94460016
+  :100050000C9446000C9446000C9446000C94460008
+  :100060000C9446000C94460011241FBECFEFD8E03C
+  :10007000DEBFCDBF21E0A0E0B1E001C01D92A930FC
+  :10008000B207E1F70E9492000C94DC000C9400008F
+  :100090001F920F920FB60F9211242F933F938F93BD
+  :1000A0009F93AF93BF938091050190910601A0911A
+  :1000B0000701B09108013091040123E0230F2D378F
+  :1000C00020F40196A11DB11D05C026E8230F02965C
+  :1000D000A11DB11D20930401809305019093060199
+  :1000E000A0930701B0930801809100019091010154
+  :1000F000A0910201B09103010196A11DB11D809351
+  :10010000000190930101A0930201B0930301BF91FC
+  :10011000AF919F918F913F912F910F900FBE0F90B4
+  :100120001F901895789484B5826084BD84B58160F1
+  :1001300084BD85B5826085BD85B5816085BD8091B2
+  :100140006E00816080936E0010928100809181002A
+  :100150008260809381008091810081608093810022
+  :10016000809180008160809380008091B1008460E4
+  :100170008093B1008091B00081608093B000809145
+  :100180007A00846080937A0080917A008260809304
+  :100190007A0080917A00816080937A0080917A0061
+  :1001A000806880937A001092C100C0E0D0E0209770
+  :0C01B000F1F30E940000FBCFF894FFCF99
+  :00000001FF`;
+  let hexstring = document.getElementById('content_hex').innerHTML;
+  fixHex(hex);
+}
+
 /**
  * Discard all blocks from the workspace.
  */
@@ -229,7 +264,8 @@ function uploadCode(code, callback) {
         switch (status) {
         case 200:
             errorInfo = data.stdout + "\n\n" + data.stderr;
-            document.getElementById('content_hex').innerHTML = atob(data.hex);
+            // consider using axios and repairing the return data if an error we need the error.
+            // document.getElementById('content_hex').innerHTML = atob(data.hex);
             
             // hexfile = "";
             // buffer = atob(data.hex).split("\n");
@@ -272,15 +308,16 @@ function uploadCode(code, callback) {
 }
 
 function uploadClick() {
-    var code = Blockly.Arduino.workspaceToCode();
-    // var code = document.getElementById('textarea_arduino').value;
+    // var code = Blockly.Arduino.workspaceToCode();
+    var code = document.getElementById("content_arduino").value;
+    // console.info(code);
 
     // alert(`Hello Ed, Sending to ${COMPILE_URL}`);
     
     uploadCode(code, function(status, errorInfo) {
         if (status == 200) {
             alert(errorInfo);
-            console.log('show upload button if hex code is not null');
+            // console.log('show upload button if hex code is not null');
         } else {
             alert("Error uploading program: " + errorInfo);
         }
