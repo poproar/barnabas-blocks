@@ -312,8 +312,6 @@ function uploadClick() {
     var code = document.getElementById("content_arduino").value;
     // console.info(code);
 
-    // alert(`Hello Ed, Sending to ${COMPILE_URL}`);
-    
     uploadCode(code, function(status, errorInfo) {
         if (status == 200) {
             alert(errorInfo);
@@ -322,6 +320,21 @@ function uploadClick() {
             alert("Error uploading program: " + errorInfo);
         }
     });
+}
+
+function editText() {
+  var textarea = document.getElementById("content_arduino");
+  var editBtn = document.getElementById("edit-button");
+
+  if (textarea.readOnly)
+  {
+    editBtn.classList.toggle("red-text");
+    textarea.readOnly = false;
+  }
+  else {
+    editBtn.classList.toggle("red-text");
+    textarea.readOnly = true;
+  }
 }
 
 function resetClick() {

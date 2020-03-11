@@ -239,6 +239,9 @@
                             <a href="#" class="hide-link tooltipped" id="verify-button" onclick="uploadClick()" data-tooltip="Test Code">
                                 <i class="small material-icons">bug_report</i>
                             </a>
+                            <a href="#" class="hide-link tooltipped red-text" id="edit-button" onclick="editText()" data-tooltip="Edit Code">
+                                <i class="small material-icons">edit</i>
+                            </a>
                             <a href="#" class="hide-link tooltipped" id="copy-button" data-tooltip="I am tooltip" data-clipboard-target="#content_arduino">
                                 <i class="small material-icons">content_copy</i>
                             </a>
@@ -265,7 +268,7 @@
         </tr>
     </table>
     <div id="content_blocks" class="content"></div>
-    <textarea id="content_arduino" class="content" wrap="off"></textarea>
+    <textarea id="content_arduino" class="content" readonly wrap="off"></textarea>
     <textarea id="content_hex" class="content" readonly wrap="on"></textarea>
 
 

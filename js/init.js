@@ -42,6 +42,7 @@ function renderContent() {
   var content = document.getElementById('content_' + selected);
   var button = document.getElementById('copy-button');
   var bugIcon = document.getElementById('verify-button');
+  var pencilIcon = document.getElementById('edit-button');
   // Initialize the pane.
   if (content.id == 'content_blocks') {
     // If the workspace was changed by the XML tab, Firefox will have performed
@@ -49,6 +50,7 @@ function renderContent() {
     Blockly.mainWorkspace.render();
     button.style.display = "none";
     bugIcon.style.display = "none";
+    pencilIcon.style.display = "none";
   } else if (content.id == 'content_arduino') {
     // content.innerHTML = Blockly.Arduino.workspaceToCode();
     var arduinoTextarea = document.getElementById('content_arduino');
@@ -64,6 +66,7 @@ function renderContent() {
     // }
     button.style.display = "";
     bugIcon.style.display = "";
+    pencilIcon.style.display = "";
   }
 }
 
