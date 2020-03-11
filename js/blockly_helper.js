@@ -261,9 +261,12 @@ function uploadCode(code, callback) {
         var data=JSON.parse(request.responseText);
         var status = parseInt(request.status); // HTTP response status, e.g., 200 for "200 OK"
         var errorInfo = null;
+        console.log("status: ",status);
+        console.log(data);
         switch (status) {
         case 200:
-            errorInfo = data.stdout + "\n\n" + data.stderr;
+            status = data.success ? 201 : 204;
+            errorInfo = data.success ? data.stdout : data.stderr;
             // consider using axios and repairing the return data if an error we need the error.
             // document.getElementById('content_hex').innerHTML = atob(data.hex);
             
@@ -313,12 +316,23 @@ function uploadClick() {
     // console.info(code);
 
     uploadCode(code, function(status, errorInfo) {
-        if (status == 200) {
-            alert(errorInfo);
+        if (status == 201) {
+          let icon = '<i class="material-icons" style="font-size:48px;color:green">check_circle</i>';
+          let output = `<pre>${errorInfo}</pre>`;
+          document.getElementById("arduino-msg").innerHTML= icon + output;
+          $('#arduino_return').openModal();
+
             // console.log('show upload button if hex code is not null');
+        } else if (status == 204){
+          let regex = /\/tmp\/chromeduino\-(.*?)\/chromeduino\-(.*?)\.ino\:/g;
+          let icon = '<i class="material-icons" style="font-size:48px;color:red">error</i>';
+          let message = errorInfo.replace(regex, "");
+          let output = `<pre>${message}</pre>`;
+          document.getElementById("arduino-msg").innerHTML= icon + output;
+          $('#arduino_return').openModal();
         } else {
-            alert("Error uploading program: " + errorInfo);
-        }
+          alert("Error uploading program: " + errorInfo);
+      }
     });
 }
 
