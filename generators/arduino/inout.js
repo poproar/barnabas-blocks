@@ -103,6 +103,12 @@ Blockly.Arduino.custom_tone = function() {
   return code;
 };
 
+Blockly.Arduino.noTone = function() {
+  var value_pin = this.getFieldValue('PIN');
+  var code = 'noTone(' + value_pin + ');\n';
+  return code;
+};
+
 Blockly.Arduino.tone = function() {
   var value_pin = this.getFieldValue('PIN');
   var value_freq = this.getFieldValue('FREQ');

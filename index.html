@@ -17,6 +17,8 @@
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="header.js"></script>
     <script type="text/javascript" src="js/programmer.js"></script>
+    <link href="https://raw.githubusercontent.com/MatheusAvellar/textarea-line-numbers/master/tln.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://raw.githubusercontent.com/MatheusAvellar/textarea-line-numbers/master/tln.min.js"></script>
 
     <!-- <script src="https://unpkg.com/blockly/blockly.min.js"></script> -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -304,6 +306,9 @@
     <div id="content_blocks" class="content"></div>
     <textarea id="content_arduino" class="content" readonly wrap="off"></textarea>
     <textarea id="content_hex" class="content" readonly wrap="on"></textarea>
+    <script>
+        TLN.append_line_numbers( 'content_arduino' );
+    </script>
 
 
     <xml id="toolbox" style="display: none">
@@ -334,6 +339,7 @@
                     </block>
                 </value>
             </block>
+            <block type="noTone"></block>
             <block type="inout_digital_read"></block>
             <block type="inout_analog_write">
                 <value name="NUM">

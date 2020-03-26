@@ -422,3 +422,23 @@ Blockly.Arduino['servo_move'] = function(block) {
   var code = 'servo_'+dropdown_pin+'.write('+value_degree+');\n'+'delay(' + delay_time + ');\n';
   return code;
 };
+
+Blockly.Blocks['noTone'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.INOUT_TONE_HELPURL);
+    this.setColour(Blockly.Blocks.inout.HUE);
+    this.appendDummyInput()
+      .appendField("noTone")
+      .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip("set tone off for pin");
+  }
+};
+
+Blockly.Arduino.noTone = function() {
+  var value_pin = this.getFieldValue('PIN');
+  var code = 'noTone(' + value_pin + ');\n';
+  return code;
+};
