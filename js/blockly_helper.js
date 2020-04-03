@@ -37,7 +37,7 @@ function restore_blocks() {
 * Save Arduino generated code to local file.
 */
 function saveCode() {
-  var fileName = window.prompt('What would you like to name your file?', 'BlocklyDuino')
+  var fileName = window.prompt('What would you like to name your file?', 'myBlocks')
   //doesn't save if the user quits the save prompt
   if(fileName){
     var blob = new Blob([Blockly.Arduino.workspaceToCode()], {type: 'text/plain;charset=utf-8'});
@@ -52,7 +52,7 @@ function saveCode() {
 function save() {
   var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
   var data = Blockly.Xml.domToText(xml);
-  var fileName = window.prompt('What would you like to name your file?', 'BlocklyDuino');
+  var fileName = window.prompt('What would you like to name your file?', 'myBlocks');
 
   // Store data in blob.
   // var builder = new BlobBuilder();
