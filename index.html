@@ -320,6 +320,7 @@
             <block type="inout_highlow"></block>
             <block type="inout_digitalpin"></block>
             <block type="inout_digital_write"></block>
+            <block type="inout_digital_read"></block>
             <!-- <block type="inout_custom_digital_write">
             <value name="PIN">
                 <block type="inout_digitalpin">
@@ -340,7 +341,6 @@
                 </value>
             </block>
             <block type="noTone"></block>
-            <block type="inout_digital_read"></block>
             <block type="inout_analog_write">
                 <value name="NUM">
                     <block type="math_number">
@@ -987,8 +987,6 @@
             <block type="controls_return"></block>
         </category>
         <category id="category_time" colour="210">
-            <block type="millis"></block>
-            <block type="micros"></block>
             <block type="delay_custom">
                 <value name="DELAY_TIME">
                     <block type="math_number">
@@ -1003,6 +1001,8 @@
                     </block>
                 </value>
             </block>
+            <block type="millis"></block>
+            <block type="micros"></block>
         </category>
         <category id="category_array" colour="210">
             <block type="array_create_with"></block>
