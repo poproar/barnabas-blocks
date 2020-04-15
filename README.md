@@ -1,10 +1,11 @@
-### Welcome to BlocklyDuino
+Barnabas Blocks
+===============
 
-BlocklyDuino is a **web-based visual programming editor for [Arduino](http://www.arduino.cc/)**.
+Introduction
+------------
 
-BlocklyDuino is based on [Blockly](https://developers.google.com/blockly/), the web-based, graphical programming editor. Provide static type language blocks and code generators for Arduino programming.
-
-BlocklyDuino also support [Grove](http://www.seeedstudio.com/wiki/GROVE_System) blocks to easily get started with microcontroller-based experimentation and learning.
+Barnabas Blocks is derived from several open source projects based on Blockly, the web-based, graphical programming editor.
+The core was started as a fork from [BlocklyDuino](https://github.com/makewitharduino/Online-BlocklyDuinoEditor) to provide language blocks and code generators for arduino programming and other elements have been added from [Chromeduino2](https://github.com/spaceneedle/Chromeduino/)
 
 ### Features
 
@@ -16,19 +17,21 @@ BlocklyDuino also support [Grove](http://www.seeedstudio.com/wiki/GROVE_System) 
 
 ### Demo
 
-BlocklyDuino is a web tool. You can give it a try at
-[Web](http://blocklyduino.github.io/BlocklyDuino/blockly/apps/blocklyduino/) to see the working BlocklyDuino.
+This is a web tool. You can give it a try at https://code.barnabasrobotics.com.
 
-You can link directly to examples
-* [demo 1](http://blocklyduino.github.io/BlocklyDuino/blockly/apps/blocklyduino/index.html?url=examples/blink.xml) make default LED blink
-* [demo 2](http://blocklyduino.github.io/BlocklyDuino/blockly/apps/blocklyduino/index.html?url=examples/servo_potentio.xml) control servo with potentio rotator
-* [demo 3](http://blocklyduino.github.io/BlocklyDuino/blockly/apps/blocklyduino/index.html?url=examples/click_color.xml) click button to change LED colors
+If you want to install it locally:
+
+git clone https://github.com/BarnabasRobotics/Online-BlocklyDuinoEditor.git
+
+You can then use a local server in your IDE or an extension with your browser and going to a url like localhost/public/blockly/demos/blocklyduino/index.html for use.
 
 ### Run locally on your web browser
 
-If you want to install it locally. Get code from github and open `blocklyduino/index.html` in your browser.
+1. Open browser to BlocklyDuino, Drag and Drop blocks to make arduino program.
+2. Select 'Arduino' tab to copy source code to Arduino IDE
 
-The preffered way is to put the BlocklyDuino/web folder into a web server and open the url like localhost/public/blocklyduino/index.html for use.
+Uploading the code to an arduino is currently a work in progress with eyes on [WebUSB](https://wicg.github.io/webusb/) or [WebSerial](https://github.com/WICG/serial)
+
 
 ### Integrated Arduino upload
 
@@ -60,13 +63,22 @@ OR (if running `ino_web_server.py`):
 Check changelog [here](https://github.com/BlocklyDuino/BlocklyDuino/blob/master/CHANGELOG.txt)
 
 ### Authors and Contributors
-Fred Lin (@gasolin) .
+Fred Lin @gasolin is the creator of BlocklyDuino.
 
-Thanks Neil Fraser, Q.Neutron from Blockly https://developers.google.com/blockly/
+BlocklyDuino is a **web-based visual programming editor for [Arduino](http://www.arduino.cc/)**.
+
+BlocklyDuino is based on [Blockly](https://developers.google.com/blockly/), the web-based, graphical programming editor. Provide static type language blocks and code generators for Arduino programming.
+
+Thanks Neil Fraser, Q.Neutron from [Blockly](https://developers.google.com/blockly/)
+
+The project is also inspired by [ardublock](https://github.com/taweili/ardublock) and [modkit](http://www.modk.it/)
 Thanks Dale Low (gumbypp) for contribute the python server to pipe BlocklyDuino source to arduino board.
-Thanks Arduino and Seeeduino guys for Arduino and Grove blocks.
 
-The project is also inspired by [arduiblock](https://github.com/taweili/ardublock) and [modkit](http://www.modk.it/)
+Thanks Arduino and Seeeduino guys for Arduino and [Grove](http://www.seeedstudio.com/wiki/GROVE_System) blocks.
+
+[makewitharduino](https://github.com/makewitharduino/Online-BlocklyDuinoEditor) is work by @okhiroyuki
+
+There has been some interesting [chatter on Chromeduino](https://github.com/spaceneedle/Chromeduino/issues/12) perhaps some of these projects find a way to merge together.
 
 ### License
 
