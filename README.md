@@ -7,6 +7,8 @@ Introduction
 Barnabas Blocks is derived from several open source projects based on Blockly, the web-based, graphical programming editor.
 The core was started as a fork from [BlocklyDuino](https://github.com/makewitharduino/Online-BlocklyDuinoEditor) to provide language blocks and code generators for arduino programming and other elements have been added from [Chromeduino2](https://github.com/spaceneedle/Chromeduino/)
 
+[Reference Document](https://docs.google.com/document/d/1Wo0LuB8NIk4ksWTbLzph6lmJyBPKhafwQRXbVBngGmY) about using this project with Chromeduino
+
 ### Features
 
 * Programming Arduino with visually drag and drop code blocks
