@@ -152,7 +152,7 @@ function init() {
 function buildtoolBox() {
   var loadIds;
   var base = "";
-  base += "category_initializes,";
+  // base += "category_initializes,";
   base += "category_time,";
   base += "category_inout,";
   base += "category_loops";
