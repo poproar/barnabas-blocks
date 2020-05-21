@@ -60,4 +60,6 @@ function setCategoryCharacter() {
   $('label[for="chbox_category_i2c_matrix"]').text(Blockly.Msg.CATEGORY_I2C_MATRIX);
   $('label[for="chbox_category_i2c_sevenseg"]').text(Blockly.Msg.CATEGORY_I2C_SEVENSEG);
   $('label[for="chbox_category_other_sensor"]').text(Blockly.Msg.CATEGORY_OTHER_SENSOR);
+  $('label[for="chbox_category_functions"]').text(Blockly.Msg.CATEGORY_FUNCTIONS);
+  $('label[for="chbox_category_variables"]').text(Blockly.Msg.CATEGORY_VARIABLES);
 }

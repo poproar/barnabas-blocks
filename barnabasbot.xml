@@ -1,0 +1,46 @@
+    <xml id="toolbox" style="display: none">
+        <category id="category_initializes" colour="360">
+            <block type="arduino_setup"></block>
+        </category>
+        <category id="category_inout" colour="210">
+            <block type="inout_digital_write"></block>
+            <block type="custom_tone">
+                <value name="FREQ">
+                    <block type="math_number">
+                        <field name="NUM">255</field>
+                    </block>
+                </value>
+            </block>
+            <block type="noTone"></block>
+        </category>
+        <sep id="category_sep"></sep>
+        <category id="category_servo" colour="210">
+            <block type="servo_move">
+                <value name="DEGREE">
+                    <block type="math_number">
+                        <field name="NUM">180</field>
+                    </block>
+                </value>
+                <value name="DELAY_TIME">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+            </block>
+        </category>
+        <category id="category_loops" colour="210">
+            <block type="controls_repeat"></block>
+        </category>
+        <category id="category_time" colour="210">
+            <block type="delay_custom">
+                <value name="DELAY_TIME">
+                    <block type="math_number">
+                        <field name="NUM">1000</field>
+                    </block>
+                </value>
+            </block>
+        </category>
+        <category id="category_variables" colour="210" custom="VARIABLE"></category>
+        <category id="category_functions" colour="210" custom="PROCEDURE"></category>
+        <sep></sep>
+    </xml>

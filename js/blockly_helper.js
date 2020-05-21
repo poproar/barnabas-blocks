@@ -442,3 +442,21 @@ Blockly.Arduino.noTone = function() {
   var code = 'noTone(' + value_pin + ');\n';
   return code;
 };
+
+Blockly.Blocks['forever'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Forever ∞');
+    this.appendStatementInput("voidLoop");
+    this.setTooltip('');
+    this.setHelpUrl('https://www.arduino.cc/reference/en/#stucture');
+    this.setDeletable(true);
+  }
+};
+
+Blockly.Arduino['forever'] = function(block) {
+  var statements_loop = Blockly.Arduino.statementToCode(block, 'voidLoop');
+  
+  var code = statements_loop;
+  return code;
+};
