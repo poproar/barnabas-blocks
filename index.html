@@ -22,14 +22,14 @@
 
     <!-- <script src="https://unpkg.com/blockly/blockly.min.js"></script> -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', '');
-    </script>
+    </script> -->
 </head>
 
 <body>
@@ -45,11 +45,14 @@
                         <i class="material-icons">usb</i>
                     </a>
                 </li>
-                <!-- <li>
+                <li>
+                    <a class="waves-effect waves-light btn red" id="btnConnect" onclick="connectUSB()">Disconnected</a>
+                </li>
+                <li>
                     <a class="dropdown-button tooltipped" href="#" data-activates="dropdown2" data-tooltip="Select a dev board">
                         <i class="material-icons md-light">developer_board</i>
                     </a>
-                </li> -->
+                </li>
                 <li>
                     <a class="waves-effect waves-light modal-trigger tooltipped" id="change-lang" href="#modal1"
                         data-tooltip="I am tooltip">
@@ -71,8 +74,6 @@
                         <option value="" data-icon="images/office.jpg">Uno</option>
                       </select>
                       <label>Select Robot Brain</label>
-                      <a class="waves-effect waves-light btn" onclick="connectUSB()"><i class="material-icons left">developer_board</i>
-                      Connect</a>
                 <p id="dialog-lang-title">Language Setting</p>
                 <table>
                     <tbody>
