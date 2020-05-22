@@ -155,8 +155,10 @@ function buildtoolBox() {
   // base += "category_initializes,";
   base += "category_inout,";
   base += "category_time,";
-  base += "category_loops";
-
+  base += "category_loops,";
+  base += "category_servo,";
+  base += "category_sep,";
+  
   var option = window.localStorage.toolboxids;
   if (option === undefined){
     change_lang();
