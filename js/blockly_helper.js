@@ -268,22 +268,7 @@ function uploadCode(code, callback) {
             status = data.success ? 201 : 204;
             errorInfo = data.success ? data.stdout : data.stderr;
             // consider using axios and repairing the return data if an error we need the error.
-            // document.getElementById('content_hex').innerHTML = atob(data.hex);
-            
-            // hexfile = "";
-            // buffer = atob(data.hex).split("\n");
-            // for(x = 0; x < buffer.length; x++) {
-            //     size = parseInt(buffer[x].substr(1,2),16);
-            //     console.log('size = '+size);
-            //     if(size == 0) {
-            //         console.info('size is 0');
-            //         return;
-            //     }
-            //     for(y = 0; y < (size * 2); y = y + 2){
-            //         // console.log(buffer[x].substr(y+9,2));
-            //         hexfile += String.fromCharCode(parseInt(buffer[x].substr(y+9,2),16));
-            //     }
-            // }
+            document.getElementById('content_hex').innerHTML = atob(data.hex);
             break;
         case 0:
             errorInfo = "code 0\n\nCould not connect to server at " + url + ".  Is the local web server running?";
@@ -321,7 +306,8 @@ function uploadClick() {
           let output = `<pre>${errorInfo}</pre>`;
           document.getElementById("arduino-msg").innerHTML= icon + output;
           $('#arduino_return').openModal();
-
+          let hexstring = document.getElementById('content_hex').innerHTML;
+          fixHex(hexstring);
             // console.log('show upload button if hex code is not null');
         } else if (status == 204){
           let regex = /\/tmp\/chromeduino\-(.*?)\/chromeduino\-(.*?)\.ino\:/g;

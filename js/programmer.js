@@ -1,34 +1,8 @@
-String.prototype.lines = function () { return this.split(/\r*\n/); }
-String.prototype.lineCount = function () { return this.lines().length; }
+// String.prototype.lines = function () { return this.split(/\r*\n/); }
+// String.prototype.lineCount = function () { return this.lines().length; }
 
 let terminalwindow = null;
-let verbose_logging = false;
-
-chrome.Event = class {
-    constructor() {
-        this.listeners = [];
-    }
-
-    addListener(f) {
-        if (!this.hasListener(f)) this.listeners.push(f);
-    }
-
-    removeListener(f) {
-        this.listeners.splice(this.listeners.indexOf(f), 1);
-    }
-
-    hasListener(f) {
-        return this.listeners.indexOf(f) !== -1;
-    }
-
-    hasListeners() {
-        return !!this.listeners.length;
-    }
-
-    dispatch(...data) {
-        this.listeners.forEach(f => f(...data));
-    }
-}
+let verbose_logging = true;
 
 const set_progress = (percent, msg, isErrored, c1 = 'darkcyan', c2 = 'grey') => {
     $('.progressbar-bar').css('background', `linear-gradient(to right, ${c1} , ${c1} ${percent}%, ${c2} ${percent}%, ${c2} )`);
@@ -152,7 +126,7 @@ function stk500_program() {
                 console.log("DTR on:" + result);
                 setTimeout(function () {
                     set_progress(70, "Reset complete...prepping upload blocks..");
-                    log("Arduino reset, now uploading.\n");
+                    console.log("Arduino reset, now uploading.\n");
                     stk500_upload(hexfile);
                 }, 200);
             });
@@ -249,7 +223,7 @@ function transmitPacket(buffer, delay) {
             }
             console.log(debug);
         }
-        connection.send(buffer);
+        writeToStream(buffer);
     }, delay + timer);
     timer = timer + delay;
 }
@@ -309,15 +283,15 @@ function stk500_upload(heximage) {
         stk500_prgpage(flashblock, block, 250);
         flashblock = flashblock + 64;
     }
-    setTimeout(function () {
-        connection.resetBaud(success => {
-            set_progress(100, "Serial programming finished.");
-            display_console("Upload Complete! Have a nice day! :)", success ? "" : "Could not reset baudrate", "\n\n");
-            termmode = 1;
-            if (!terminalwindow) connection.disconnect();
-            if (terminal) terminal.clear();
-        });
-    }, timer + 1000);
+    // setTimeout(function () {
+    //     connection.resetBaud(success => {
+    //         set_progress(100, "Serial programming finished.");
+    //         display_console("Upload Complete! Have a nice day! :)", success ? "" : "Could not reset baudrate", "\n\n");
+    //         termmode = 1;
+    //         if (!terminalwindow) connection.disconnect();
+    //         if (terminal) terminal.clear();
+    //     });
+    // }, timer + 1000);
 
     timer = 0;
 }
@@ -363,9 +337,10 @@ function fixHex(content_hex) {
     for (x = 0; x < buffer.length; x++) {
         size = parseInt(buffer[x].substr(1, 2), 16);
         if (size == 0) {
-            log("complete!\n");
+            console.log("complete!\n");
             set_progress(50, "Intel Hex decoded, launching programmer...");
-            stk500_program();
+            // stk500_program();
+            stk500_upload(hexfile);
             return;
         }
         for (y = 0; y < (size * 2); y = y + 2) {
@@ -376,19 +351,197 @@ function fixHex(content_hex) {
 }
 
 function reset() {
-    log("Resetting device....");
+    console.log("Resetting device....");
     serial.setControlSignals(connection.connectionId, DTRRTSOff, function (result) {
         console.log("DTR off: " + result);
         setTimeout(function () {
             serial.setControlSignals(connection.connectionId, DTRRTSOn, function (result) {
                 console.log("DTR on:" + result);
-                log("done.\n");
+                console.log("done.\n");
             });
         }, 100);
     });
 }
 
-function log(text) {
-    console.log(text);
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+/* i stole chrome's arduino serial port example, thanks guys for the great foundation to build up from. no idea what half this crap is. */
+
+const connection = navigator.serial;
+// var SerialConnection = function() {
+//     this.connectionId = -1;
+//     this.baud = 115200;
+//     this.lineBuffer = "";
+
+//     this.boundOnReceive = this.onReceive.bind(this);
+//     this.boundOnReceiveError = this.onReceiveError.bind(this);
+//     serial.onReceive.addListener(this.boundOnReceive);
+//     serial.onReceiveError.addListener(this.boundOnReceiveError);
+
+//     this.onConnect = new chrome.Event();
+//     this.onReadLine = new chrome.Event();
+//     this.onError = new chrome.Event();
+// };
+
+
+// SerialConnection.prototype.onReceive = function(receiveInfo) {
+//   if (receiveInfo.connectionId !== this.connectionId) {
+//     return;
+//   }
+
+//   this.lineBuffer += ab2str(receiveInfo.data);
+//   var d = new Date();
+//   var n = d.getMilliseconds();
+//   var buffer = this.lineBuffer;
+//   var decoded = "";
+//   for(x = 0; x < buffer.length; x++ )
+//      { decoded += "[" + buffer.charCodeAt(x).toString(16) + "]"; }
+//   // console.log(n+" length: "+buff.length);
+//   if(verbose_logging) console.log(n+" received data: "+decoded);
+//   /*if(termmode == 1) {
+
+// //    $("#terminal").text() = tlen.substr(0,tlen.length-1);
+//  // $("#terminal").append(buffer+"&#9608;"); }
+    
+//     $("#terminal").append(buffer); var elem = document.getElementById('terminal');
+//     elem.scrollTop = elem.scrollHeight; } */
+//   if(terminal && termmode === 1) terminal.message(buffer);
+//   this.lineBuffer = "";
+//   var index;
+//   while ((index = this.lineBuffer.indexOf('\n')) >= 0) {
+//     var line = this.lineBuffer.substr(0, index + 1);
+//     this.onReadLine.dispatch(line);
+//     this.lineBuffer = this.lineBuffer.substr(index + 1);
+//   }
+// };
+
+// SerialConnection.prototype.onReceiveError = function(errorInfo) {
+//   if (errorInfo.connectionId === this.connectionId) {
+//     this.onError.dispatch(errorInfo);
+//   }
+// };
+
+// SerialConnection.prototype.getDevices = function(callback) {
+//   serial.getDevices(callback);
+// };
+    
+// SerialConnection.prototype.connect = function(path) {
+//   serial.connect(path, {bitrate: this.baud}, connectionInfo => {
+//       if (!connectionInfo) {
+//           log("Connection failed.");
+//           return;
+//       }
+//       this.connectionId = connectionInfo.connectionId;
+//       this.onConnect.dispatch();
+//       serial.setControlSignals(connection.connectionId,DTRRTSOn,function(result) {
+//           console.log("DTR on: " + result);
+//       });
+//   })
+// };
+
+// SerialConnection.prototype.send = function(msg) {
+//   if (this.connectionId < 0) {
+//     throw 'Invalid connection';
+//   }
+//   serial.send(this.connectionId, str2ab(msg), function() {});
+// };
+
+// SerialConnection.prototype.disconnect = function() {
+//     if (this.connectionId < 0) {
+//         throw 'Invalid connection';
+//     }
+//     serial.disconnect(this.connectionId, success => {
+//         if(!success) console.error('could not disconnect');
+//         this.connectionId = -1;
+//     });
+// };
+
+// SerialConnection.prototype.setBaud = function(baud) {
+//     if (this.connectionId < 0) {
+//         throw 'Invalid connection';
+//     }
+//     if(this.baud === baud) return;
+//     serial.update(this.connectionId, {bitrate: baud}, success => {
+//         if(success) {
+//             console.log("Baud for connection set to " + baud);
+//             this.baud = baud;
+//         }
+//         else console.error("Could not set baud rate.");
+//     });
+// };
+
+// SerialConnection.prototype.tempBaud = function(baud, cb) {
+//     if (this.connectionId < 0) {
+//         throw 'Invalid connection';
+//     }
+//     serial.update(this.connectionId, {bitrate: baud}, success => {
+//         if(success) {
+//             console.log("Baud for connection set to " + baud + " temporarily");
+//         }
+//         else console.error("Could not set baud rate.");
+//         cb(success);
+//     });
+// };
+
+// SerialConnection.prototype.resetBaud = function(cb) {
+//     if (this.connectionId < 0) {
+//         throw 'Invalid connection';
+//     }
+//     serial.update(this.connectionId, {bitrate: this.baud}, success => {
+//         if(success) {
+//             console.log("Baud for connection set back to " + this.baud);
+//         }
+//         else console.error("Could not set baud rate.");
+//         cb(success);
+//     });
+// };
+
+// SerialConnection.prototype.isConnected = function() {
+//     return this.connectionId > 0;
+// };
+
+
+// const connection = new SerialConnection();
+
+
+////////
+
+
+function getHiddenProp(){
+    var prefixes = ['webkit','moz','ms','o'];
+    
+    // if 'hidden' is natively supported just return it
+    if ('hidden' in document) return 'hidden';
+    
+    // otherwise loop over all the known prefixes until we find one
+    for (var i = 0; i < prefixes.length; i++){
+        if ((prefixes[i] + 'Hidden') in document) 
+            return prefixes[i] + 'Hidden';
+    }
+
+    // otherwise it's not supported
+    return null;
+}
+
+function isHidden() {
+    var prop = getHiddenProp();
+    if (!prop) return false;
+    
+    return document[prop];
+}
+
+function notify(msisdn,text) { 
+var myNotification = new Notify('Iridium', {
+    body: msisdn+": "+text,
+  icon: "9555.jpg",
+  timeout: 10,
+    notifyShow: onNotifyShow
+});
+
+function onNotifyShow() {
+    console.log('notification was shown!');
+}
+myNotification.show();
 
 }
