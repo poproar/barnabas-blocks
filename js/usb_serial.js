@@ -36,7 +36,7 @@ async function connect() {
   // - Request a port and open a connection.
   port = await navigator.serial.requestPort();
   // - Wait for the port to open.
-  await port.open({ baudrate: 115200 });
+  await port.open({ baudrate: 9600 });
 
   // CODELAB: Add code setup the output stream here.
   const encoder = new TextEncoderStream();
@@ -97,13 +97,13 @@ async function connectUSB() {
 
         if (port) {
             await disconnect();
-            btnConnect.innerText = 'Disconnected';
+            btnConnect.innerText = 'Connect Monitor';
             btnConnect.classList.add('red');
             return;
           }
           // CODELAB: Add connect code here.
           await connect();
-          btnConnect.innerText = 'Connected';
+          btnConnect.innerText = 'Monitor Connected';
           btnConnect.classList.remove('red');
     } else {
         console.error('Browser does not support Web Serial');
@@ -120,7 +120,9 @@ async function readLoop() {
   while (true) {
     const { value, done } = await reader.read();
     if (value) {
-      log.textContent += value + '\n';
+      // log.textContent += value + '\n';
+      console.log(value + '\n');
+      alert(value);
     }
     if (done) {
       console.log('[readLoop] DONE', done);
@@ -141,7 +143,8 @@ function writeToStream(...lines) {
   const writer = outputStream.getWriter();
   lines.forEach((line) => {
     console.log('[SEND]', line);
-    writer.write(line + '\n');
+    // consider + \n or \c\r
+    writer.write(line);
   });
   writer.releaseLock();
 }
