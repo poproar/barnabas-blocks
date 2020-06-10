@@ -206,6 +206,13 @@ function setCheckbox() {
     $('#devMode').prop('checked', true);
     $('#get-hex').removeClass('hide');
   }
+  var board = window.localStorage.board;
+  if (board === undefined || board === "") {
+    board = 'nano';
+  }
+
+  $("#board_select").val(board);
+  $('#board_select').material_select();
 }
 
 function loadxml() {
@@ -303,6 +310,7 @@ function setScript() {
     if (typeof param === "undefined") param = "en";
     param = param.replace("#", "");
   }
+
   script.src = filepath["msg_" + param];
   var str = "#select-lang-" + param;
   $(str).prop('checked', true);
@@ -375,7 +383,9 @@ function change_lang() {
     expires: 7
   });
 
+  window.localStorage.board = $('#board_select').val();
   window.localStorage.devMode = $('#devMode:checked').val();
+  
   
   var loc = window.location;
   window.location = loc.protocol + '//' + loc.host + loc.pathname + '?lang=' + val;

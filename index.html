@@ -46,11 +46,6 @@
                     <a class="waves-effect waves-light btn red" id="btnConnect" onclick="connectUSB()">Monitor</a>
                 </li>
                 <li>
-                    <a class="dropdown-button tooltipped" href="#" data-activates="dropdown2" data-tooltip="Select a dev board">
-                        <i class="material-icons md-light">developer_board</i>
-                    </a>
-                </li>
-                <li>
                     <a class="waves-effect waves-light modal-trigger tooltipped" id="change-lang" href="#modal1"
                         data-tooltip="I am tooltip">
                         <i class="material-icons">settings</i>
@@ -64,11 +59,10 @@
     <div id="modal1" class="modal">
         <div class="modal-content">
             <form action="#">
-                    <select class="icons">
-                        <option value="" disabled selected>Select Robot Brain</option>
-                        <option value="" data-icon="images/sample-1.jpg">Noggin</option>
-                        <option value="" data-icon="images/sample-1.jpg">Noggin Alt</option>
-                        <option value="" data-icon="images/office.jpg">Uno</option>
+                    <select class="icons" name="brain" id="board_select">
+                        <option value="nano" data-icon="images/noggin.png">Noggin</option>
+                        <!--option value="" data-icon="images/sample-1.jpg">Noggin Alt</option-->
+                        <option value="uno" data-icon="images/uno.png">Uno</option>
                       </select>
                       <label>Select Robot Brain</label>
                 <p id="dialog-lang-title">Language Setting</p>
@@ -246,16 +240,6 @@
         <li class="divider">
         <li>
             <a class="modal-trigger" href="#!" id="button_export" onclick="export_xml()">Export</a>
-        </li>
-    </ul>
-
-    <ul id="dropdown2" class="dropdown-content">
-        <li>
-            <a class="modal-trigger" href="#!" id="noggin_select">Noggin</a>
-        </li>
-        <li class="divider">
-        <li>
-            <a class="modal-trigger" href="#!" id="uno_select">Uno</a>
         </li>
     </ul>
 

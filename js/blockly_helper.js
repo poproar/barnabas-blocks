@@ -1,12 +1,23 @@
 var COMPILE_URL = "https://compile.barnabasrobotics.com"
 
 function uploadClick(test = false) {
-  tabClick('arduino');
-  // var code = Blockly.Arduino.workspaceToCode();
-  var code = document.getElementById("content_arduino").value;
-  // var board = document.getElementById("board_select").value;
+  if (selected == 'blocks') {
+    var code = Blockly.Arduino.workspaceToCode();
+  } else {
+    var code = document.getElementById("content_arduino").value;
+  }
 
-  $.post(COMPILE_URL + "/compile", { sketch: code, board: 'arduino:avr:uno' }, function (data) {
+  console.log(code);
+  var board = document.getElementById("board_select").value;
+  if (board == 'uno') {
+    var avr = 'arduino:avr:uno';
+  } else {
+    var avr = 'arduino:avr:nano:cpu=atmega328';
+  }
+  console.info(avr);
+
+
+  $.post(COMPILE_URL + "/compile", { sketch: code, board: avr }, function (data) {
     // console.log(data);
     console.warn(data.stdout, data.stderr, '\n\n');
     if (!data.success) {
@@ -25,18 +36,18 @@ function uploadClick(test = false) {
     document.getElementById("arduino-msg").innerHTML = icon + output;
     $('#arduino_return').openModal();
     if (!test) {
-      pushHex();
+      // disconnect();
+      // toggle button
+
+      pushHex(board);
     }
   });
 }
 
-function pushHex() {
+function pushHex(board = 'uno') {
   let hexstr = atob(document.getElementById('content_hex').innerHTML);
   document.getElementById('content_hex').innerHTML = hexstr;
   try {
-
-    const board = 'uno';
-
     let avrgirl = new AvrgirlArduino({
       board: board,
       debug: true
