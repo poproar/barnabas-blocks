@@ -51,7 +51,7 @@ function renderContent() {
     button.style.display = "none";
     bugIcon.style.display = "none";
     pencilIcon.style.display = "none";
-  } else if (content.id == 'content_arduino') {
+  } else if (content.id == 'content_arduino' && content.readOnly) {
     // content.innerHTML = Blockly.Arduino.workspaceToCode();
     var arduinoTextarea = document.getElementById('content_arduino');
     arduinoTextarea.value = Blockly.Arduino.workspaceToCode();

@@ -14,8 +14,7 @@ function uploadClick(test = false) {
   } else {
     var avr = 'arduino:avr:nano:cpu=atmega328';
   }
-  console.info(avr);
-
+  // console.info(avr);
 
   $.post(COMPILE_URL + "/compile", { sketch: code, board: avr }, function (data) {
     // console.log(data);
@@ -28,6 +27,11 @@ function uploadClick(test = false) {
       let output = `<pre>${message}</pre>`;
       document.getElementById("arduino-msg").innerHTML = icon + output;
       $('#arduino_return').openModal();
+
+      // // this code selects range of text
+      // const input = document.getElementById('content_arduino');  
+      // input.focus();
+      // input.setSelectionRange(2, 5);
       return;
     }
     document.getElementById('content_hex').innerHTML = (data.hex);
