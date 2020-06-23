@@ -5,9 +5,10 @@
 
 'use strict';
 
-var TABS_ = ['blocks', 'arduino'];
+var TABS_ = ['blocks', 'arduino', 'hex'];
 
 var selected = 'blocks';
+var ed = false;
 
 /**
  * Switch the visible pane when a tab is clicked.
@@ -18,6 +19,10 @@ function tabClick(clickedName) {
   for (var i = 0; i < TABS_.length; i++) {
     var name = TABS_[i];
     document.getElementById('tab_' + name).className = 'taboff';
+    // remove this after testing
+    if (window.localStorage.devMode === 'undefined') {
+      document.getElementById('tab_hex').className = 'taboff hide';
+    }
     document.getElementById('content_' + name).style.visibility = 'hidden';
   }
 
@@ -36,12 +41,16 @@ function tabClick(clickedName) {
 function renderContent() {
   var content = document.getElementById('content_' + selected);
   var button = document.getElementById('copy-button');
+  var bugIcon = document.getElementById('verify-button');
+  var pencilIcon = document.getElementById('edit-button');
   // Initialize the pane.
   if (content.id == 'content_blocks') {
     // If the workspace was changed by the XML tab, Firefox will have performed
     // an incomplete rendering due to Blockly being invisible.  Rerender.
     Blockly.mainWorkspace.render();
     button.style.display = "none";
+    bugIcon.style.display = "none";
+    pencilIcon.style.display = "none";
   } else if (content.id == 'content_arduino') {
     // content.innerHTML = Blockly.Arduino.workspaceToCode();
     var arduinoTextarea = document.getElementById('content_arduino');
@@ -56,6 +65,8 @@ function renderContent() {
     // arduinoTextarea.focus();
     // }
     button.style.display = "";
+    bugIcon.style.display = "";
+    pencilIcon.style.display = "";
   }
 }
 
@@ -190,6 +201,11 @@ function setCheckbox() {
       $('#chbox_' + options[i]).prop('checked', true);
     }
   }
+  var dev = window.localStorage.devMode;
+  if (dev == 'on') {
+    $('#devMode').prop('checked', true);
+    $('#get-hex').removeClass('hide');
+  }
 }
 
 function loadxml() {
@@ -306,6 +322,8 @@ function setCharacter() {
 
   $("#tab_blocks").text(Blockly.Msg.BLOCKS);
   $("#tab_arduino").text(Blockly.Msg.ARDUINO);
+  $("#tab_hex").text(Blockly.Msg.HEX);
+
 
   $("#get-app").attr("data-tooltip", "Upload to Bot");// Blockly.Msg.DOWNLOAD_CHROME_APP
   $("#go-to-sample").attr("data-tooltip", Blockly.Msg.GO_TO_SAMPLE);
@@ -356,6 +374,9 @@ function change_lang() {
   $.cookie("lang", val, {
     expires: 7
   });
+
+  window.localStorage.devMode = $('#devMode:checked').val();
+  
   var loc = window.location;
   window.location = loc.protocol + '//' + loc.host + loc.pathname + '?lang=' + val;
 }

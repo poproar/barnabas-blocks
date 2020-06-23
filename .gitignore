@@ -7,6 +7,8 @@ Desktop.ini
 
 # Project files
 ino_project
+.env
+launch.json
 
 # Closure library needed for uncompressed development
 /closure-library
