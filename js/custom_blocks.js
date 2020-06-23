@@ -17,8 +17,9 @@ Blockly.Blocks['arduino_setup'] = {
     var statements_loop = Blockly.Arduino.statementToCode(block, 'voidLoop');
    
     Blockly.Arduino.setups_['setup'] = statements_setup;
+    Blockly.Arduino.loop_ = statements_loop;
    
-    var code = statements_loop;
+    var code = ''; // statements_loop;
     return code;
   };
   

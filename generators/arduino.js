@@ -115,6 +115,7 @@ Blockly.Arduino.init = function(workspace) {
   Blockly.Arduino.definitions_ = Object.create(null);
   // Create a dictionary of setups to be printed before the code.
   Blockly.Arduino.setups_ = Object.create(null);
+  Blockly.Arduino.loop_ = Object.create(null);
 
   if (!Blockly.Arduino.variableDB_) {
     Blockly.Arduino.variableDB_ =
@@ -152,9 +153,18 @@ Blockly.Arduino.init = function(workspace) {
  */
 Blockly.Arduino.finish = function(code) {
   // Indent every line.
-  code = '  ' + code.replace(/\n/g, '\n  ');
+  // code = '  ' + code.replace(/\n/g, '\n  ');
+  code = code.replace(/\n/g, '\n  ');
   code = code.replace(/\n\s+$/, '\n');
-  code = 'void loop() \n{\n' + code + '\n}';
+  code = '\n\n/***** OUTSIDE BLOCKS *****\n{\n' + code + '\n}\n** END OUTSIDE BLOCKS ********/';
+
+  var loop = Blockly.Arduino.loop_;
+
+  loop = '  ' + loop.replace(/\n/g, '\n  ');
+  loop = loop.replace(/\n\s+$/, '\n');
+  loop = 'void loop() \n{\n' + loop + '\n}';
+
+
 
   // Convert the definitions dictionary into a list.
   var imports = [];
@@ -175,7 +185,7 @@ Blockly.Arduino.finish = function(code) {
   }
 
   var allDefs = imports.join('\n') + '\n\n' + definitions.join('\n') + '\nvoid setup() \n{\n  '+setups.join('\n  ') + '\n}'+ '\n\n';
-  return allDefs.replace(/\n\n+/g, '\n\n').replace(/\n*$/, '\n\n\n') + code;
+  return allDefs.replace(/\n\n+/g, '\n\n').replace(/\n*$/, '\n\n\n') + loop + code;
 };
 
 /**
