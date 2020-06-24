@@ -24,7 +24,7 @@ let outputDone;
 let inputStream;
 let outputStream;
 
-const log = document.getElementById('log');
+const log = document.getElementById('content_log');
 
 /**
  * @name connect
@@ -50,11 +50,12 @@ async function connect() {
   // CODELAB: Add code to read the stream here.
   let decoder = new TextDecoderStream();
   inputDone = port.readable.pipeTo(decoder.writable);
-  inputStream = decoder.readable
-    .pipeThrough(new TransformStream(new LineBreakTransformer()))
-    .pipeThrough(new TransformStream(new JSONTransformer()));
+  inputStream = decoder.readable;
+    // .pipeThrough(new TransformStream(new LineBreakTransformer()));
+    // .pipeThrough(new TransformStream(new JSONTransformer()));
 
   reader = inputStream.getReader();
+  log.textContent = 'Connected!...\n'
   readLoop();
 
 }
@@ -84,6 +85,8 @@ async function disconnect() {
   // CODELAB: Close the port.
   await port.close();
   port = null;
+  log.textContent += '\nDisconnected';
+  console.log('Port closed');
 }
 
 
@@ -120,9 +123,8 @@ async function readLoop() {
   while (true) {
     const { value, done } = await reader.read();
     if (value) {
-      // log.textContent += value + '\n';
-      console.log(value + '\n');
-      alert(value);
+      log.textContent += value + '';
+      // console.log(value + '\n');
     }
     if (done) {
       console.log('[readLoop] DONE', done);
@@ -163,8 +165,12 @@ class LineBreakTransformer {
   transform(chunk, controller) {
     // CODELAB: Handle incoming chunk
     this.container += chunk;
+    console.info('chunk');
+    console.info(chunk);
     const lines = this.container.split('\r\n');
+    console.info('After Line split');
     this.container = lines.pop();
+    console.info('After pop');
     lines.forEach(line => controller.enqueue(line));
   }
 

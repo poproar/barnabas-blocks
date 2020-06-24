@@ -36,7 +36,7 @@
                     width="40px" /> Barnabas Blocks</a>
             <ul class="right show-on-small">
                 <li>
-                    <a class="waves-effect waves-light modal-trigger tooltipped hide" href="#modal_up" id="get-hex"
+                    <a class="waves-effect waves-light tooltipped hide" id="get-hex" onclick="uploadClick()"
                         data-tooltip="I am tooltip">
                         <i class="material-icons right">usb</i><b>UPLOAD</b>
                     </a>
@@ -254,6 +254,8 @@
                         <td class="tabmin"> </td>
                         <td id="tab_hex" class="hide taboff " onclick="tabClick('hex')"></td>
                         <td class="tabmin"> </td>
+                        <td id="tab_log" class="hide taboff " onclick="tabClick('log')"></td>
+                        <td class="tabmin"> </td>
                         <td class="tabmax">
                             <!-- <a href="#" class="hide-link tooltipped" id="flash-button" onclick="flashHex()" data-tooltip="flash to device" data-clipboard-target="#content_hex">
                                 <i class="small material-icons">developer_board</i>
@@ -297,6 +299,7 @@
     <div id="content_blocks" class="content"></div>
     <textarea id="content_arduino" class="content" readonly wrap="off"></textarea>
     <textarea id="content_hex" class="content" readonly wrap="on"></textarea>
+    <pre id="content_log" class="content" readonly wrap="on">not connected</pre>
 
 
     <xml id="toolbox" style="display: none">
@@ -1031,6 +1034,8 @@
 
     <div class="info">
     </div>
+    <script type="text/javascript" src="js/usb_serial.js"></script>
+
 </body>
 
 </html>
