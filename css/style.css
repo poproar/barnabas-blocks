@@ -226,3 +226,10 @@ nav .brand-logo{
   }
 }
 
+#notSupported {
+  padding: 1em;
+  background-color: red;
+  color: white;
+  text-align: center;
+  border: 3px solid mintcream;
+}

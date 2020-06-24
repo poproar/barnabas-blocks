@@ -30,7 +30,6 @@
 </head>
 
 <body>
-
     <nav>
         <div class="nav-wrapper green lighten-1">
             <a href="./" class="brand-logo"><img style="top: 6px; position: relative;" src="media/barney.svg" alt="bbot"
@@ -54,6 +53,20 @@
             </ul>
         </div>
     </nav>
+
+    <div id="notSupported" class="modal">
+        <div class="modal-content">
+            Sorry, <b>Web Serial</b> is not supported on this device, make sure you're
+            running MS Edge or Chrome 78 or later and have enabled the
+            <code>#enable-experimental-web-platform-features</code> flag in
+            <code>chrome://flags</code>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat ">Close</a>
+            <a href="http://" class="modal-action modal-close waves-effect waves btn-flat" target="_blank" rel="noopener noreferrer">How to enable Experimental
+                Flags</a>
+        </div>
+    </div>
 
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
