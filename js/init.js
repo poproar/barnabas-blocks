@@ -350,6 +350,7 @@ function setCharacter() {
   $("#change-lang").attr("data-tooltip", Blockly.Msg.CHANGE_LANG);
   $("#dialog-lang-title").text(Blockly.Msg.DIALOG_LANG_TITLE);
   $("#dialog-block-title").text(Blockly.Msg.DIALOG_BLOCK_TITLE);
+  $("#get-hex").attr("data-tooltip", Blockly.Msg.UPLOAD);
 
   $("#button_import").text(Blockly.Msg.BUTTON_IMPORT);
   $("#button_export").text(Blockly.Msg.BUTTON_EXPORT);

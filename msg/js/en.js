@@ -124,6 +124,7 @@ Blockly.Msg.CATEGORY_ULTRA_SONIC = "UltraSonic";
 Blockly.Msg.CATEGORY_VARIABLES = "Variables";
 Blockly.Msg.CHANGE = "Change";
 Blockly.Msg.CHANGE_LANG = "Change Language";
+Blockly.Msg.UPLOAD = "Upload";
 Blockly.Msg.CHANGE_VALUE_TITLE = "Change value:";
 Blockly.Msg.CHAT = "Chat with your collaborator by typing in this box!";
 Blockly.Msg.COL = "Col";

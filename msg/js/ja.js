@@ -123,6 +123,7 @@ Blockly.Msg.CATEGORY_ULTRA_SONIC = "超音波センサー";
 Blockly.Msg.CATEGORY_VARIABLES = "変数";
 Blockly.Msg.CHANGE = "Change";
 Blockly.Msg.CHANGE_LANG = "言語設定";
+Blockly.Msg.UPLOAD = "Upload";
 Blockly.Msg.CHANGE_VALUE_TITLE = "値を変更します。";
 Blockly.Msg.CHAT = "Chat with your collaborator by typing in this box!";  // untranslated
 Blockly.Msg.COL = "桁";

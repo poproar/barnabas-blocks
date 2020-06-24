@@ -38,11 +38,11 @@
                 <li>
                     <a class="waves-effect waves-light modal-trigger tooltipped hide" href="#modal_up" id="get-hex"
                         data-tooltip="I am tooltip">
-                        <i class="material-icons">usb</i>
+                        <i class="material-icons right">usb</i><b>UPLOAD</b>
                     </a>
                 </li>
                 <li>
-                    <a class="waves-effect waves-light btn red" id="btnConnect" onclick="connectUSB()">Monitor</a>
+                    <a class="waves-effect waves-light btn red" id="btnConnect" onclick="connectUSB()">Connect Monitor</a>
                 </li>
                 <li>
                     <a class="waves-effect waves-light modal-trigger tooltipped" id="change-lang" href="#modal1"
@@ -184,19 +184,6 @@
         </div>
         <div class="modal-footer">
             <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">OK</a>
-        </div>
-    </div>
-
-    <div id="modal_up" class="modal">
-        <div class="modal-content">
-            <div class="input-field">
-                We are going to push this to the server and expect a hex string back that we can push to arduino
-            </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
-                onclick="uploadClick()">OK</a>
-            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">CANCEL</a>
         </div>
     </div>
 

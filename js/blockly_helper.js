@@ -22,11 +22,8 @@ function uploadClick(test = false) {
     if (!data.success) {
       console.warn(0, data.msg, true);
       let regex = /\/tmp\/chromeduino\-(.*?)\/chromeduino\-(.*?)\.ino\:/g;
-      let icon = '<i class="material-icons" style="font-size:48px;color:red">error</i>';
       let message = data.stderr.replace(regex, "");
-      let output = `<pre>${message}</pre>`;
-      document.getElementById("arduino-msg").innerHTML = icon + output;
-      $('#arduino_return').openModal();
+      upload_result(message, false)
 
       // // this code selects range of text
       // const input = document.getElementById('content_arduino');  
@@ -35,40 +32,45 @@ function uploadClick(test = false) {
       return;
     }
     document.getElementById('content_hex').innerHTML = (data.hex);
-    let icon = '<i class="material-icons" style="font-size:48px;color:green">check_circle</i>';
-    let output = `<pre>${data.stdout}</pre>`;
-    document.getElementById("arduino-msg").innerHTML = icon + output;
-    $('#arduino_return').openModal();
-    if (!test) {
-      // disconnect();
-      // toggle button
+    let hexstr = atob(document.getElementById('content_hex').innerHTML);
+    document.getElementById('content_hex').innerHTML = hexstr;
 
-      pushHex(board);
+    try {
+      let avrgirl = new AvrgirlArduino({
+        board: board,
+        debug: true
+      });
+  
+      avrgirl.flash(str2ab(hexstr), (error) => {
+        // gear.classList.remove('spinning');
+        // progress.textContent = "done!";
+        if (error) {
+          console.error(error);
+          upload_result(error, false);
+        } else {
+          console.info('done correctly.');
+          upload_result(data.stdout)
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      upload_result(error, false);
     }
+
   });
 }
 
-function pushHex(board = 'uno') {
-  let hexstr = atob(document.getElementById('content_hex').innerHTML);
-  document.getElementById('content_hex').innerHTML = hexstr;
-  try {
-    let avrgirl = new AvrgirlArduino({
-      board: board,
-      debug: true
-    });
-
-    avrgirl.flash(str2ab(hexstr), (error) => {
-      // gear.classList.remove('spinning');
-      // progress.textContent = "done!";
-      if (error) {
-        console.error(error);
-      } else {
-        console.info('done correctly.');
-      }
-    });
-  } catch (error) {
-    console.error(error);
+function upload_result(msg, success = true){
+  let icon = '';
+  let output = '';
+  if (success) {
+    icon = '<i class="material-icons" style="font-size:48px;color:green">check_circle</i>';
+  } else {
+    icon = '<i class="material-icons" style="font-size:48px;color:red">error</i>';
   }
+  output = `<pre>${msg}</pre>`;
+  document.getElementById("arduino-msg").innerHTML = icon + output;
+  $('#arduino_return').openModal();
 }
 
 var hexf =
