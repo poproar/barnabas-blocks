@@ -8,7 +8,7 @@ function uploadClick(test = false) {
   }
 
   console.log(code);
-  var board = document.getElementById("board_select").value;
+  var board = $("#board-select").data("board");
   if (board == 'uno') {
     var avr = 'arduino:avr:uno';
   } else {

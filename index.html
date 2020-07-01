@@ -36,6 +36,12 @@
                     width="40px" /> Barnabas Blocks</a>
             <ul class="right show-on-small">
                 <li>
+                    <a class="waves-effect waves-light tooltipped" id="board-select" onclick="boardSelect()"
+                        data-tooltip="Click to change board" data-board="">
+                        <i class="material-icons right">developer_board</i><b id="board-show">BOARD</b>
+                    </a>
+                </li>
+                <li>
                     <a class="waves-effect waves-light tooltipped hide" id="get-hex" onclick="uploadClick()"
                         data-tooltip="I am tooltip">
                         <i class="material-icons right">usb</i><b>UPLOAD</b>
@@ -72,12 +78,11 @@
     <div id="modal1" class="modal">
         <div class="modal-content">
             <form action="#">
-                    <select class="icons" name="brain" id="board_select">
+                    <!-- <select class="icons" name="brain" id="board_select">
                         <option value="nano" data-icon="images/noggin.png">Noggin</option>
-                        <!--option value="" data-icon="images/sample-1.jpg">Noggin Alt</option-->
                         <option value="uno" data-icon="images/uno.png">Uno</option>
                       </select>
-                      <label>Select Robot Brain</label>
+                      <label>Select Robot Brain</label> -->
                 <p id="dialog-lang-title">Language Setting</p>
                 <table>
                     <tbody>
@@ -1035,6 +1040,8 @@
     <div class="info">
     </div>
     <script type="text/javascript" src="js/usb_serial.js"></script>
+    <script type="text/javascript" src="js/board_select.js"></script>
+
 
 </body>
 

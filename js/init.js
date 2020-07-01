@@ -168,7 +168,7 @@ function buildtoolBox() {
   base += "category_sep";
 
   var option = window.localStorage.toolboxids;
-  if (option === undefined){
+  if (option === undefined) {
     change_lang();
   }
 
@@ -210,9 +210,12 @@ function setCheckbox() {
   if (board === undefined || board === "") {
     board = 'nano';
   }
-
-  $("#board_select").val(board);
-  $('#board_select').material_select();
+  if (board == "nano") {
+    document.getElementById("board-show").innerText = "NOGGIN";
+  } else {
+    document.getElementById("board-show").innerText = "UNO";
+  }
+  $("#board-select").data("board", board);
 }
 
 function loadxml() {
@@ -396,10 +399,9 @@ function change_lang() {
     expires: 7
   });
 
-  window.localStorage.board = $('#board_select').val();
+  window.localStorage.board = $("#board-select").data("board");
   window.localStorage.devMode = $('#devMode:checked').val();
-  
-  
+
   var loc = window.location;
   window.location = loc.protocol + '//' + loc.host + loc.pathname + '?lang=' + val;
 }
