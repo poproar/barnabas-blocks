@@ -124,6 +124,7 @@ async function readLoop() {
     const { value, done } = await reader.read();
     if (value) {
       log.textContent += value + '';
+      log.scrollTop = log.scrollHeight;
       // console.log(value + '\n');
     }
     if (done) {
