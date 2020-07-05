@@ -36,6 +36,12 @@
                     width="40px" /> Barnabas Blocks</a>
             <ul class="right show-on-small">
                 <li>
+                    <a class="waves-effect waves-light tooltipped" id="lesson-select" onclick="lessonSelect()"
+                        data-tooltip="Click to change lesson" data-lesson="">
+                        <i class="material-icons right" id="lesson-icon">portrait</i><b id="lesson-show">Lesson</b>
+                    </a>
+                </li>
+                <li>
                     <a class="waves-effect waves-light tooltipped" id="board-select" onclick="boardSelect()"
                         data-tooltip="Click to change board" data-board="">
                         <i class="material-icons right">developer_board</i><b id="board-show">BOARD</b>
@@ -1040,6 +1046,7 @@
     <div class="info">
     </div>
     <script type="text/javascript" src="js/usb_serial.js"></script>
+    <script type="text/javascript" src="js/lesson_select.js"></script>
     <script type="text/javascript" src="js/board_select.js"></script>
 
 

@@ -167,6 +167,17 @@ function buildtoolBox() {
   // base += "category_interrupts,";
   base += "category_sep";
 
+  // let lesson = window.localStorage.lesson;
+  // let racer ="";
+  // racer += "category_math,";
+  // racer += "category_text,";
+  // racer += "category_serial,";
+  // racer += "category_variables,";
+  // racer += "category_functions,";
+  // // base += "category_interrupts,";
+  // racer += "category_sep";
+
+
   var option = window.localStorage.toolboxids;
   if (option === undefined) {
     change_lang();
@@ -178,6 +189,11 @@ function buildtoolBox() {
   } else {
     loadIds = base + ',' + option;
   }
+
+  // if (lesson ==="racer")
+  // {
+  //   loadIds = base + ',' + racer;
+  // }
 
   //window.localStorage.toolboxids = loadIds;
 
@@ -216,6 +232,17 @@ function setCheckbox() {
     document.getElementById("board-show").innerText = "UNO";
   }
   $("#board-select").data("board", board);
+
+  var lesson = window.localStorage.lesson;
+  if (lesson === undefined || lesson === "") {
+    lesson = 'bot';
+  }
+  if (lesson == "bot") {
+    document.getElementById("lesson-show").innerText = "ROBOT";
+  } else {
+    document.getElementById("lesson-show").innerText = "RACER";
+  }
+  $("#lesson-select").data("lesson", lesson);
 }
 
 function loadxml() {
@@ -400,6 +427,7 @@ function change_lang() {
   });
 
   window.localStorage.board = $("#board-select").data("board");
+  window.localStorage.lesson = $("#lesson-select").data("lesson");
   window.localStorage.devMode = $('#devMode:checked').val();
 
   var loc = window.location;
