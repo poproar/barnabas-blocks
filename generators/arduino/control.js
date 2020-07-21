@@ -1,126 +1,332 @@
-/**
- * Visual Blocks Language
- *
- * Copyright 2012 Google Inc.
- * http://blockly.googlecode.com/
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @fileoverview Generating Arduino for control blocks.
- * @author gasolin@gmail.com  (Fred Lin)
- */
 'use strict';
 
-goog.provide('Blockly.Arduino.loops');
+// goog.provide('Blockly.Arduino.initializes');
 
-goog.require('Blockly.Arduino');
+// goog.require('Blockly.Arduino');
 
-Blockly.Arduino.controls_for = function() {
-  // For loop.
-  var variable0 = Blockly.Arduino.variableDB_.getName(
-      this.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-  var argument0 = Blockly.Arduino.valueToCode(this, 'FROM',
-      Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
-  var argument1 = Blockly.Arduino.valueToCode(this, 'TO',
-      Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
-  var branch = Blockly.Arduino.statementToCode(this, 'DO');
+Blockly.Arduino['controls_wait'] = function (block) {
+  let delay_time = Math.round(Blockly.Arduino.valueToCode(block, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC) * 1000);
+  let code = 'delay(' + delay_time + ');\n';
+  return code;
+};
+
+Blockly.Arduino['controls_repeat_times'] = function (block) {
+  // Repeat n times (internal number).
+  let repeats = Blockly.Arduino.valueToCode(block, 'TIMES', Blockly.Arduino.ORDER_ATOMIC);
+  let branch = Blockly.Arduino.statementToCode(block, 'DO');
+  branch = Blockly.Arduino.addLoopTrap(branch, block.id);
+  let looplet = Blockly.Arduino.variableDB_.getDistinctName(
+    'count', Blockly.Variables.NAME_TYPE);
+  let code = 'for (int ' + looplet + ' = 0; ' +
+    looplet + ' < ' + repeats + '; ' +
+    looplet + '++) {\n' +
+    branch + '}\n';
+  return code;
+};
+
+Blockly.Arduino['controls_setup'] = function (block) {
+  let statements_setup = Blockly.Arduino.statementToCode(block, 'SETUP');
+  let statements_loop = Blockly.Arduino.statementToCode(block, 'LOOP');
+
+  Blockly.Arduino.setups_['setup'] = statements_setup;
+  Blockly.Arduino.loop_ = statements_loop;
+
+  let code = statements_loop;  // ''; // switch to empty 
+  return '// any code not in a loop ';
+};
+
+Blockly.Arduino['controls_delay'] = function (block) {
+  let delay_time = Blockly.Arduino.valueToCode(this, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC) || '1000'
+  let code = 'delay(' + delay_time + ');\n';
+  return code;
+};
+
+Blockly.Arduino['controls_loop'] = function (block) {
+  let statements_loop = Blockly.Arduino.statementToCode(block, 'LOOP');
+
+  Blockly.Arduino.loop_ = statements_loop;
+  return '';
+}
+
+Blockly.Arduino['boolean_onoff'] = function (block) {
+  // Boolean values HIGH and LOW.
+  // Blockly.Arduino.valueToCode(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC) 
+  let code = (block.getFieldValue('BOOL') == 'HIGH') ? 'HIGH' : 'LOW';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino['boolean_hilo'] = function (block) {
+  let code = (block.getFieldValue('BOOL') == 'HIGH') ? 'HIGH' : 'LOW';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino['lights_led'] = function (block) {
+  let pin = Blockly.Arduino.valueToCode(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '13'
+  let stat = Blockly.Arduino.valueToCode(block, 'STATUS', Blockly.Arduino.ORDER_ATOMIC) || 'HIGH'
+  if (pin > 0) {
+    Blockly.Arduino.setups_['setup_output_' + pin] = 'pinMode(' + pin + ', OUTPUT);';
+  }
+  let code = 'digitalWrite(' + pin + ', ' + stat + ');\n'
+  return code;
+};
+
+Blockly.Arduino['sounds_tone'] = function (block) {
+  // set up ?
+
+  let pin = Blockly.Arduino.valueToCode(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || 6;
+  let freq = Blockly.Arduino.valueToCode(block, 'FREQ', Blockly.Arduino.ORDER_ATOMIC) || '440';
+  if (pin > 0) {
+    Blockly.Arduino.setups_['setup_output_' + pin] = 'pinMode(' + pin + ', OUTPUT);';
+  }
+  let code = 'tone(' + pin + ',' + freq + ');\n';
+  return code;
+};
+
+Blockly.Arduino['sounds_noTone'] = function (block) {
+  let pin = Blockly.Arduino.valueToCode(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || 6;
+  // let pin = block.getFieldValue('PIN');
+  if (pin > 0) {
+    Blockly.Arduino.setups_['setup_output_' + pin] = 'pinMode(' + pin + ', OUTPUT);';
+  }
+  let code = 'noTone(' + pin + ');\n';
+  return code;
+};
+
+Blockly.Arduino['motors_servo'] = function (block) {
+  let dropdown_pin = Blockly.Arduino.valueToCode(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || 9;
+  let value_degree = Blockly.Arduino.valueToCode(block, 'DEGREE', Blockly.Arduino.ORDER_ATOMIC) || 180;
+  //value_degree = value_degree.replace('(','').replace(')','')
+
+  Blockly.Arduino.definitions_['define_servo'] = '#include <Servo.h>\n';
+  Blockly.Arduino.definitions_['var_servo' + dropdown_pin] = 'Servo servo_' + dropdown_pin + ';\n';
+  Blockly.Arduino.setups_['setup_servo_' + dropdown_pin] = 'servo_' + dropdown_pin + '.attach(' + dropdown_pin + ');\n';
+
+  let code = 'servo_' + dropdown_pin + '.write(' + value_degree + ');\n';
+  return code;
+};
+
+Blockly.Arduino['sensors_button'] = function (block) {
+  let pin = Blockly.Arduino.valueToCode(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '2';
+  let stat = Blockly.Arduino.valueToCode(block, 'STATUS', Blockly.Arduino.ORDER_ATOMIC) || 'HIGH';
+  if ((pin) > 0) {
+    Blockly.Arduino.setups_['setup_output_' + pin] = 'pinMode(' + pin + ', INPUT);';
+  }
+  let code = 'digitalRead(' + pin + ', ' + stat + ');\n';
+  return code;
+};
+
+Blockly.Arduino['sensors_sonic'] = function (block) {
+  let echo_pin = Blockly.Arduino.valueToCode(block, 'ECHO', Blockly.Arduino.ORDER_ATOMIC) || '3';
+  let trig_pin = Blockly.Arduino.valueToCode(block, 'TRIGGER', Blockly.Arduino.ORDER_ATOMIC) || '4';
+  let reset_pin = Blockly.Arduino.valueToCode(block, 'RESET', Blockly.Arduino.ORDER_ATOMIC) || '0';
+
+  Blockly.Arduino.definitions_['define_sonic_timeout'] = 'int Sonic_Time_out = 3000;\n';
+  Blockly.Arduino.setups_['setup_output_' + trig_pin] = 'pinMode(' + trig_pin + ', OUTPUT);';
+  Blockly.Arduino.setups_['setup_output_' + echo_pin] = 'pinMode(' + echo_pin + ', INPUT);';
+  Blockly.Arduino.setups_['setup_output_' + reset_pin] = 'pinMode(' + reset_pin + ', OUTPUT);';
+
+  Blockly.Arduino.definitions_['define_Sonic_Timing'] = 'long Sonic_Timing(){\n'+
+    "  digitalWrite(" + trig_pin + ", LOW);\n" +
+    "  delayMicroseconds(2);\n" +
+    "  digitalWrite(" + trig_pin + ", HIGH);\n" +
+    "  delayMicroseconds(10);\n" +
+    "  digitalWrite(" + trig_pin + ", LOW);\n" +
+    "  long duration = pulseIn(" + echo_pin + ",HIGH,Sonic_Time_out);\n" +
+    "  if ( duration == 0 ){\n" +
+    "    duration = Sonic_Time_out;\n" +
+    "    digitalWrite(" + reset_pin + ", HIGH);\n" +
+    "    delay(25);\n" +
+    "    digitalWrite(" + reset_pin + " ,LOW);\n" +
+    "    delay(225);\n" +
+    "  }\n"+
+    "  return duration;\n"+
+    "}\n";
+
+  let code = ``;
+  return code;
+};
+
+Blockly.Arduino['base_map'] = function() {
+  var value_num = Blockly.Arduino.valueToCode(this, 'NUM', Blockly.Arduino.ORDER_NONE);
+  var value_dmax = Blockly.Arduino.valueToCode(this, 'DMAX', Blockly.Arduino.ORDER_ATOMIC);
+  var code = 'map(' + value_num + ', 0, 1024, 0, ' + value_dmax + ')';
+  return [code, Blockly.Arduino.ORDER_NONE];
+};
+
+Blockly.Arduino.serial_print = function() {
+  var content = Blockly.Arduino.valueToCode(this, 'CONTENT', Blockly.Arduino.ORDER_ATOMIC) || '0'
+  //content = content.replace('(','').replace(')','');  
+
+  Blockly.Arduino.setups_['setup_serial_'+ profile.default.serial] = 'Serial.begin('+profile.default.serial+');\n';
+
+  var code = 'Serial.print('+content+');\n';
+  return code;
+};
+
+Blockly.Arduino.serial_read = function() {
+  var content = Blockly.Arduino.valueToCode(this, 'CONTENT', Blockly.Arduino.ORDER_ATOMIC) || '0'
+  //content = content.replace('(','').replace(')','');
+
+  Blockly.Arduino.setups_['setup_serial_'+profile.default.serial] = 'Serial.begin('+profile.default.serial+');\n';
+
+  var code = 'Serial.read()';
+  return [code,Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino.serial_byte_number = function() {
+  var code = this.getFieldValue('NUM');
+
+  return [code,Blockly.Arduino.ORDER_ATOMIC];
+};
+
+
+Blockly.Arduino.serial_available = function() {
+  var content = Blockly.Arduino.valueToCode(this, 'CONTENT', Blockly.Arduino.ORDER_ATOMIC) || '0'
+  //content = content.replace('(','').replace(')','');
+
+  Blockly.Arduino.setups_['setup_serial_'+profile.default.serial] = 'Serial.begin('+profile.default.serial+');\n';
+
+  var code = 'Serial.available()';
+  return [code,Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino.serial_println = function() {
+  var content = Blockly.Arduino.valueToCode(this, 'CONTENT', Blockly.Arduino.ORDER_ATOMIC) || '0'
+  //content = content.replace('(','').replace(')','');
+
+  Blockly.Arduino.setups_['setup_serial_'+profile.default.serial] = 'Serial.begin('+profile.default.serial+');\n';
+
+  var code = 'Serial.println('+content+');\n';
+  return code;
+};
+
+Blockly.Arduino.text = function() {
+  // Text value.
+  var code = Blockly.Arduino.quote_(this.getFieldValue('TEXT'));
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+
+Blockly.Arduino.procedures_defreturn = function() {
+  // Define a procedure with a return value.
+  var funcName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('NAME'),
+      Blockly.Procedures.NAME_TYPE);
+  var branch = Blockly.Arduino.statementToCode(this, 'STACK');
   if (Blockly.Arduino.INFINITE_LOOP_TRAP) {
     branch = Blockly.Arduino.INFINITE_LOOP_TRAP.replace(/%1/g,
         '\'' + this.id + '\'') + branch;
   }
-  var code;
-  if (argument0.match(/^-?\d+(\.\d+)?$/) &&
-      argument1.match(/^-?\d+(\.\d+)?$/)) {
-    // Both arguments are simple numbers.
-    var up = parseFloat(argument0) <= parseFloat(argument1);
-    code = 'for (' + variable0 + ' = ' + argument0 + '; ' +
-        variable0 + (up ? ' <= ' : ' >= ') + argument1 + '; ' +
-        variable0 + (up ? '++' : '--') + ') {\n' +
-        branch + '}\n';
+  var returnValue = Blockly.Arduino.valueToCode(this, 'RETURN',
+      Blockly.Arduino.ORDER_NONE) || '';
+  var type = this.getFieldValue('TYPE');
+  if (returnValue) {
+    returnValue = '  return ' + returnValue + ';\n';
+  }
+  var returnType = returnValue ? type : 'void';
+  var args = [];
+  for (var x = 0; x < this.arguments_.length; x++) {
+    args[x] = Blockly.Arduino.variableDB_.getName(this.arguments_[x],
+        Blockly.Variables.NAME_TYPE);
+  }
+  var code = returnType + ' ' + funcName + '(' + args.join(', ') + ') {\n' +
+      branch + returnValue + '}\n';
+  code = Blockly.Arduino.scrub_(this, code);
+  Blockly.Arduino.definitions_[funcName] = code;
+  return null;
+};
+
+// Defining a procedure without a return value uses the same generator as
+// a procedure with a return value.
+Blockly.Arduino.procedures_defnoreturn = Blockly.Arduino.procedures_defreturn;
+
+Blockly.Arduino.procedures_callreturn = function() {
+  // Call a procedure with a return value.
+  var funcName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('NAME'),
+      Blockly.Procedures.NAME_TYPE);
+  var args = [];
+  for (var x = 0; x < this.arguments_.length; x++) {
+    args[x] = Blockly.Arduino.valueToCode(this, 'ARG' + x,
+        Blockly.Arduino.ORDER_NONE) || 'null';
+  }
+  var code = funcName + '(' + args.join(', ') + ')';
+  return [code, Blockly.Arduino.ORDER_UNARY_POSTFIX];
+};
+
+Blockly.Arduino.procedures_callnoreturn = function() {
+  // Call a procedure with no return value.
+  var funcName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('NAME'),
+      Blockly.Procedures.NAME_TYPE);
+  var args = [];
+  for (var x = 0; x < this.arguments_.length; x++) {
+    args[x] = Blockly.Arduino.valueToCode(this, 'ARG' + x,
+        Blockly.Arduino.ORDER_NONE) || 'null';
+  }
+  var code = funcName + '(' + args.join(', ') + ');\n';
+  return code;
+};
+
+Blockly.Arduino.procedures_ifreturn = function() {
+  // Conditionally return value from a procedure.
+  var condition = Blockly.Arduino.valueToCode(this, 'CONDITION',
+      Blockly.Arduino.ORDER_NONE) || 'false';
+  var code = 'if (' + condition + ') {\n';
+  if (this.hasReturnValue_) {
+    var value = Blockly.Arduino.valueToCode(this, 'VALUE',
+        Blockly.Arduino.ORDER_NONE) || 'null';
+    code += '  return ' + value + ';\n';
   } else {
-    code = '';
-    // Cache non-trivial values to variables to prevent repeated look-ups.
-    var startVar = argument0;
-    if (!argument0.match(/^\w+$/) && !argument0.match(/^-?\d+(\.\d+)?$/)) {
-      var startVar = Blockly.Arduino.variableDB_.getDistinctName(
-          variable0 + '_start', Blockly.Variables.NAME_TYPE);
-      code += 'int ' + startVar + ' = ' + argument0 + ';\n';
-    }
-    var endVar = argument1;
-    if (!argument1.match(/^\w+$/) && !argument1.match(/^-?\d+(\.\d+)?$/)) {
-      var endVar = Blockly.Arduino.variableDB_.getDistinctName(
-          variable0 + '_end', Blockly.Variables.NAME_TYPE);
-      code += 'int ' + endVar + ' = ' + argument1 + ';\n';
-    }
-    code += 'for (' + variable0 + ' = ' + startVar + ';\n' +
-        '    (' + startVar + ' <= ' + endVar + ') ? ' +
-        variable0 + ' <= ' + endVar + ' : ' +
-        variable0 + ' >= ' + endVar + ';\n' +
-        '    ' + variable0 + ' += (' + startVar + ' <= ' + endVar +
-            ') ? 1 : -1) {\n' +
-        branch0 + '}\n';
+    code += '  return;\n';
   }
+  code += '}\n';
   return code;
 };
 
-Blockly.Arduino['controls_whileUntil'] = function(block) {
-  // Do while/until loop.
-  var until = block.getFieldValue('MODE') == 'UNTIL';
-  var argument0 = Blockly.Arduino.valueToCode(block, 'BOOL', Blockly.Arduino.ORDER_NONE) || 'false';
-  var branch = Blockly.Arduino.statementToCode(block, 'DO');
-  branch = Blockly.Arduino.addLoopTrap(branch, block.id);
-  if (until) {
-    argument0 = '!' + argument0;
+Blockly.Arduino['variables_get'] = function(block) {
+  // Variable getter.
+  var code = Blockly.Arduino.variableDB_.getName(this.getFieldValue('VAR'),
+      Blockly.Variables.NAME_TYPE);
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+/*
+Blockly.Arduino['variables_declare'] = function() {
+  // Variable setter.
+  var dropdown_type = this.getFieldValue('TYPE');
+  //TODO: settype to variable
+  var argument0 = Blockly.Arduino.valueToCode(this, 'VALUE',
+      Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
+  var varName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('VAR'),
+      Blockly.Variables.NAME_TYPE);
+  Blockly.Arduino.setups_['setup_var' + varName] = varName + ' = ' + argument0 + ';\n';
+  return '';
+};
+*/
+
+Blockly.Arduino['variables_rset'] = function(block) {
+  // Variable setter.
+  var argument0 = Blockly.Arduino.valueToCode(block, 'VALUE',
+      Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
+  var varName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('VAR'),
+      Blockly.Variables.NAME_TYPE);
+  var variables = Blockly.Variables.allVariablesAndTypes(this.workspace);
+  var code;
+  for (var x = 0; x < variables.length; x++) {
+    if(variables[x][0] == varName && variables[x][1] == 'Array'){
+      code = 'int ' + variables[x][0] + '[] = ' + argument0 + ';\n';
+      //Blockly.Arduino.variableDB_.getName(variables[x],
+      //Blockly.Variables.NAME_TYPE) + ';\n';
+      Blockly.Arduino.definitions_[variables[x][0]] = code;
+      return "";
+    }
   }
-  return 'while (' + argument0 + ') {\n' + branch + '}\n';
-};
+  return varName + ' = ' + argument0 + ';\n';
 
-Blockly.Arduino['controls_while'] = function(block) {
-  // Do while/until loop.
-  var argument0 = Blockly.Arduino.valueToCode(block, 'BOOL', Blockly.Arduino.ORDER_NONE) || 'false';
-  var branch = Blockly.Arduino.statementToCode(block, 'DO');
-  branch = Blockly.Arduino.addLoopTrap(branch, block.id);
-  return 'while (' + argument0 + ') {\n' + branch + '}\n';
 };
-
-Blockly.Arduino['controls_repeat'] = function(block){
-  // Repeat n times (internal number).
-  var repeats = Number(block.getFieldValue('TIMES'));
-  var branch = Blockly.Arduino.statementToCode(block, 'DO');
-  branch = Blockly.Arduino.addLoopTrap(branch, block.id);
-  var loopVar = Blockly.Arduino.variableDB_.getDistinctName(
-  'count', Blockly.Variables.NAME_TYPE);
-  var code = 'for (int ' + loopVar + ' = 0; ' +
-  loopVar + ' < ' + repeats + '; ' +
-  loopVar + '++) {\n' +
-  branch + '}\n';
-  return code;
-};
-
-Blockly.Arduino['controls_flow_statements'] = function(block) {
-  // Flow statements: continue, break.
-  switch (block.getFieldValue('FLOW')) {
-    case 'BREAK':
-      return 'break;\n';
-    case 'CONTINUE':
-      return 'continue;\n';
-  }
-  throw 'Unknown flow statement.';
-};
-
-Blockly.Arduino['controls_return'] = function(block) {
-  var value = Blockly.Arduino.valueToCode(block, 'VAL', Blockly.Arduino.ORDER_NONE) || '';
-  return 'return ' + value +';\n';
+Blockly.Arduino['variables_set'] = function(block) {
+  // Variable setter.
+  var argument0 = Blockly.Arduino.valueToCode(block, 'VALUE',
+      Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
+  var varName = Blockly.Arduino.variableDB_.getName(
+      block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
+  return varName + ' = ' + argument0 + ';\n';
 };
