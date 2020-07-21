@@ -192,14 +192,14 @@ Code.LANG = Code.getLang();
  * List of tab names.
  * @private
  */
-Code.TABS_ = ['blocks', 'javascript', 'arduino', 'xml'];
+Code.TABS_ = ['blocks', 'arduino', 'xml'];
 
 /**
  * List of tab names with casing, for display in the UI.
  * @private
  */
 Code.TABS_DISPLAY_ = [
-  'Blocks', 'JavaScript', 'Arduino', 'XML',
+  'Blocks', 'Arduino', 'XML',
 ];
 
 Code.selected = 'blocks';
@@ -282,8 +282,6 @@ Code.renderContent = function() {
     var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
     xmlTextarea.value = xmlText;
     xmlTextarea.focus();
-  } else if (content.id == 'content_javascript') {
-    Code.attemptCodeGeneration(Blockly.JavaScript);
   } else if (content.id == 'content_arduino') {
     Code.attemptCodeGeneration(Blockly.Arduino);
   }
@@ -400,7 +398,7 @@ Code.init = function() {
 
   // Add to reserved word list: Local variables in execution environment (runJS)
   // and the infinite loop detection function.
-  Blockly.JavaScript.addReservedWords('code,timeouts,checkTimeout');
+  // Blockly.JavaScript.addReservedWords('code,timeouts,checkTimeout');
 
   Code.loadBlocks('');
 
@@ -504,22 +502,22 @@ Code.initLanguage = function() {
  * Execute the user's code.
  * Just a quick and dirty eval.  Catch infinite loops.
  */
-Code.runJS = function() {
-  Blockly.JavaScript.INFINITE_LOOP_TRAP = 'checkTimeout();\n';
-  var timeouts = 0;
-  var checkTimeout = function() {
-    if (timeouts++ > 1000000) {
-      throw MSG['timeout'];
-    }
-  };
-  var code = Blockly.JavaScript.workspaceToCode(Code.workspace);
-  Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
-  try {
-    eval(code);
-  } catch (e) {
-    alert(MSG['badCode'].replace('%1', e));
-  }
-};
+// Code.runJS = function() {
+//   Blockly.JavaScript.INFINITE_LOOP_TRAP = 'checkTimeout();\n';
+//   var timeouts = 0;
+//   var checkTimeout = function() {
+//     if (timeouts++ > 1000000) {
+//       throw MSG['timeout'];
+//     }
+//   };
+//   var code = Blockly.JavaScript.workspaceToCode(Code.workspace);
+//   Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+//   try {
+//     eval(code);
+//   } catch (e) {
+//     alert(MSG['badCode'].replace('%1', e));
+//   }
+// };
 
 /**
  * Discard all blocks from the workspace.
@@ -536,9 +534,9 @@ Code.discard = function() {
 };
 
 // Load the Code demo's language strings.
-document.write('<script src="msg/' + Code.LANG + '.js"></script>\n');
+document.write('<script src="./js/lang/msg/' + Code.LANG + '.js"></script>\n');
 // Load Blockly's language strings.
-document.write('<script src="../../msg/js/' + Code.LANG + '.js"></script>\n');
+document.write('<script src="./js/lang/' + Code.LANG + '.js"></script>\n');
 
 window.addEventListener('load', Code.init);
 
