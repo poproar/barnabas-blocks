@@ -164,14 +164,8 @@ button {
   vertical-align: top;
 }
 
-#boardMenu {
+span select {
   padding: 2px 5px 4px;
-  margin: 1px 5px 5px ;
-  vertical-align: baseline ;
-}
-
-#lessonMenu {
-  padding: 2px 2px 4px;
   margin: 1px 5px 5px ;
   vertical-align: baseline ;
 }

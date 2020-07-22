@@ -20,7 +20,7 @@ var Code = {};
  */
 Code.LANGUAGE_NAME = {
   'en': 'English',
-  'es': 'Español'
+  // 'es': 'Español'
 };
 
 /**
@@ -57,6 +57,32 @@ Code.getLang = function() {
     lang = 'en';
   }
   return lang;
+};
+
+/**
+ * Get the board of this user from the URL.
+ * @return {string} User's board.
+ */
+Code.getBoard = function() {
+  var board = window.localStorage.board;
+  if (board === undefined || board === "") {
+    // Default to nano.
+    board = 'nano';
+  }
+  return board;
+};
+
+/**
+ * Get the board of this user from the URL.
+ * @return {string} User's board.
+ */
+Code.getLesson = function() {
+  var lesson = window.localStorage.lesson;
+  if (lesson === undefined || lesson === "") {
+    // Default to bot.
+    lesson = 'bot';
+  }
+  return lesson;
 };
 
 /**
@@ -187,6 +213,18 @@ Code.getBBox_ = function(element) {
  * @type {string}
  */
 Code.LANG = Code.getLang();
+
+/**
+ * User's Board (e.g. "nano").
+ * @type {string}
+ */
+Code.BOARD = Code.getBoard();
+
+/**
+ * User's Lesson (e.g. "Racer").
+ * @type {string}
+ */
+Code.LESSON = Code.getLesson();
 
 /**
  * List of tab names.
@@ -335,6 +373,7 @@ Code.checkAllGeneratorFunctionsDefined = function(generator) {
  */
 Code.init = function() {
   Code.initLanguage();
+  Code.initSelects();
 
   var rtl = Code.isRtl();
   var container = document.getElementById('content_area');
@@ -374,11 +413,7 @@ Code.init = function() {
     }
   }
 
-  // Construct the toolbox XML, replacing translated variable names.
-  var toolboxText = document.getElementById('toolbox').outerHTML; // or ajax? ||
-  toolboxText = toolboxText.replace(/(^|[^%]){(\w+)}/g,
-      function(m, p1, p2) {return p1 + MSG[p2];});
-  var toolboxXml = Blockly.Xml.textToDom(toolboxText);
+  var toolboxXml = Code.buildToolbox(Code.LESSON);
 
   Code.workspace = Blockly.inject('content_blocks',
       {grid:
@@ -407,10 +442,30 @@ Code.init = function() {
     BlocklyStorage.backupOnUnload(Code.workspace);
   }
 
+  Code.bindClick('boardSelect',
+      function() {localStorage.setItem('board', this.value);});
+
+  Code.bindClick('lessonSelect',
+      function() {
+        localStorage.setItem('lesson', this.value);
+        document.getElementById('title').textContent = document.getElementById('lessonSelect').value ;//MSG['title'];
+        let newTree = Code.buildToolbox(this.value);
+        console.log(newTree);
+        Code.workspace.updateToolbox(newTree);
+        if (Code.LESSON === 'bot') {
+          Code.discard();
+        }
+      });
+
+
   Code.tabClick(Code.selected);
 
-  Code.bindClick('trashButton',
+  // Code.bindClick('trashButton',
+  //     function() {Code.discard(); Code.renderContent();});
+
+  Code.bindClick('newButton',
       function() {Code.discard(); Code.renderContent();});
+
   Code.bindClick('runButton', Code.runJS);
   // Disable the link button if page isn't backed by App Engine storage.
   var linkButton = document.getElementById('linkButton');
@@ -444,6 +499,16 @@ Code.init = function() {
   // Lazy-load the syntax-highlighting.
   window.setTimeout(Code.importPrettify, 1);
 };
+
+Code.buildToolbox = function(lesson) {
+    // Construct the toolbox XML, replacing translated variable names.
+  // Bor or Racer ?? 
+  var toolboxText = document.getElementById(lesson+'_toolbox').outerHTML; // or ajax? ||
+  toolboxText = toolboxText.replace(/(^|[^%]){(\w+)}/g,
+      function(m, p1, p2) {return p1 + MSG[p2];});
+  var toolboxXml = Blockly.Xml.textToDom(toolboxText);
+  return toolboxXml;
+}
 
 /**
  * Initialize the page language.
@@ -490,18 +555,29 @@ Code.initLanguage = function() {
 
   // Inject language strings.
   document.title += ' ' + MSG['title'];
-  document.getElementById('title').textContent = document.getElementById('lessonMenu').value ;//MSG['title'];
+  document.getElementById('title').textContent = document.getElementById('lessonSelect').value ;//MSG['title'];
   document.getElementById('tab_blocks').textContent = MSG['blocks'];
 
   document.getElementById('linkButton').title = MSG['linkTooltip'];
   document.getElementById('runButton').title = MSG['runTooltip'];
-  document.getElementById('trashButton').title = MSG['trashTooltip'];
+  // document.getElementById('trashButton').title = MSG['trashTooltip'];
+  document.getElementById('newButton').title = MSG['trashTooltip'];
+
 };
 
-/**
- * Execute the user's code.
- * Just a quick and dirty eval.  Catch infinite loops.
- */
+Code.initSelects = function() {
+  if(localStorage.getItem('board')){
+    document.getElementById('boardSelect').value=localStorage.getItem('board');
+  }
+  if(localStorage.getItem('lesson')){
+    document.getElementById('lessonSelect').value=localStorage.getItem('lesson');
+  }
+};
+
+// /**
+//  * Execute the user's code.
+//  * Just a quick and dirty eval.  Catch infinite loops.
+//  */
 // Code.runJS = function() {
 //   Blockly.JavaScript.INFINITE_LOOP_TRAP = 'checkTimeout();\n';
 //   var timeouts = 0;
@@ -548,7 +624,7 @@ const componentStyles =
   'toolboxForegroundColour': '#fff',
   'flyoutBackgroundColour': '#222',
   'flyoutForegroundColour': '#555',
-  'flyoutOpacity': 1,
+  'flyoutOpacity': 0.2,
   'scrollbarColour': '#797979',
   'insertionMarkerColour': '#fff',
   'insertionMarkerOpacity': 0.3,

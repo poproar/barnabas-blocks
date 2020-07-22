@@ -40,19 +40,23 @@
         <button id="editButton" class="" title="edit">
           EDIT TEXT
         </button>
-        <label for="boardMenu"> Select a board</label>
-        <select id="boardMenu" class="">
-          <option value="nano">Noggin</option>
-          <option value="uno">Uno</option>
-        </select>
-        <label for="lessonMenu"> Select a lesson</label>
-        <select id="lessonMenu" class="">
-          <option value="bot">Barnabas Bot</option>
-          <option value="racer">Barnabas Racer</option>
-        </select>
-        <button id="trashButton" class="notext" title="...">
+        <span>
+          <label for="boardSelect"> Select a board</label>
+          <select id="boardSelect" class="">
+            <option value="nano">Noggin</option>
+            <option value="uno">Uno</option>
+          </select>
+        </span>
+        <span>
+          <label for="lessonSelect"> Select a lesson</label>
+          <select id="lessonSelect" class="">
+            <option value="bot">Barnabas Bot</option>
+            <option value="racer">Barnabas Racer</option>
+          </select>
+        </span>
+        <!-- <button id="trashButton" class="notext" title="...">
           <img src='../../media/1x1.gif' class="trash icon21">
-        </button>
+        </button> -->
         <button id="linkButton" class="notext" title="...">
           <img src='../../media/1x1.gif' class="link icon21">
         </button>
@@ -101,8 +105,8 @@
   <pre id="content_arduino" class="content prettyprint lang-cpp"></pre>
   <textarea id="content_xml" class="content" wrap="off"></textarea>
 
-  <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
-    <category name="Control" categorystyle="controls">
+  <xml xmlns="https://developers.google.com/blockly/xml" id="racer_toolbox" style="display: none">
+    <category name="Control" categorystyle="controls" >
       <block type="controls_loop"></block>
       <block type="controls_wait">
         <value name="DELAY_TIME">
@@ -119,7 +123,7 @@
         </value>
       </block>
       <block type="controls_setup" class="racer"></block>
-      <block type="controls_delay" class="racer ">
+      <block type="controls_delay" class="racer">
         <value name="DELAY_TIME">
           <block type="math_number">
             <field name="NUM">1000</field>
@@ -129,9 +133,9 @@
       <block type="controls_if" colour="60"></block>
       <block type="controls_whileUntil" class="racer"></block>
       <block type="controls_flow_statements" class="racer"></block>
-      <category name="Subroutines" colour="70" custom="PROCEDURE" class="racer "></category>
+      <category name="Subroutines" colour="70" custom="PROCEDURE" class="racer"></category>
     </category>
-    <category name="Tests" categorystyle="tests" class="racer ">
+    <category name="Tests" categorystyle="tests" class="racer">
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
       <block type="logic_negate"></block>
@@ -139,7 +143,7 @@
       <block type="logic_null"></block>
       <block type="logic_ternary"></block>
     </category>
-    <category name="Math Operators" categorystyle="math" class="racer ">
+    <category name="Math Operators" categorystyle="math" class="racer">
       <block type="math_arithmetic">
         <value name="A">
           <block type="math_number">
@@ -380,6 +384,80 @@
         <value name="TRIGGER">
           <block type="math_number">
             <field name="NUM">4</field>
+          </block>
+        </value>
+      </block>
+    </category>
+  </xml>
+
+  <xml xmlns="https://developers.google.com/blockly/xml" id="bot_toolbox"   style="display: none">
+    <category name="Control" categorystyle="controls" >
+      <block type="controls_loop"></block>
+      <block type="controls_wait">
+        <value name="DELAY_TIME">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_repeat_times">
+        <value name="TIMES">
+          <block type="math_number">
+            <field name="NUM">5</field>
+          </block>
+        </value>
+      </block>
+        <value name="DELAY_TIME">
+          <block type="math_number">
+            <field name="NUM">1000</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_if" colour="60"></block>
+    </category>
+    <category name="Lights" categorystyle="lights">
+      <block type="lights_led">
+        <value name="PIN">
+          <block type="math_number">
+            <field name="NUM">7</field>
+          </block>
+        </value>
+        <value name="STATUS">
+          <block type="boolean_onoff"></block>
+        </value>
+      </block>
+    </category>
+    <category name="Sounds" categorystyle="sounds">
+      <block type="sounds_tone">
+        <value name="PIN">
+          <block type="math_number">
+            <field name="NUM">6</field>
+          </block>
+        </value>
+        <value name="FREQ">
+          <block type="math_number">
+            <field name="NUM">440</field>
+          </block>
+        </value>
+      </block>
+      <block type="sounds_noTone">
+        <value name="PIN">
+          <block type="math_number">
+            <field name="NUM">6</field>
+          </block>
+        </value>
+      </block>
+    </category>
+    <category name="Motors" categorystyle="motors" >
+      <block type="motors_servo">
+        <value name="PIN">
+          <block type="math_number">
+            <field name="NUM">6</field>
+          </block>
+        </value>
+        <value name="DEGREE">
+          <block type="math_number">
+            <field name="NUM">180</field>
           </block>
         </value>
       </block>
