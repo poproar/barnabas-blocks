@@ -4,7 +4,7 @@
  */
 function backup_blocks() {
     if ('localStorage' in window) {
-      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+      var xml = Blockly.Xml.workspaceToDom(Code.workspace);
       window.localStorage.setItem('arduino', Blockly.Xml.domToText(xml));
     }
   }
@@ -15,7 +15,7 @@ function backup_blocks() {
   function restore_blocks() {
     if ('localStorage' in window && window.localStorage.arduino) {
       var xml = Blockly.Xml.textToDom(window.localStorage.arduino);
-      Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+      Blockly.Xml.domToWorkspace(xml, Code.workspace);
     }
   }
   
@@ -23,7 +23,7 @@ function backup_blocks() {
   * Save Arduino generated code to local file.
   */
   function saveCode() {
-    var fileName = window.prompt('What would you like to name your file?', 'myBlocks')
+    var fileName = window.prompt('What would you like to name your file?', 'mySketch')
     //doesn't save if the user quits the save prompt
     if(fileName){
       var blob = new Blob([Blockly.Arduino.workspaceToCode()], {type: 'text/plain;charset=utf-8'});
@@ -36,7 +36,7 @@ function backup_blocks() {
    * better include Blob and FileSaver for browser compatibility
    */
   function save() {
-    var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+    var xml = Blockly.Xml.workspaceToDom(Code.workspace);
     var data = Blockly.Xml.domToText(xml);
     var fileName = window.prompt('What would you like to name your file?', 'myBlocks');
   
@@ -75,28 +75,17 @@ function backup_blocks() {
           //alert('Error parsing XML:\n' + e);
           return;
         }
-        var count = Blockly.mainWorkspace.getAllBlocks().length;
+        var count = Code.workspace.getAllBlocks().length;
         if (count && confirm(Blockly.Msg.REPLACE_TEXT1 + '\n' +Blockly.Msg.REPLACE_TEXT2)) {
-          Blockly.mainWorkspace.clear();
+          Code.workspace.clear();
         }
-        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+        Blockly.Xml.domToWorkspace(xml, Code.workspace);
       }
       // Reset value of input after loading because Chrome will not fire
       // a 'change' event if the same file is loaded again.
       document.getElementById('load').value = '';
     };
     reader.readAsText(files[0]);
-  }
-  
-  /**
-   * Discard all blocks from the workspace.
-   */
-  function discard() {
-    var count = Blockly.mainWorkspace.getAllBlocks().length;
-    if (count < 2 || window.confirm(Blockly.Msg.DELETE_ALL1 + count + Blockly.Msg.DELETE_ALL2)) {
-      Blockly.mainWorkspace.clear();
-      renderContent();
-    }
   }
   
   /*
@@ -108,12 +97,12 @@ function backup_blocks() {
     window.setTimeout(restore_blocks, 0);
     // Hook a save function onto unload.
     bindEvent(window, 'unload', backup_blocks);
-    tabClick(selected);
+    Code.tabClick(Code.selected);
   
     // Init load event.
     var loadInput = document.getElementById('load');
     loadInput.addEventListener('change', load, false);
-    document.getElementById('fakeload').onclick = function() {
+    document.getElementById('loadButton').onclick = function() {
       loadInput.click();
     };
   }
