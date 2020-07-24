@@ -459,7 +459,9 @@ Code.init = function () {
   // setCheckbox();
 
   Code.bindClick('boardSelect',
-    function () { localStorage.setItem('board', this.value); });
+    function () { localStorage.setItem('board', this.value);
+    document.getElementById('board').textContent = document.getElementById('boardSelect').value;//MSG['title'];
+  });
 
   Code.bindClick('lessonSelect',
     function () {
@@ -603,6 +605,7 @@ Code.initLanguage = function () {
   // Inject language strings.
   document.title += ' ' + MSG['title'];
   document.getElementById('title').textContent = document.getElementById('lessonSelect').value;//MSG['title'];
+  document.getElementById('board').textContent = document.getElementById('boardSelect').value;//MSG['title'];
   document.getElementById('tab_blocks').textContent = MSG['blocks'];
 
   document.getElementById('linkButton').title = MSG['linkTooltip']; //Blockly.Msg.LOAD_XML)
