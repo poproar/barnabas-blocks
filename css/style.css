@@ -179,7 +179,7 @@ span select {
 .icon21 {
   height: 21px;
   width: 21px;
-  background-image: url(/icons.png);
+  background-image: url(../icons.png);
 }
 .trash {
   background-position: 0px 0px;
