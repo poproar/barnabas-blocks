@@ -618,9 +618,13 @@ Code.initLanguage = function () {
 Code.initSelects = function () {
   if (localStorage.getItem('board')) {
     document.getElementById('boardSelect').value = localStorage.getItem('board');
+  } else {
+    Code.BOARD;
   }
   if (localStorage.getItem('lesson')) {
     document.getElementById('lessonSelect').value = localStorage.getItem('lesson');
+  }else {
+    Code.LESSON;
   }
 };
 
