@@ -65,9 +65,10 @@ Code.getLang = function () {
  */
 Code.getBoard = function () {
   var board = window.localStorage.board;
-  if (board === undefined || board === "") {
+  if (board === undefined || board == null || board === "") {
     // Default to nano.
     board = 'nano';
+    localStorage.setItem('board',board);
   }
   return board;
 };
@@ -78,9 +79,10 @@ Code.getBoard = function () {
  */
 Code.getLesson = function () {
   let lesson = localStorage.getItem('lesson');
-  if (lesson === undefined || lesson === "") {
+  if (lesson === undefined || lesson == null || lesson === "") {
     // Default to bot.
     lesson = 'bot';
+    localStorage.setItem('lesson', lesson);
   }
   return lesson;
 };
@@ -418,9 +420,9 @@ Code.init = function () {
     if (messageKey.indexOf('cat') == 0) {
       Blockly.Msg[messageKey.toUpperCase()] = MSG[messageKey];
     }
-  }
+  } 
 
-  var toolboxXml = Code.buildToolbox(Code.LESSON);
+  let toolboxXml = Code.buildToolbox();
 
   Code.workspace = Blockly.inject('content_blocks',
     {
@@ -523,13 +525,14 @@ Code.init = function () {
   // old init loadxml();
 };
 
-Code.buildToolbox = function (lesson) {
+Code.buildToolbox = function () {
   // Construct the toolbox XML, replacing translated variable names.
   // Bor or Racer ?? 
-  var toolboxText = document.getElementById(lesson + '_toolbox').outerHTML; // or ajax? ||
+  let lesson = Code.getLesson();
+  let toolboxText = document.getElementById(lesson + '_toolbox').outerHTML; // or ajax? ||
   toolboxText = toolboxText.replace(/(^|[^%]){(\w+)}/g,
     function (m, p1, p2) { return p1 + MSG[p2]; });
-  var toolboxXml = Blockly.Xml.textToDom(toolboxText);
+  let toolboxXml = Blockly.Xml.textToDom(toolboxText);
   return toolboxXml;
 }
 
@@ -617,14 +620,10 @@ Code.initLanguage = function () {
 
 Code.initSelects = function () {
   if (localStorage.getItem('board')) {
-    document.getElementById('boardSelect').value = localStorage.getItem('board');
-  } else {
-    Code.BOARD;
+    document.getElementById('boardSelect').value = Code.BOARD;
   }
   if (localStorage.getItem('lesson')) {
-    document.getElementById('lessonSelect').value = localStorage.getItem('lesson');
-  }else {
-    Code.LESSON;
+    document.getElementById('lessonSelect').value = Code.LESSON;
   }
 };
 
