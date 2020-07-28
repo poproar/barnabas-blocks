@@ -7,8 +7,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
       {
         "type": "field_image",
         "src": "images/wait.png",
-        "width": 64,
-        "height": 64,
+        "width": 32,
+        "height": 32,
         "alt": "*",
         "flipRtl": false
       },
@@ -91,8 +91,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
       {
         "type": "field_image",
         "src": "images/led.png",
-        "width": 64,
-        "height": 64,
+        "width": 32,
+        "height": 32,
         "alt": "Light Emitting Diode",
         "flipRtl": false
       },
@@ -126,8 +126,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
       {
         "type": "field_image",
         "src": "images/tone.png",
-        "width": 64,
-        "height": 64,
+        "width": 32,
+        "height": 32,
         "alt": "Buzzer",
         "flipRtl": false
       },
@@ -163,8 +163,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
       {
         "type": "field_image",
         "src": "images/notone.png",
-        "width": 64,
-        "height": 64,
+        "width": 32,
+        "height": 32,
         "alt": "No Buzzer",
         "flipRtl": false
       },
