@@ -111,7 +111,9 @@
             <td class="tabmin tab_collapse">&nbsp;</td>
             <td id="tab_arduino" class="taboff tab_collapse">Arduino</td>
             <td class="tabmin tab_collapse">&nbsp;</td>
-            <td id="tab_xml" class="taboff tab_collapse">XML</td>
+            <td id="tab_console" class="taboff tab_collapse">Console</td>
+            <td class="tabmin tab_collapse">&nbsp;</td>
+            <td id="tab_xml" class="taboff tab_collapse" style="display: none;">XML</td>
             <td class="tabmin">&nbsp;</td>
             <td id="tab_code" class="taboff">
               <select id="code_menu"></select>
@@ -137,8 +139,10 @@
     </tr>
   </table>
   <div id="content_blocks" class="content"></div>
-  <pre id="content_arduino" class="content prettyprint lang-cpp"></pre>
+  <textarea id="content_arduino" class="content prettyprint lang-cpp"></textarea>
   <textarea id="content_xml" class="content" wrap="off"></textarea>
+  <pre id="content_console" class="content prettyprint lang-cpp"></pre>
+
 
   <xml xmlns="https://developers.google.com/blockly/xml" id="racer_toolbox" style="display: none">
     <category name="Control" categorystyle="controls" >

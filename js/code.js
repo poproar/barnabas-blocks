@@ -234,14 +234,14 @@ Code.LESSON = Code.getLesson();
  * List of tab names.
  * @private
  */
-Code.TABS_ = ['blocks', 'arduino', 'xml'];
+Code.TABS_ = ['blocks', 'arduino', 'console', 'xml'];
 
 /**
  * List of tab names with casing, for display in the UI.
  * @private
  */
 Code.TABS_DISPLAY_ = [
-  'Blocks', 'Arduino', 'XML',
+  'Blocks', 'Arduino', 'Console', 'XML'
 ];
 
 Code.selected = 'blocks';
