@@ -10,11 +10,13 @@
  */
 'use strict';
 
+
 /**
  * Create a namespace for the application.
  */
 var Code = {};
 
+Code.COMPILE_URL = "https://compile.barnabasrobotics.com"
 /**
  * Lookup for names of supported languages.  Keys should be in ISO 639 format.
  */
@@ -338,6 +340,16 @@ Code.attemptCodeGeneration = function (generator) {
   var content = document.getElementById('content_' + Code.selected);
   content.textContent = '';
   if (Code.checkAllGeneratorFunctionsDefined(generator)) {
+    if (Code.workspace.getBlocksByType('controls_loop').length > 1) {
+      Blockly.alert(`You have more than one LOOP block!\n\nTry removing a block`);
+      let blk = Code.workspace.getBlocksByType('controls_loop')[0];
+      Blockly.Warning(blk);
+      // blk.addSelect();
+      // Blockly.Events.Ui(blk.id,'selected');
+      Code.workspace.zoomToFit();
+
+      Code.tabClick('blocks');
+    }
     var code = generator.workspaceToCode(Code.workspace);
     content.textContent = code;
     // Remove the 'prettyprinted' class, so that Prettify will recalculate.
@@ -488,7 +500,7 @@ Code.init = function () {
   Code.bindClick('newButton',
     function () { Code.discard(); Code.renderContent(); });
 
-  Code.bindClick('runButton', Code.runJS);
+  Code.bindClick('runButton', Code.getHex);
   Code.bindClick('saveButton', Code.save);
   // Disable the link button if page isn't backed by App Engine storage.
   var linkButton = document.getElementById('linkButton');
@@ -647,6 +659,130 @@ Code.initSelects = function () {
 //     alert(MSG['badCode'].replace('%1', e));
 //   }
 // };
+
+/**
+ * Send code to server for hex
+ * 
+ */
+Code.getHex = async function () {
+
+  let code = '';
+  if (Code.selected == 'blocks') {
+    code = Blockly.Arduino.workspaceToCode();
+  } else { // this should allow custom text edits
+    code = document.getElementById("content_arduino").value;
+  }
+
+  let board = Code.BOARD;
+  if (board == 'uno') {
+    var avr = 'arduino:avr:uno';
+  } else {
+    var avr = 'arduino:avr:nano:cpu=atmega328';
+  }
+
+  let data = { sketch: code, board: avr };
+
+
+  // console.log(JSON.stringify(data));
+  fetch(Code.COMPILE_URL + "/compile", { 
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    // mode: 'cors', // no-cors, *cors, same-origin
+    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    // credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    // redirect: 'follow', // manual, *follow, error
+    // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data)// body data type must match "Content-Type" header    // encodeURIComponent(JSON.stringify(data));
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log(data);
+      if (!data.success) {
+        console.warn(0, data.msg, true);
+        // // can only run below if arduino compile error I can still get response with garbage body
+        if (data.stderr.length > 0) {
+          let regex = /\/tmp\/chromeduino\-(.*?)\/chromeduino\-(.*?)\.ino\:/g;
+          let message = data.stderr.replace(regex, "");
+          console.error(message);
+          // upload_result(message, false)
+        }
+        return false;
+      } else {
+        // let hexstring = atob(data);
+        console.log("HEX:", atob(data.hex));
+      }
+    }
+  )
+  .catch(e => {
+    console.log("Fetch Error:", e);
+  });
+
+  // $.post(COMPILE_URL + "/compile", { sketch: code, board: avr }, function (data) {
+  //   // console.log(data);
+  //   console.warn(data.stdout, data.stderr, '\n\n');
+    // if (!data.success) {
+    //   console.warn(0, data.msg, true);
+    //   let regex = /\/tmp\/chromeduino\-(.*?)\/chromeduino\-(.*?)\.ino\:/g;
+    //   let message = data.stderr.replace(regex, "");
+    //   upload_result(message, false)
+
+    //   // // this code selects range of text
+    //   // const input = document.getElementById('content_arduino');  
+    //   // input.focus();
+    //   // input.setSelectionRange(2, 5);
+    //   return;
+    // }
+    // let hexstring = atob(data.hex);
+    // console.log("HEX:", hexstring);
+
+    // return hexstring;
+
+    // try {
+    //   let avrgirl = new AvrgirlArduino({
+    //     board: board,
+    //     debug: true
+    //   });
+  
+    //   avrgirl.flash(str2ab(hexstr), (error) => {
+    //     // gear.classList.remove('spinning');
+    //     // progress.textContent = "done!";
+    //     if (error) {
+    //       console.error(error);
+    //       upload_result(error, false);
+    //     } else {
+    //       console.info('done correctly.');
+    //       upload_result(data.stdout)
+    //     }
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    //   upload_result(error, false);
+    // }
+
+  // });
+};
+
+/**
+ * 
+ * @param {string} msg 
+ * @param {boolean} success 
+ */
+
+function upload_result(msg, success = true){
+  let icon = '';
+  let output = '';
+  if (success) {
+    icon = '<i class="material-icons" style="font-size:48px;color:green">check_circle</i>';
+  } else {
+    icon = '<i class="material-icons" style="font-size:48px;color:red">error</i>';
+  }
+  output = `<pre>${msg}</pre>`;
+  document.getElementById("arduino-msg").innerHTML = icon + output;
+  $('#arduino_return').openModal();
+}
 
 /**
  * Save blocks to local file.
