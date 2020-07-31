@@ -179,7 +179,7 @@ Blockly.Arduino.init = function(workspace) {
  */
 Blockly.Arduino.finish = function(code) {
   // Indent every line.
-  code = '  ' + code.replace(/\n/g, '\n  '); // comment?
+  // code = '  ' + code.replace(/\n/g, '\n  '); // comment?
   code = code.replace(/\n/g, '\n  ');
   code = code.replace(/\n\s+$/, '\n');
   code = '\n\n/***** OUTSIDE BLOCKS *****\n{\n' + code + '}\n** END OUTSIDE BLOCKS ********/';
@@ -192,7 +192,7 @@ Blockly.Arduino.finish = function(code) {
   } else {
     loop = '  ' + loop.replace(/\n/g, '\n  ');
     loop = loop.replace(/\n\s+$/, '\n');
-    loop = 'void loop() \n{\n' + loop + '\n}';
+    loop = 'void loop() \n{\n' + loop + '}';
   }
 
   // Convert the definitions dictionary into a list.
