@@ -342,14 +342,24 @@ Code.attemptCodeGeneration = function (generator) {
   if (Code.checkAllGeneratorFunctionsDefined(generator)) {
     if (Code.workspace.getBlocksByType('controls_loop').length > 1) {
       Blockly.alert(`You have more than one LOOP block!\n\nTry removing a block`);
-      let blk = Code.workspace.getBlocksByType('controls_loop')[0];
-      Blockly.Warning(blk);
-      // blk.addSelect();
-      // Blockly.Events.Ui(blk.id,'selected');
-      Code.workspace.zoomToFit();
-
+      let blks = Code.workspace.getBlocksByType('controls_loop');
+      let smallest = 999;
+      let identifier = 0;
+      for (const [key, value] of Object.entries(blks)) {
+        let size = 0;
+        if (value.childBlocks_.length) {
+          size = value.childBlocks_[0].childBlocks_.length;
+        }
+        if (size < smallest) {
+          smallest = size;
+          identifier = key; 
+        }
+      }
       Code.tabClick('blocks');
-    }
+      Blockly.alert(`This Block has the least amount of calls`);
+      blks[identifier].select();
+      Code.workspace.centerOnBlock(blks[identifier].id);
+    } 
     var code = generator.workspaceToCode(Code.workspace);
     content.textContent = code;
     // Remove the 'prettyprinted' class, so that Prettify will recalculate.
@@ -386,6 +396,12 @@ Code.checkAllGeneratorFunctionsDefined = function (generator) {
  * Initialize Blockly.  Called on page load.
  */
 Code.init = function () {
+  window.onclick = function (event) {
+    let modal = document.getElementById("arduinoOutput");
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
   Code.initSerial();
   // // set up clipboard 
   // var clipboard = new Clipboard('#copy-button');
@@ -500,7 +516,8 @@ Code.init = function () {
   Code.bindClick('newButton',
     function () { Code.discard(); Code.renderContent(); });
 
-  Code.bindClick('runButton', Code.getHex);
+  Code.bindClick('runButton', Code.flash);
+  Code.bindClick('compileButton', Code.compile);
   Code.bindClick('saveButton', Code.save);
   // Disable the link button if page isn't backed by App Engine storage.
   var linkButton = document.getElementById('linkButton');
@@ -558,12 +575,12 @@ Code.initSerial = function () {
     modal.style.display = "block";
 
     // Get the <span> element that closes the modal
-    let span = document.getElementsByClassName("close")[0];
+    // let span = document.getElementsByClassName("close")[0];
 
     // When the user clicks on <span> (x), close the modal
-    span.onclick = function () {
-      modal.style.display = "none";
-    }
+    // span.onclick = function () {
+    //   modal.style.display = "none";
+    // }
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function (event) {
@@ -664,15 +681,15 @@ Code.initSelects = function () {
  * Send code to server for hex
  * 
  */
-Code.getHex = async function () {
+Code.getHex = function (flash = false) {
 
   let code = '';
   if (Code.selected == 'blocks') {
     code = Blockly.Arduino.workspaceToCode();
   } else { // this should allow custom text edits
     code = document.getElementById("content_arduino").value;
-  }
-
+  } 
+  
   let board = Code.BOARD;
   if (board == 'uno') {
     var avr = 'arduino:avr:uno';
@@ -707,63 +724,55 @@ Code.getHex = async function () {
           let regex = /\/tmp\/chromeduino\-(.*?)\/chromeduino\-(.*?)\.ino\:/g;
           let message = data.stderr.replace(regex, "");
           console.error(message);
-          // upload_result(message, false)
+          upload_result(message, false)
         }
-        return false;
       } else {
-        // let hexstring = atob(data);
-        console.log("HEX:", atob(data.hex));
+        let hexstring = atob(data.hex);
+        return {'data': hexstring, 'msg': data.stdout};
       }
     }
   )
+  .then(hex => {
+    if (hex && flash) {
+      try {
+        let avrgirl = new AvrgirlArduino({
+          board: board,
+          debug: true
+        });
+    
+        avrgirl.flash(str2ab(hex.data), (error) => {
+          // gear.classList.remove('spinning');
+          // progress.textContent = "done!";
+          if (error) {
+            console.error("Flash ERROR:", error);
+            upload_result(error +'\n'+ hex.msg, false);
+          } else {
+            console.info('done correctly.');
+            upload_result(hex.msg)
+          }
+        });
+      } catch (error) {
+        console.error("AVR ERROR:", error);
+        upload_result(error, false);
+      }
+
+    } else {
+      console.log("HEX:", hex);
+      upload_result(hex.msg);
+    }
+  })
   .catch(e => {
     console.log("Fetch Error:", e);
   });
-
-  // $.post(COMPILE_URL + "/compile", { sketch: code, board: avr }, function (data) {
-  //   // console.log(data);
-  //   console.warn(data.stdout, data.stderr, '\n\n');
-    // if (!data.success) {
-    //   console.warn(0, data.msg, true);
-    //   let regex = /\/tmp\/chromeduino\-(.*?)\/chromeduino\-(.*?)\.ino\:/g;
-    //   let message = data.stderr.replace(regex, "");
-    //   upload_result(message, false)
-
-    //   // // this code selects range of text
-    //   // const input = document.getElementById('content_arduino');  
-    //   // input.focus();
-    //   // input.setSelectionRange(2, 5);
-    //   return;
-    // }
-    // let hexstring = atob(data.hex);
-    // console.log("HEX:", hexstring);
-
-    // return hexstring;
-
-    // try {
-    //   let avrgirl = new AvrgirlArduino({
-    //     board: board,
-    //     debug: true
-    //   });
-  
-    //   avrgirl.flash(str2ab(hexstr), (error) => {
-    //     // gear.classList.remove('spinning');
-    //     // progress.textContent = "done!";
-    //     if (error) {
-    //       console.error(error);
-    //       upload_result(error, false);
-    //     } else {
-    //       console.info('done correctly.');
-    //       upload_result(data.stdout)
-    //     }
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    //   upload_result(error, false);
-    // }
-
-  // });
 };
+
+Code.flash = function() {
+  Code.getHex(true);
+}
+
+Code.compile = function() {
+  Code.getHex();
+}
 
 /**
  * 
@@ -780,8 +789,17 @@ function upload_result(msg, success = true){
     icon = '<i class="material-icons" style="font-size:48px;color:red">error</i>';
   }
   output = `<pre>${msg}</pre>`;
-  document.getElementById("arduino-msg").innerHTML = icon + output;
-  $('#arduino_return').openModal();
+  // document.getElementById("responseType").innerHTML = icon;
+  document.getElementById("response").innerHTML = icon + output;
+  let modal = document.getElementById('arduinoOutput');
+  if (Code.selected == 'blocks') {
+    modal.style.marginLeft = (Code.workspace.getToolbox().width) + 'px';
+    modal.style.width = (Code.workspace.getToolbox().width - window.width) + 'px';
+  } else {
+    modal.style.marginLeft = '0px';
+    modal.style.width = (window.width) + 'px';
+  }
+  document.getElementById("arduinoOutput").style.display = "block";
 }
 
 /**
@@ -888,3 +906,25 @@ Blockly.Themes.Barnabas = Blockly.Theme.defineTheme('barnabas', {
   'startHats': true
 });
 
+/* Interprets an ArrayBuffer as UTF-8 encoded string data. */
+var ab2str = function (buf) {
+  var bufView = new Uint8Array(buf);
+  var encodedString = String.fromCharCode.apply(null, bufView);
+  if (verbose_logging) console.log(encodedString);
+  return decodeURIComponent(encodeURIComponent(encodedString));
+};
+
+/* Converts a string to UTF-8 encoding in a Uint8Array; returns the array buffer. */
+var str2ab = function (str) {
+  // var encodedString = unescape(encodeURIComponent(str));
+  var encodedString = str;
+  var bytes = new Uint8Array(encodedString.length);
+  for (var i = 0; i < encodedString.length; ++i) {
+      bytes[i] = encodedString.charCodeAt(i);
+  }
+  return bytes.buffer;
+};
+
+Code.close = function(parentModal) {
+  document.getElementById(parentModal).style.display = "none";
+}

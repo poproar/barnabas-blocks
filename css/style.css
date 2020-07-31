@@ -253,6 +253,10 @@ span select {
   animation-name: slideIn;
   animation-duration: 0.4s
 }
+.modal-sheet .modal-body {
+  text-align: left;
+  width: 80%;
+}
 
 
 /* Add Animation */
