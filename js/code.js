@@ -401,7 +401,7 @@ Code.checkRoots = function() {
     blocks[identifier].select();
     Code.workspace.centerOnBlock(blocks[identifier].id);
   } else if (roots < 1) {
-    console.log(Code.workspace.getToolbox().getFlyout().show(document.getElementById(lesson+'_controls')));
+    (Code.workspace.getToolbox().getFlyout().show(document.getElementById(lesson+'_controls')));
     Blockly.alert('YOU NEED A LOOP BLOCK');
   }
   return singleRoot;
@@ -479,7 +479,7 @@ Code.init = function () {
       media: './media/',
       rtl: rtl,
       toolbox: toolboxXml,
-      renderer: 'zelos',
+      // renderer: 'zelos',
       theme: 'barnabas',
       zoom:
       {
@@ -709,7 +709,6 @@ Code.getHex = function (flash = false) {
 
   let data = { sketch: code, board: avr };
 
-
   // console.log(JSON.stringify(data));
   fetch(Code.COMPILE_URL + "/compile", { 
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -726,7 +725,7 @@ Code.getHex = function (flash = false) {
   })
   .then(response => response.json())
   .then(data => {
-      console.log(data);
+      // console.log(data);
       if (!data.success) {
         console.warn(0, data.msg, true);
         // // can only run below if arduino compile error I can still get response with garbage body
@@ -772,7 +771,7 @@ Code.getHex = function (flash = false) {
     }
   })
   .catch(e => {
-    console.log("Fetch Error:", e);
+    console.error("Fetch Error:", e);
   });
 };
 
@@ -954,3 +953,5 @@ const getMethods = (obj) => {
   } while ((currentObj = Object.getPrototypeOf(currentObj)))
   return [...properties.keys()].filter(item => typeof obj[item] === 'function')
 }
+
+// console.log(getMethods(Blockly.Variables))
