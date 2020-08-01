@@ -282,21 +282,3 @@ Blockly.Arduino.scrub_ = function(block, code) {
   var nextCode = Blockly.Arduino.blockToCode(nextBlock);
   return commentCode + code + nextCode;
 };
-
-
-// move below after testing to own subfolder (these do exist)
-Blockly.Arduino.math_number = function() {
-  // Numeric value.
-  var code = window.parseFloat(this.getFieldValue('NUM'));
-  // -4.abs() returns -4 in Dart due to strange order of operation choices.
-  // -4 is actually an operator and a number.  Reflect this in the order.
-  var order = code < 0 ?
-      Blockly.Arduino.ORDER_UNARY_PREFIX : Blockly.Arduino.ORDER_ATOMIC;
-  return [code, order];
-};
-
-Blockly.Arduino.logic_boolean = function() {
-  // Boolean values true and false.
-  var code = (this.getFieldValue('BOOL') == 'TRUE') ? 'true' : 'false';
-  return [code, Blockly.Arduino.ORDER_ATOMIC];
-};
