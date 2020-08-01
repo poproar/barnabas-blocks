@@ -41,7 +41,7 @@ Blockly.Blocks['variables_get'] = {
     this.appendDummyInput()
       .appendField(Blockly.Msg.VARIABLES_GET_TITLE)
       .appendField(new Blockly.FieldDropdown(
-      Blockly.Variables.allTypes(),
+      Blockly.VariableMap.getVariableTypes(Blockly.mainWorkspace),
       this.typeChangedHandler), 'TYPE')
       .appendField(new Blockly.FieldVariable(
       Blockly.Msg.VARIABLES_GET_ITEM), 'VAR')
@@ -164,7 +164,7 @@ Blockly.Blocks['variables_set'] = {
       // TODO: Combine these messages instead of using concatenation.
       Blockly.Msg.VARIABLES_SET_TITLE + ' %1 %2' +
       Blockly.Msg.VARIABLES_SET_TAIL + ' %3',
-      ['TYPE', new Blockly.FieldDropdown(Blockly.Variables.allTypes(),
+      ['TYPE', new Blockly.FieldDropdown(Blockly.VariableMap.getVariableTypes(Blockly.mainWorkspace),
                                          this.typeChangedHandler)],
       ['VAR', new Blockly.FieldVariable(Blockly.Msg.VARIABLES_SET_ITEM,
                                         this.nameChangedHandler)],
