@@ -149,7 +149,7 @@
 
 
   <xml xmlns="https://developers.google.com/blockly/xml" id="racer_toolbox" style="display: none">
-    <category name="Control" categorystyle="controls" >
+    <category id="racer_controls" name="Controls" categorystyle="controls" >
       <block type="controls_setup" class="racer"></block>
       <block type="controls_wait">
         <value name="DELAY_TIME">
@@ -177,7 +177,7 @@
       <block type="controls_flow_statements" class="racer"></block>
       <category name="Subroutines" colour="70" custom="PROCEDURE" class="racer"></category>
     </category>
-    <category name="Tests" categorystyle="tests" class="racer">
+    <category id="racer_test" name="Tests" categorystyle="tests" class="racer">
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
       <block type="logic_negate"></block>
@@ -433,7 +433,7 @@
   </xml>
 
   <xml xmlns="https://developers.google.com/blockly/xml" id="bot_toolbox"   style="display: none">
-    <category name="Control" categorystyle="controls" >
+    <category id="bot_controls" name="Control" categorystyle="controls" >
       <block type="controls_loop"></block>
       <block type="controls_wait">
         <value name="DELAY_TIME">
@@ -456,7 +456,7 @@
         </value>
       </block>
     </category>
-    <category name="Lights" categorystyle="lights">
+    <category id="bot_lights" name="Lights" categorystyle="lights">
       <block type="lights_led">
         <value name="PIN">
           <block type="math_number">

@@ -339,27 +339,7 @@ Code.renderContent = function () {
 Code.attemptCodeGeneration = function (generator) {
   var content = document.getElementById('content_' + Code.selected);
   content.textContent = '';
-  if (Code.checkAllGeneratorFunctionsDefined(generator)) {
-    if (Code.workspace.getBlocksByType('controls_loop').length > 1) {
-      Blockly.alert(`You have more than one LOOP block!\n\nTry removing a block`);
-      let blks = Code.workspace.getBlocksByType('controls_loop');
-      let smallest = 999;
-      let identifier = 0;
-      for (const [key, value] of Object.entries(blks)) {
-        let size = 0;
-        if (value.childBlocks_.length) {
-          size = value.childBlocks_[0].childBlocks_.length;
-        }
-        if (size < smallest) {
-          smallest = size;
-          identifier = key; 
-        }
-      }
-      Code.tabClick('blocks');
-      Blockly.alert(`This Block has the least amount of calls`);
-      blks[identifier].select();
-      Code.workspace.centerOnBlock(blks[identifier].id);
-    } 
+  if (Code.checkAllGeneratorFunctionsDefined(generator) && Code.checkRoots()) {
     var code = generator.workspaceToCode(Code.workspace);
     content.textContent = code;
     // Remove the 'prettyprinted' class, so that Prettify will recalculate.
@@ -391,6 +371,41 @@ Code.checkAllGeneratorFunctionsDefined = function (generator) {
   }
   return valid;
 };
+
+Code.checkRoots = function() {
+
+  let lesson = Code.getLesson();
+  let blocks = Code.workspace.getBlocksByType('controls_loop');
+  if (lesson == 'racer') 
+    blocks = Code.workspace.getBlocksByType('controls_setup');
+  
+  let roots = blocks.length;
+  let singleRoot = roots == 1;
+
+  if (roots > 1) {
+    Blockly.alert(`You have more than one LOOP block!\n\nTry removing a block`);
+    let smallest = 999;
+    let identifier = 0;
+    for (const [key, value] of Object.entries(blocks)) {
+      let size = 0;
+      if (value.childBlocks_.length) {
+        size = value.childBlocks_[0].childBlocks_.length;
+      }
+      if (size < smallest) {
+        smallest = size;
+        identifier = key; 
+      }
+    }
+    Code.tabClick('blocks');
+    Blockly.alert(`This Block has the least amount of calls`);
+    blocks[identifier].select();
+    Code.workspace.centerOnBlock(blocks[identifier].id);
+  } else if (roots < 1) {
+    console.log(Code.workspace.getToolbox().getFlyout().show(document.getElementById(lesson+'_controls')));
+    Blockly.alert('YOU NEED A LOOP BLOCK');
+  }
+  return singleRoot;
+}
 
 /**
  * Initialize Blockly.  Called on page load.
@@ -683,12 +698,7 @@ Code.initSelects = function () {
  */
 Code.getHex = function (flash = false) {
 
-  let code = '';
-  if (Code.selected == 'blocks') {
-    code = Blockly.Arduino.workspaceToCode();
-  } else { // this should allow custom text edits
-    code = document.getElementById("content_arduino").value;
-  } 
+  let code = Code.getINO();
   
   let board = Code.BOARD;
   if (board == 'uno') {
@@ -767,13 +777,20 @@ Code.getHex = function (flash = false) {
 };
 
 Code.flash = function() {
-  Code.getHex(true);
+  if (Code.getINO().includes('void loop'))
+    Code.getHex(true);
 }
 
 Code.compile = function() {
-  Code.getHex();
+  if (Code.getINO().includes('void loop'))
+    Code.getHex();
 }
 
+Code.getINO = function() {
+  if (Code.selected == 'blocks' && Code.checkRoots()) 
+    return Blockly.Arduino.workspaceToCode() 
+    return document.getElementById("content_arduino").value;
+}
 /**
  * 
  * @param {string} msg 
@@ -927,4 +944,13 @@ var str2ab = function (str) {
 
 Code.close = function(parentModal) {
   document.getElementById(parentModal).style.display = "none";
+}
+
+const getMethods = (obj) => {
+  let properties = new Set()
+  let currentObj = obj
+  do {
+    Object.getOwnPropertyNames(currentObj).map(item => properties.add(item))
+  } while ((currentObj = Object.getPrototypeOf(currentObj)))
+  return [...properties.keys()].filter(item => typeof obj[item] === 'function')
 }
