@@ -479,7 +479,7 @@ Code.init = function () {
       media: './media/',
       rtl: rtl,
       toolbox: toolboxXml,
-      // renderer: 'zelos',
+      renderer: 'zelos',
       theme: 'barnabas',
       zoom:
       {
