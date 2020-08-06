@@ -81,6 +81,11 @@ Blockly.Arduino['boolean_hilo'] = function (block) {
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
+Blockly.Arduino['boolean_pressed'] = function (block) {
+  let code = (block.getFieldValue('BOOL') == 'HIGH') ? 'HIGH' : 'LOW';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
 Blockly.Arduino['lights_led'] = function (block) {
   let pin = Blockly.Arduino.valueToCode(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '13'
   let stat = Blockly.Arduino.valueToCode(block, 'STATUS', Blockly.Arduino.ORDER_ATOMIC) || 'HIGH'
@@ -130,9 +135,9 @@ Blockly.Arduino['sensors_button'] = function (block) {
   let pin = Blockly.Arduino.valueToCode(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '2';
   let stat = Blockly.Arduino.valueToCode(block, 'STATUS', Blockly.Arduino.ORDER_ATOMIC) || 'HIGH';
   if ((pin) > 0) {
-    Blockly.Arduino.setups_['setup_output_' + pin] = 'pinMode(' + pin + ', INPUT);';
+    Blockly.Arduino.setups_['setup_output_' + pin] = 'pinMode(' + pin + ', INPUT_PULLUP);';
   }
-  let code = 'digitalRead(' + pin + ', ' + stat + ');\n';
+  let code = 'digitalRead(' + pin + ')== ' + stat ;
   return code;
 };
 

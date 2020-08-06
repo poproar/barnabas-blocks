@@ -221,7 +221,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   },
   // button
   {
-    "type": "sensors_button",
+    "type": "sensors_buttonT",
     "message0": "BUTTON %1 pin# %2 status %3",
     "args0": [
       {
@@ -252,6 +252,38 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "colour": 180,
     "tooltip": "I am a button",
     "helpUrl": "http://www.arduino.cc/playground/ComponentLib/servo"
+  },
+  {
+    "type": "sensors_button",
+    "message0": "BUTTON %1 pin# %2 status %3",
+    "args0": [
+      {
+        "type": "field_image",
+        "src": "https://www.gstatic.com/codesite/ph/images/star_on.gif",
+        "width": 32,
+        "height": 32,
+        "alt": "Buzzer",
+        "flipRtl": false
+      },
+      {
+        "type": "input_value",
+        "name": "PIN",
+        "value": 2,
+        "min": 0,
+        "max": 13
+      },
+      {
+        "type": "input_value",
+        "name": "STATUS",
+        "check": "Boolean",
+        "align": "RIGHT"
+      }
+    ],
+    "inputsInline": false,
+    "output": "Boolean",
+    "colour": 180,
+    "helpUrl": "%{BKY_LOGIC_COMPARE_HELPURL}",
+    "extensions": ["logic_compare"]
   },
   // ultrasonic
   {
@@ -297,6 +329,17 @@ Blockly.Blocks['boolean_onoff'] = {
       this.setColour('#c6a0ec');
       this.appendDummyInput()
           .appendField(new Blockly.FieldDropdown([["On", "HIGH"], ["Off", "LOW"]]), 'BOOL')
+      this.setOutput(true, 'Boolean');
+      this.setTooltip('');
+  }
+};
+
+Blockly.Blocks['boolean_pressed'] = {
+  init: function () {
+      this.setHelpUrl('http://arduino.cc/en/Reference/Constants');
+      this.setColour('#c6a0ec');
+      this.appendDummyInput()
+          .appendField(new Blockly.FieldDropdown([["Pressed", "HIGH"], ["Not Pressed", "LOW"]]), 'BOOL')
       this.setOutput(true, 'Boolean');
       this.setTooltip('');
   }
@@ -593,4 +636,20 @@ Blockly.Blocks['variables_set'] = {
   customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
   typeChangedHandler: Blockly.Blocks['variables_get'].typeChangedHandler,
   nameChangedHandler: Blockly.Blocks['variables_get'].nameChangedHandler
+};
+Blockly.Blocks['inout_digital_read'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.INOUT_DIGITAL_READ_HELPURL);
+    this.setColour(Blockly.Blocks.inout.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.INOUT_DIGITAL_READ_APPENDTEXT_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.INOUT_DIGITAL_READ_APPENDTEXT_PULLUP);
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.INOUT_OFF, "INPUT"], [Blockly.Msg.INOUT_ON, "INPUT_PULLUP"]]), 'INPUT_MODE');
+    this.setInputsInline(true);
+    this.setOutput(true, 'Boolean');
+    this.setTooltip(Blockly.Msg.INOUT_DIGITAL_READ_TOOLTIP);
+  }
 };
