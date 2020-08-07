@@ -787,13 +787,19 @@ Code.getHex = function (flash = false) {
 };
 
 Code.flash = function() {
-  if (Code.getINO().includes('void loop'))
+  if (Code.getINO().includes('void loop')){
     Code.getHex(true);
+  } else {
+    console.error("Missing VOID LOOP");
+  }
 }
 
 Code.compile = function() {
-  if (Code.getINO().includes('void loop'))
+  if (Code.getINO().includes('void loop')) {
     Code.getHex();
+  } else {
+    console.error("Missing VOID LOOP");
+  }
 }
 
 Code.getINO = function() {
