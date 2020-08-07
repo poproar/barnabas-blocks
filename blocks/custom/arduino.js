@@ -219,36 +219,67 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "tooltip": "Move between 0~180 degree",
     "helpUrl": "http://www.arduino.cc/playground/ComponentLib/servo"
   },
+  // DC Motor
+  {
+    "type": "motors_dc",
+    "message0": "DC MOTOR %1 pin# %2 value %3",
+    "args0": [
+      {
+        "type": "field_image",
+        "src": "images/servo.png",
+        "width": 64,
+        "height": 64,
+        "alt": "Blue Motor",
+        "flipRtl": false
+      },
+      {
+        "type": "input_value",
+        "name": "PIN",
+        "value": 0,
+        "min": 0,
+        "max": 6
+      },
+      {
+        "type": "input_value",
+        "name": "VALUE",
+        "check": "Number",
+        "align": "RIGHT",
+        "min": 0,
+        "max": 255      }
+    ],
+    "inputsInline": false,
+    "previousStatement": null,
+    "nextStatement": null,
+    "colour": 230,
+    "tooltip": "analogWrite",
+    "helpUrl": "http://www.arduino.cc/playground/ComponentLib/servo",
+    "extensions": ['test_max']
+  },
   // button
   {
-    "type": "sensors_buttonT",
-    "message0": "BUTTON %1 pin# %2 status %3",
+    "type": "boolean_button",
+    "message0": "BUTTON %1 pin# %2",
     "args0": [
       {
         "type": "field_image",
         "src": "https://www.gstatic.com/codesite/ph/images/star_on.gif",
         "width": 32,
         "height": 32,
-        "alt": "Buzzer",
+        "alt": "Button",
         "flipRtl": false
       },
       {
-        "type": "input_value",
+        "type": "field_number",
         "name": "PIN",
         "value": 2,
         "min": 0,
         "max": 13
-      },
-      {
-        "type": "input_value",
-        "name": "STATUS",
-        "check": "Boolean",
-        "align": "RIGHT"
       }
     ],
-    "inputsInline": false,
-    "previousStatement": null,
-    "nextStatement": null,
+    // "inputsInline": false,
+    // "previousStatement": null,
+    // "nextStatement": null,
+    "output": "Boolean",
     "colour": 180,
     "tooltip": "I am a button",
     "helpUrl": "http://www.arduino.cc/playground/ComponentLib/servo"
@@ -448,208 +479,8 @@ Blockly.Blocks['serial_println'] = {
   }
 };
 
-Blockly.Blocks['variables_get'] = {
-  /**
-   * Block for variable getter.
-   * @this Blockly.Block
-   */
-  init: function() {
-    this.setHelpUrl(Blockly.Msg.VARIABLES_GET_HELPURL);
-    this.setColour(Blockly.Msg["VARIABLES_HUE"]);
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.VARIABLES_GET_TITLE)
-      .appendField(new Blockly.FieldDropdown(
-      Blockly.VariableMap.getVariableTypes(Blockly.mainWorkspace),
-      this.typeChangedHandler), 'TYPE')
-      .appendField(new Blockly.FieldVariable(
-      Blockly.Msg.VARIABLES_GET_ITEM), 'VAR')
-      .appendField(Blockly.Msg.VARIABLES_GET_TAIL);
-    this.setOutput(true);
-    this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
-    this.contextMenuMsg_ = Blockly.Msg.VARIABLES_GET_CREATE_SET;
-    this.contextMenuType_ = 'variables_set';
-  },
-  /**
-   * Notification that all the properties have been applied
-   * and we're ready to go!
-   */
-  postInit: function() {
-    var name = this.getFieldValue('VAR');
-    var type = Blockly.Variables.typeOf(name,Blockly.mainWorkspace);
-    if (type) this.setType(type);
-  },
-  /**
-   * Return all variables referenced by this block.
-   * @return {!Array.<string>} List of variable names.
-   * @this Blockly.Block
-   */
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  /**
-   * Notification that a variable is requesting it's type
-   * @param {string} name The name of the variable query
-   * @return {string} The type of the variable with the given name
-   * (or undefined if this block isn't for that variable)
-   */
-  typeOf: function(name){
-    if (Blockly.Names.equals(name, this.getFieldValue('VAR'))) {
-      return this.getFieldValue('TYPE');
-    }
-    else return undefined;
-  },
-  /**
-   * Notification that a variable changed type
-   * If the name matches this blocks variable name, rename it.
-   * @param {string} name The name of the variable to change type
-   * @param {string} type The new type of the variable
-   * @this Blockly.Block
-   */
-  changeType: function(name, type) {
-    if (Blockly.Names.equals(name, this.getFieldValue('VAR'))) {
-      this.setType(type);
-    }
-  },
-  /**
-   * Changes the type of this block
-   * @param {string} type The new type for the block
-   */
-  setType: function(type) {
-    var targetConnection = this.outputConnection.targetConnection;
-    if (targetConnection && !targetConnection.acceptsType(type)) {
-      this.unplug();
-    }
-    this.setFieldValue(type, 'TYPE');
-    this.changeOutput(type);
-  },
-  /**
-   * Notification that a variable is renaming.
-   * If the name matches one of this block's variables, rename it.
-   * @param {string} oldName Previous name of variable.
-   * @param {string} newName Renamed variable.
-   * @this Blockly.Block
-   */
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-      this.setFieldValue(newName, 'VAR');
-    }
-  },
-  /**
-   * Add menu option to create getter/setter block for this setter/getter.
-   * @param {!Array} options List of menu options to add to.
-   * @this Blockly.Block
-   */
-  customContextMenu: function(options) {
-    var option = {enabled: true};
-    var name = this.getFieldValue('VAR');
-    option.text = this.contextMenuMsg_.replace('%1', name);
-    var xmlField = goog.dom.createDom('field', null, name);
-    xmlField.setAttribute('name', 'VAR');
-    var xmlBlock = goog.dom.createDom('block', null, xmlField);
-    xmlBlock.setAttribute('type', this.contextMenuType_);
-    option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
-    options.push(option);
-  },
-  /**
-   * The function called when the type dropdown is changed
-   * @param {string} type The type that the dropdown changed to
-   */
-  typeChangedHandler: function(type){
-    var self = this.sourceBlock_;
-    var name = self.getFieldValue('VAR');
-    Blockly.Variables.changeType(name, type, Blockly.mainWorkspace);
-  },
-  /**
-   * The function called when the name dropdown is changed
-   * @param {string} text The name that the dropdown changed to
-   */
-  nameChangedHandler: function(newName){
-    var self = this.sourceBlock_;
-    var type = Blockly.Variables.typeOf(newName, Blockly.mainWorkspace);
-    if (type) self.setType(type);
-  }
-};
-
-Blockly.Blocks['variables_set'] = {
-  /**
-   * Block for variable setter.
-   * @this Blockly.Block
-   */
-  init: function() {
-    this.setHelpUrl(Blockly.Msg.VARIABLES_SET_HELPURL);
-    this.setColour(BBlockly.Msg["VARIABLES_HUE"]);
-    this.interpolateMsg(
-      // TODO: Combine these messages instead of using concatenation.
-      Blockly.Msg.VARIABLES_SET_TITLE + ' %1 %2' +
-      Blockly.Msg.VARIABLES_SET_TAIL + ' %3',
-      ['TYPE', new Blockly.FieldDropdown(Blockly.VariableMap.getVariableTypes(Blockly.mainWorkspace),
-                                         this.typeChangedHandler)],
-      ['VAR', new Blockly.FieldVariable(Blockly.Msg.VARIABLES_SET_ITEM,
-                                        this.nameChangedHandler)],
-      ['VALUE', null, Blockly.ALIGN_RIGHT],
-      Blockly.ALIGN_RIGHT);
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
-    this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
-    this.contextMenuType_ = 'variables_get';
-  },
-  /**
-   * Notification that all the properties have been applied
-   * and we're ready to go!
-   */
-  postInit: function(){
-    var name = this.getFieldValue('VAR');
-    var type = Blockly.Variables.typeOf(name,Blockly.mainWorkspace);
-    if (type) this.setType(type);
-  },
-  /**
-   * Return all variables referenced by this block.
-   * @return {!Array.<string>} List of variable names.
-   * @this Blockly.Block
-   */
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  /**
-   * Changes the type of this block
-   * @param {string} type The new type for the block
-   */
-  setType: function(type) {
-    this.setFieldValue(type, 'TYPE');
-    this.getInput('VALUE').setCheck(type);
-  },
-  /**
-   * Notification that a variable is renaming.
-   * If the name matches one of this block's variables, rename it.
-   * @param {string} oldName Previous name of variable.
-   * @param {string} newName Renamed variable.
-   * @this Blockly.Block
-   */
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-      this.setFieldValue(newName, 'VAR');
-    }
-  },
-  typeOf: Blockly.Blocks['variables_get'].typeOf,
-  changeType: Blockly.Blocks['variables_get'].changeType,
-  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
-  typeChangedHandler: Blockly.Blocks['variables_get'].typeChangedHandler,
-  nameChangedHandler: Blockly.Blocks['variables_get'].nameChangedHandler
-};
-Blockly.Blocks['inout_digital_read'] = {
-  init: function() {
-    this.setHelpUrl(Blockly.Msg.INOUT_DIGITAL_READ_HELPURL);
-    this.setColour(Blockly.Blocks.inout.HUE);
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.INOUT_DIGITAL_READ_APPENDTEXT_PIN)
-      .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.INOUT_DIGITAL_READ_APPENDTEXT_PULLUP);
-    this.appendDummyInput()
-      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.INOUT_OFF, "INPUT"], [Blockly.Msg.INOUT_ON, "INPUT_PULLUP"]]), 'INPUT_MODE');
-    this.setInputsInline(true);
-    this.setOutput(true, 'Boolean');
-    this.setTooltip(Blockly.Msg.INOUT_DIGITAL_READ_TOOLTIP);
-  }
-};
+Blockly.Extensions.register('test_max',
+function() {
+  // this refers to the block that the extension is being run on
+  console.log('running test_max:',this);
+});

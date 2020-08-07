@@ -28,39 +28,39 @@ goog.provide('Blockly.Arduino.logic');
 goog.require('Blockly.Arduino');
 
 
-Blockly.Arduino.controls_if = function() {
+Blockly.Arduino['controls_if'] = function(block) {
   // If/elseif/else condition.
   var n = 0;
-  var argument = Blockly.Arduino.valueToCode(this, 'IF' + n,
+  var argument = Blockly.Arduino.valueToCode(block, 'IF' + n,
       Blockly.Arduino.ORDER_NONE) || 'false';
-  var branch = Blockly.Arduino.statementToCode(this, 'DO' + n);
+  var branch = Blockly.Arduino.statementToCode(block, 'DO' + n);
   var code = 'if (' + argument + ') {\n' + branch + '\n}';
-  for (n = 1; n <= this.elseifCount_; n++) {
-    argument = Blockly.Arduino.valueToCode(this, 'IF' + n,
+  for (n = 1; n <= block.elseifCount_; n++) {
+    argument = Blockly.Arduino.valueToCode(block, 'IF' + n,
       Blockly.Arduino.ORDER_NONE) || 'false';
-    branch = Blockly.Arduino.statementToCode(this, 'DO' + n);
+    branch = Blockly.Arduino.statementToCode(block, 'DO' + n);
     code += ' else if (' + argument + ') {\n' + branch + '}';
   }
-  if (this.elseCount_) {
-    branch = Blockly.Arduino.statementToCode(this, 'ELSE');
+  if (block.elseCount_) {
+    branch = Blockly.Arduino.statementToCode(block, 'ELSE');
     code += ' else {\n' + branch + '\n}';
   }
   return code + '\n';
 };
 
-Blockly.Arduino.logic_compare = function() {
+Blockly.Arduino['logic_compare'] = function(block) {
   // Comparison operator.
-  var mode = this.getFieldValue('OP');
-  var operator = Blockly.Arduino.logic_compare.OPERATORS[mode];
+  var mode = block.getFieldValue('OP');
+  var operator = Blockly.Arduino['logic_compare'].OPERATORS[mode];
   var order = (operator == '==' || operator == '!=') ?
       Blockly.Arduino.ORDER_EQUALITY : Blockly.Arduino.ORDER_RELATIONAL;
-  var argument0 = Blockly.Arduino.valueToCode(this, 'A', order) || '0';
-  var argument1 = Blockly.Arduino.valueToCode(this, 'B', order) || '0';
+  var argument0 = Blockly.Arduino.valueToCode(block, 'A', order) || '0';
+  var argument1 = Blockly.Arduino.valueToCode(block, 'B', order) || '0';
   var code = argument0 + ' ' + operator + ' ' + argument1;
   return [code, order];
 };
 
-Blockly.Arduino.logic_compare.OPERATORS = {
+Blockly.Arduino['logic_compare'].OPERATORS = {
   EQ: '==',
   NEQ: '!=',
   LT: '<',
@@ -69,32 +69,32 @@ Blockly.Arduino.logic_compare.OPERATORS = {
   GTE: '>='
 };
 
-Blockly.Arduino.logic_operation = function() {
+Blockly.Arduino['logic_operation'] = function(block) {
   // Operations 'and', 'or'.
-  var operator = (this.getFieldValue('OP') == 'AND') ? '&&' : '||';
+  var operator = (block.getFieldValue('OP') == 'AND') ? '&&' : '||';
   var order = (operator == '&&') ? Blockly.Arduino.ORDER_LOGICAL_AND :
       Blockly.Arduino.ORDER_LOGICAL_OR;
-  var argument0 = Blockly.Arduino.valueToCode(this, 'A', order) || 'false';
-  var argument1 = Blockly.Arduino.valueToCode(this, 'B', order) || 'false';
+  var argument0 = Blockly.Arduino.valueToCode(block, 'A', order) || 'false';
+  var argument1 = Blockly.Arduino.valueToCode(block, 'B', order) || 'false';
   var code = argument0 + ' ' + operator + ' ' + argument1;
   return [code, order];
 };
 
-Blockly.Arduino.logic_negate = function() {
+Blockly.Arduino['logic_negate'] = function(block) {
   // Negation.
   var order = Blockly.Arduino.ORDER_UNARY_PREFIX;
-  var argument0 = Blockly.Arduino.valueToCode(this, 'BOOL', order) || 'false';
+  var argument0 = Blockly.Arduino.valueToCode(block, 'BOOL', order) || 'false';
   var code = '!' + argument0;
   return [code, order];
 };
 
-Blockly.Arduino.logic_boolean = function() {
+Blockly.Arduino['logic_boolean'] = function(block) {
   // Boolean values true and false.
-  var code = (this.getFieldValue('BOOL') == 'TRUE') ? 'true' : 'false';
+  var code = (block.getFieldValue('BOOL') == 'TRUE') ? 'true' : 'false';
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
-Blockly.Arduino.logic_null = function() {
+Blockly.Arduino['logic_null'] = function(block) {
   var code = 'NULL';
   return [code ,Blockly.Arduino.ORDER_ATOMIC];
 };

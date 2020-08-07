@@ -234,14 +234,14 @@ Code.LESSON = Code.getLesson();
  * List of tab names.
  * @private
  */
-Code.TABS_ = ['blocks', 'arduino', 'console', 'xml'];
+Code.TABS_ = ['blocks', 'arduino', 'monitor', 'xml'];
 
 /**
  * List of tab names with casing, for display in the UI.
  * @private
  */
 Code.TABS_DISPLAY_ = [
-  'Blocks', 'Arduino', 'Console', 'XML'
+  'Blocks', 'Arduino', 'Serial Monitor', 'XML'
 ];
 
 Code.selected = 'blocks';
@@ -330,6 +330,8 @@ Code.renderContent = function () {
   if (typeof PR == 'object') {
     PR.prettyPrint();
   }
+  var btnMonitor = document.getElementById('monitorButton');
+  btnMonitor.style.display = (content.id == 'content_monitor') ? "":"none";
 };
 
 /**
@@ -404,6 +406,10 @@ Code.checkRoots = function() {
     (Code.workspace.getToolbox().getFlyout().show(document.getElementById(lesson+'_controls')));
     Blockly.alert('YOU NEED A LOOP BLOCK');
   }
+  // move this to own function
+  if (!Code.workspace.allInputsFilled()) {
+    Blockly.alert('Some blocks are missing...');
+  }
   return singleRoot;
 }
 
@@ -476,7 +482,7 @@ Code.init = function () {
         colour: '#aaa',
         snap: true
       },
-      media: './media/',
+      media: '../../media/',
       rtl: rtl,
       toolbox: toolboxXml,
       renderer: 'zelos',
@@ -534,6 +540,8 @@ Code.init = function () {
   Code.bindClick('runButton', Code.flash);
   Code.bindClick('compileButton', Code.compile);
   Code.bindClick('saveButton', Code.save);
+  Code.bindClick('monitorButton', Code.monitor);
+
   // Disable the link button if page isn't backed by App Engine storage.
   var linkButton = document.getElementById('linkButton');
   if ('BlocklyStorage' in window) {
@@ -659,6 +667,7 @@ Code.initLanguage = function () {
   document.getElementById('runButton').title = MSG['runTooltip'];
   // document.getElementById('trashButton').title = MSG['trashTooltip'];
   document.getElementById('newButton').title = MSG['trashTooltip'];
+  // document.getElementById('monitorButton').title = MSG['trashTooltip'];
 
 };
 
@@ -818,6 +827,8 @@ function upload_result(msg, success = true){
   document.getElementById("arduinoOutput").style.display = "block";
 }
 
+Code.monitor = connectUSB;
+
 /**
  * Save blocks to local file.
  * better include Blob and FileSaver for browser compatibility
@@ -853,9 +864,11 @@ Code.discard = function () {
 };
 
 // Load the Code demo's language strings.
-document.write('<script src="./js/lang/msg/' + Code.LANG + '.js"></script>\n');
+// document.write('<script src="./js/lang/msg/' + Code.LANG + '.js"></script>\n');
 // Load Blockly's language strings.
-document.write('<script src="./js/lang/' + Code.LANG + '.js"></script>\n');
+// document.write('<script src="./js/lang/' + Code.LANG + '.js"></script>\n');
+document.write('<script src="../../msg/js/' + Code.LANG + '.js"></script>\n');
+
 
 window.addEventListener('load', Code.init);
 
@@ -955,3 +968,28 @@ const getMethods = (obj) => {
 }
 
 // console.log(getMethods(Blockly.Variables))
+
+var MSG = {
+  title: "Code",
+  blocks: "Blocks",
+  linkTooltip: "Save and link to blocks.",
+  runTooltip: "Run the program defined by the blocks in the workspace.",
+  badCode: "Program error:\n%1",
+  timeout: "Maximum execution iterations exceeded.",
+  trashTooltip: "Discard all blocks.",
+  catLogic: "Logic",
+  catLoops: "Loops",
+  catMath: "Math",
+  catText: "Text",
+  catLists: "Lists",
+  catColour: "Colour",
+  catVariables: "Variables",
+  catFunctions: "Functions",
+  listVariable: "list",
+  textVariable: "text",
+  httpRequestError: "There was a problem with the request.",
+  linkAlert: "Share your blocks with this link:\n\n%1",
+  hashError: "Sorry, '%1' doesn't correspond with any saved program.",
+  xmlError: "Could not load your saved file. Perhaps it was created with a different version of Blockly?",
+  badXml: "Error parsing XML:\n%1\n\nSelect 'OK' to abandon your changes or 'Cancel' to further edit the XML."
+};

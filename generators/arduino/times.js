@@ -28,36 +28,36 @@ goog.provide('Blockly.Arduino.times');
 
 goog.require('Blockly.Arduino');
 
-Blockly.Arduino['delay'] = function() {
-  var delay_time = this.getFieldValue('DELAY_TIME');
+Blockly.Arduino['delay'] = function(block) {
+  var delay_time = block.getFieldValue('DELAY_TIME');
   var code = 'delay(' + delay_time + ');\n';
   return code;
 };
 
-Blockly.Arduino['delay_custom'] = function() {
-  var delay_time = Blockly.Arduino.valueToCode(this, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC) || '1000'
+Blockly.Arduino['delay_custom'] = function(block) {
+  var delay_time = Blockly.Arduino.valueToCode(block, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC) || '1000'
   var code = 'delay(' + delay_time + ');\n';
   return code;
 };
 
-Blockly.Arduino['delayMicroseconds_custom'] = function() {
-  var delay_time = Blockly.Arduino.valueToCode(this, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC) || '1000'
+Blockly.Arduino['delayMicroseconds_custom'] = function(block) {
+  var delay_time = Blockly.Arduino.valueToCode(block, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC) || '1000'
   var code = 'delayMicroseconds(' + delay_time + ');\n';
   return code;
 };
 
-Blockly.Arduino['delayMicroseconds'] = function() {
-  var delay_time = this.getFieldValue('DELAY_TIME');
+Blockly.Arduino['delayMicroseconds'] = function(block) {
+  var delay_time = block.getFieldValue('DELAY_TIME');
   var code = 'delayMicroseconds(' + delay_time + ');\n';
   return code;
 };
 
-Blockly.Arduino['millis'] = function() {
+Blockly.Arduino['millis'] = function(block) {
   var code = 'millis()';
   return [code,Blockly.Arduino.ORDER_ATOMIC];
 };
 
-Blockly.Arduino['micros'] = function() {
+Blockly.Arduino['micros'] = function(block) {
   var code = 'micros()';
   return [code,Blockly.Arduino.ORDER_ATOMIC];
 };

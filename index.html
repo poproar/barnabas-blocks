@@ -7,13 +7,11 @@
   <title>Barnabas Blocks</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css">
-  <script src="/storage.js"></script>
+  <!-- <script src="/storage.js"></script> -->
   <script src="./js/blockly_compressed.js"></script>
   <script src="./js/blocks_compressed.js"></script>
+  <script src="./js/arduino_compressed.js"></script>
   <script src="./blocks/custom/arduino.js"></script>
-  <script src="./generators/arduino.js"></script>
-  <script src="./generators/arduino/control.js"></script>
-  <script src="./js/avrgirl-arduino.global.js"></script>
 </head>
 <body>
   <div id="notSupported" class="modal">
@@ -94,17 +92,17 @@
         <button id="linkButton" class="notext" title="...">
           <img src='../../media/1x1.gif' class="link icon21">
         </button>
-        <button id="runButton" class="ready" title="...">
+        <button id="runButton" class="" title="...">
           UPLOAD
           <!-- <img src='../../media/1x1.gif' class="run icon21"> -->
         </button>
-        <button id="compileButton" class="primary" title="...">
+        <button id="compileButton" class="" title="...">
           COMPILE
           <!-- <img src='../../media/1x1.gif' class="run icon21"> -->
         </button>
       </td>
       <td class="farSide">
-        
+
       </td>
     </tr>
     <tr>
@@ -115,7 +113,7 @@
             <td class="tabmin tab_collapse">&nbsp;</td>
             <td id="tab_arduino" class="taboff tab_collapse">Arduino</td>
             <td class="tabmin tab_collapse">&nbsp;</td>
-            <td id="tab_console" class="taboff tab_collapse">Console</td>
+            <td id="tab_monitor" class="taboff tab_collapse">Monitor</td>
             <td class="tabmin tab_collapse">&nbsp;</td>
             <td id="tab_xml" class="taboff tab_collapse" style="display: none;">XML</td>
             <td class="tabmin">&nbsp;</td>
@@ -123,6 +121,9 @@
               <select id="code_menu"></select>
             </td>
             <td class="tabmax">
+              <button id="monitorButton" class="" title="Click to Connect the SERIAL MONITOR">
+                CONNECT
+              </button>
               <!-- <button id="trashButton" class="notext" title="...">
                 <img src='../../media/1x1.gif' class="trash icon21">
               </button>
@@ -145,7 +146,7 @@
   <div id="content_blocks" class="content"></div>
   <textarea id="content_arduino" class="content prettyprint lang-cpp"></textarea>
   <textarea id="content_xml" class="content" wrap="off"></textarea>
-  <pre id="content_console" class="content prettyprint lang-cpp"></pre>
+  <pre id="content_monitor" class="content prettyprint lang-cpp"></pre>
 
 
   <xml xmlns="https://developers.google.com/blockly/xml" id="racer_toolbox" style="display: none">
@@ -173,6 +174,12 @@
         </value>
       </block>
       <block type="controls_if" colour="60"></block>
+      <block type="controls_if">
+        <mutation else="1"></mutation>
+      </block>
+      <block type="controls_if">
+        <mutation elseif="1" else="1"></mutation>
+      </block>
       <block type="controls_whileUntil" class="racer"></block>
       <block type="controls_flow_statements" class="racer"></block>
       <category name="Subroutines" colour="70" custom="PROCEDURE" class="racer"></category>
@@ -278,86 +285,15 @@
       <block type="boolean_onoff"></block>
       <block type="boolean_hilo"></block>
       <block type="logic_boolean"></block>
+      <block type="text"></block>
     </category>
     <category name="Communication"  categorystyle="comm">
-      <block type="serial_println"></block>
-    </category>
-    <category name="%{BKY_CATTEXT}" colour="%{BKY_TEXTS_HUE}" class="racer">
-      <block type="text"></block>
-      <block type="text_join"></block>
-      <block type="text_append">
-        <value name="TEXT">
+      <block type="serial_println">
+        <value name="CONTENT">
           <block type="text"></block>
         </value>
       </block>
-      <block type="text_length">
-        <value name="VALUE">
-          <block type="text">
-            <field name="TEXT">abc</field>
-          </block>
-        </value>
-      </block>
-      <block type="text_isEmpty">
-        <value name="VALUE">
-          <block type="text">
-            <field name="TEXT"></field>
-          </block>
-        </value>
-      </block>
-      <block type="text_indexOf">
-        <value name="VALUE">
-          <block type="variables_get">
-            <field name="VAR">{textVariable}</field>
-          </block>
-        </value>
-        <value name="FIND">
-          <block type="text">
-            <field name="TEXT">abc</field>
-          </block>
-        </value>
-      </block>
-      <block type="text_charAt">
-        <value name="VALUE">
-          <block type="variables_get">
-            <field name="VAR">{textVariable}</field>
-          </block>
-        </value>
-      </block>
-      <block type="text_getSubstring">
-        <value name="STRING">
-          <block type="variables_get">
-            <field name="VAR">{textVariable}</field>
-          </block>
-        </value>
-      </block>
-      <block type="text_changeCase">
-        <value name="TEXT">
-          <block type="text">
-            <field name="TEXT">abc</field>
-          </block>
-        </value>
-      </block>
-      <block type="text_trim">
-        <value name="TEXT">
-          <block type="text">
-            <field name="TEXT">abc</field>
-          </block>
-        </value>
-      </block>
-      <block type="text_print">
-        <value name="TEXT">
-          <block type="text">
-            <field name="TEXT">abc</field>
-          </block>
-        </value>
-      </block>
-      <block type="text_prompt_ext">
-        <value name="TEXT">
-          <block type="text">
-            <field name="TEXT">abc</field>
-          </block>
-        </value>
-      </block>
+      <block type="text"></block>
     </category>
     <category name="Lights" categorystyle="lights">
       <block type="lights_led">
@@ -405,15 +341,25 @@
           </block>
         </value>
       </block>
-    </category>
-    <category name="Sensors" categorystyle="sensors" class="racer ">
-      <block type="sensors_button">
+      <block type="motors_dc">
         <value name="PIN">
           <block type="math_number">
-            <field name="NUM">2</field>
+            <field name="NUM">0</field>
           </block>
         </value>
-        <value name="STATUS">
+        <value name="VALUE">
+          <block type="math_number">
+            <field name="NUM">255</field>
+          </block>
+        </value>
+      </block>
+    </category>
+    <category name="Sensors" categorystyle="sensors" class="racer ">
+      <block type="logic_compare" inputsInline="false">
+        <value name="A">
+          <block type="boolean_button"></block>
+        </value>
+        <value name="B">
           <block type="boolean_pressed"></block>
         </value>
       </block>
@@ -504,9 +450,11 @@
       </block>
     </category>
   </xml>
-
+  
+  <script src="./js/avrgirl-arduino.global.js"></script>
   <script src="./js/FileSaver.min.js"></script>
   <script src="./js/file_handling.js"></script>
+  <script src="./js/usb_serial.js"></script>
   <script src="./js/code.js"></script>
 </body>
 </html>

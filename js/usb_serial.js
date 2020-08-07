@@ -24,7 +24,7 @@ let outputDone;
 let inputStream;
 let outputStream;
 
-const log = document.getElementById('content_log');
+const monitor = document.getElementById('content_monitor');
 
 /**
  * @name connect
@@ -55,7 +55,7 @@ async function connect() {
     // .pipeThrough(new TransformStream(new JSONTransformer()));
 
   reader = inputStream.getReader();
-  log.textContent = 'Connected!...\n'
+  monitor.textContent = 'Connected!...\n'
   readLoop();
 
 }
@@ -85,7 +85,7 @@ async function disconnect() {
   // CODELAB: Close the port.
   await port.close();
   port = null;
-  log.textContent += '\nDisconnected';
+  monitor.textContent += '\nDisconnected';
   console.log('Port closed');
 }
 
@@ -96,18 +96,20 @@ async function disconnect() {
  */
 async function connectUSB() {
     if ('serial' in navigator) {
-        let btnConnect = document.getElementById('btnConnect');
+        let btnMonitor = document.getElementById('monitorButton');
 
         if (port) {
             await disconnect();
-            btnConnect.innerText = 'Connect Monitor';
-            btnConnect.classList.add('red');
+            btnMonitor.innerText = 'CONNECT';
+            btnMonitor.classList.remove('ready');
+            btnMonitor.title = 'Click to CONNECT';
             return;
           }
           // CODELAB: Add connect code here.
           await connect();
-          btnConnect.innerText = 'Monitor Connected';
-          btnConnect.classList.remove('red');
+          btnMonitor.innerText = 'CONNECTED';
+          btnMonitor.classList.add('ready');
+          btnMonitor.title = 'Click to DISCONNECT';
     } else {
         console.error('Browser does not support Web Serial');
     }
@@ -123,8 +125,8 @@ async function readLoop() {
   while (true) {
     const { value, done } = await reader.read();
     if (value) {
-      log.textContent += value + '';
-      log.scrollTop = log.scrollHeight;
+      monitor.textContent += value + '';
+      monitor.scrollTop = monitor.scrollHeight;
       // console.log(value + '\n');
     }
     if (done) {

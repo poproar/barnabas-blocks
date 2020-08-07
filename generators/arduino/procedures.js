@@ -28,30 +28,30 @@ goog.provide('Blockly.Arduino.procedures');
 goog.require('Blockly.Arduino');
 
 
-Blockly.Arduino.procedures_defreturn = function() {
+Blockly.Arduino['procedures_defreturn'] = function(block) {
   // Define a procedure with a return value.
-  var funcName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('NAME'),
+  var funcName = Blockly.Arduino.variableDB_.getName(block.getFieldValue('NAME'),
       Blockly.Procedures.NAME_TYPE);
-  var branch = Blockly.Arduino.statementToCode(this, 'STACK');
+  var branch = Blockly.Arduino.statementToCode(block, 'STACK');
   if (Blockly.Arduino.INFINITE_LOOP_TRAP) {
     branch = Blockly.Arduino.INFINITE_LOOP_TRAP.replace(/%1/g,
-        '\'' + this.id + '\'') + branch;
+        '\'' + block.id + '\'') + branch;
   }
-  var returnValue = Blockly.Arduino.valueToCode(this, 'RETURN',
+  var returnValue = Blockly.Arduino.valueToCode(block, 'RETURN',
       Blockly.Arduino.ORDER_NONE) || '';
-  var type = this.getFieldValue('TYPE');
+  var type = block.getFieldValue('TYPE');
   if (returnValue) {
     returnValue = '  return ' + returnValue + ';\n';
   }
   var returnType = returnValue ? type : 'void';
   var args = [];
-  for (var x = 0; x < this.arguments_.length; x++) {
-    args[x] = Blockly.Arduino.variableDB_.getName(this.arguments_[x],
+  for (var x = 0; x < block.arguments_.length; x++) {
+    args[x] = Blockly.Arduino.variableDB_.getName(block.arguments_[x],
         Blockly.Variables.NAME_TYPE);
   }
   var code = returnType + ' ' + funcName + '(' + args.join(', ') + ') {\n' +
       branch + returnValue + '}\n';
-  code = Blockly.Arduino.scrub_(this, code);
+  code = Blockly.Arduino.scrub_(block, code);
   Blockly.Arduino.definitions_[funcName] = code;
   return null;
 };
@@ -60,39 +60,39 @@ Blockly.Arduino.procedures_defreturn = function() {
 // a procedure with a return value.
 Blockly.Arduino.procedures_defnoreturn = Blockly.Arduino.procedures_defreturn;
 
-Blockly.Arduino.procedures_callreturn = function() {
+Blockly.Arduino['procedures_callreturn'] = function(block) {
   // Call a procedure with a return value.
-  var funcName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('NAME'),
+  var funcName = Blockly.Arduino.variableDB_.getName(block.getFieldValue('NAME'),
       Blockly.Procedures.NAME_TYPE);
   var args = [];
-  for (var x = 0; x < this.arguments_.length; x++) {
-    args[x] = Blockly.Arduino.valueToCode(this, 'ARG' + x,
+  for (var x = 0; x < block.arguments_.length; x++) {
+    args[x] = Blockly.Arduino.valueToCode(block, 'ARG' + x,
         Blockly.Arduino.ORDER_NONE) || 'null';
   }
   var code = funcName + '(' + args.join(', ') + ')';
   return [code, Blockly.Arduino.ORDER_UNARY_POSTFIX];
 };
 
-Blockly.Arduino.procedures_callnoreturn = function() {
+Blockly.Arduino['procedures_callnoreturn'] = function(block) {
   // Call a procedure with no return value.
-  var funcName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('NAME'),
+  var funcName = Blockly.Arduino.variableDB_.getName(block.getFieldValue('NAME'),
       Blockly.Procedures.NAME_TYPE);
   var args = [];
-  for (var x = 0; x < this.arguments_.length; x++) {
-    args[x] = Blockly.Arduino.valueToCode(this, 'ARG' + x,
+  for (var x = 0; x < block.arguments_.length; x++) {
+    args[x] = Blockly.Arduino.valueToCode(block, 'ARG' + x,
         Blockly.Arduino.ORDER_NONE) || 'null';
   }
   var code = funcName + '(' + args.join(', ') + ');\n';
   return code;
 };
 
-Blockly.Arduino.procedures_ifreturn = function() {
+Blockly.Arduino['procedures_ifreturn'] = function(block) {
   // Conditionally return value from a procedure.
-  var condition = Blockly.Arduino.valueToCode(this, 'CONDITION',
+  var condition = Blockly.Arduino.valueToCode(block, 'CONDITION',
       Blockly.Arduino.ORDER_NONE) || 'false';
   var code = 'if (' + condition + ') {\n';
-  if (this.hasReturnValue_) {
-    var value = Blockly.Arduino.valueToCode(this, 'VALUE',
+  if (block.hasReturnValue_) {
+    var value = Blockly.Arduino.valueToCode(block, 'VALUE',
         Blockly.Arduino.ORDER_NONE) || 'null';
     code += '  return ' + value + ';\n';
   } else {

@@ -23,14 +23,16 @@
  */
 'use strict';
 
-// goog.provide('Blockly.Arduino');
+goog.provide('Blockly.Arduino');
 
-// goog.require('Blockly.Generator');
+goog.require('Blockly.Generator');
+goog.require('Blockly.utils.global');
+goog.require('Blockly.utils.string');
 
 
 /**
  * Arduino code generator.
- * @type !Blockly.Generator
+ * @type {!Blockly.Generator}
  */
 Blockly.Arduino = new Blockly.Generator('Arduino');
 

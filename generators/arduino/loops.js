@@ -27,18 +27,18 @@ goog.provide('Blockly.Arduino.loops');
 
 goog.require('Blockly.Arduino');
 
-Blockly.Arduino.controls_for = function() {
+Blockly.Arduino['controls_for'] = function(block) {
   // For loop.
   var variable0 = Blockly.Arduino.variableDB_.getName(
-      this.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-  var argument0 = Blockly.Arduino.valueToCode(this, 'FROM',
+      block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+  var argument0 = Blockly.Arduino.valueToCode(block, 'FROM',
       Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
-  var argument1 = Blockly.Arduino.valueToCode(this, 'TO',
+  var argument1 = Blockly.Arduino.valueToCode(block, 'TO',
       Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
-  var branch = Blockly.Arduino.statementToCode(this, 'DO');
+  var branch = Blockly.Arduino.statementToCode(block, 'DO');
   if (Blockly.Arduino.INFINITE_LOOP_TRAP) {
     branch = Blockly.Arduino.INFINITE_LOOP_TRAP.replace(/%1/g,
-        '\'' + this.id + '\'') + branch;
+        '\'' + block.id + '\'') + branch;
   }
   var code;
   if (argument0.match(/^-?\d+(\.\d+)?$/) &&
