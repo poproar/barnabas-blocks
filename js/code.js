@@ -482,7 +482,7 @@ Code.init = function () {
         colour: '#aaa',
         snap: true
       },
-      media: '../../media/',
+      media: '../media/',
       rtl: rtl,
       toolbox: toolboxXml,
       renderer: 'zelos',
