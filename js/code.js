@@ -525,6 +525,8 @@ Code.init = function () {
         if (prev === 'racer') {
           Code.discard();
         }
+        onresize();
+
       }
     });
 
@@ -659,7 +661,7 @@ Code.initLanguage = function () {
 
   // Inject language strings.
   document.title += ' ' + MSG['title'];
-  document.getElementById('title').textContent = document.getElementById('lessonSelect').value;//MSG['title'];
+  document.getElementById('title').textContent = Code.getLesson() || document.getElementById('lessonSelect').value;//MSG['title'];
   document.getElementById('board').textContent = document.getElementById('boardSelect').value;//MSG['title'];
   document.getElementById('tab_blocks').textContent = MSG['blocks'];
 
