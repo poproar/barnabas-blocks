@@ -70,7 +70,7 @@ Code.getBoard = function () {
   if (board === undefined || board == null || board === "") {
     // Default to nano.
     board = 'nano';
-    localStorage.setItem('board',board);
+    localStorage.setItem('board', board);
   }
   return board;
 };
@@ -331,7 +331,7 @@ Code.renderContent = function () {
     PR.prettyPrint();
   }
   var btnMonitor = document.getElementById('monitorButton');
-  btnMonitor.style.display = (content.id == 'content_monitor') ? "":"none";
+  btnMonitor.style.display = (content.id == 'content_monitor') ? "" : "none";
 };
 
 /**
@@ -374,13 +374,13 @@ Code.checkAllGeneratorFunctionsDefined = function (generator) {
   return valid;
 };
 
-Code.checkRoots = function() {
+Code.checkRoots = function () {
 
   let lesson = Code.getLesson();
   let blocks = Code.workspace.getBlocksByType('controls_loop');
-  if (lesson == 'racer') 
+  if (lesson == 'racer')
     blocks = Code.workspace.getBlocksByType('controls_setup');
-  
+
   let roots = blocks.length;
   let singleRoot = roots == 1;
 
@@ -395,7 +395,7 @@ Code.checkRoots = function() {
       }
       if (size < smallest) {
         smallest = size;
-        identifier = key; 
+        identifier = key;
       }
     }
     Code.tabClick('blocks');
@@ -403,13 +403,13 @@ Code.checkRoots = function() {
     blocks[identifier].select();
     Code.workspace.centerOnBlock(blocks[identifier].id);
   } else if (roots < 1) {
-    (Code.workspace.getToolbox().getFlyout().show(document.getElementById(lesson+'_controls')));
+    (Code.workspace.getToolbox().getFlyout().show(document.getElementById(lesson + '_controls')));
     Blockly.alert('YOU NEED A LOOP BLOCK');
   }
   // move this to own function
-  if (!Code.workspace.allInputsFilled()) {
-    Blockly.alert('Some blocks are missing...');
-  }
+  // if (!Code.workspace.allInputsFilled()) {
+  //   Blockly.alert('Some blocks are missing...');
+  // }
   return singleRoot;
 }
 
@@ -469,7 +469,7 @@ Code.init = function () {
     if (messageKey.indexOf('cat') == 0) {
       Blockly.Msg[messageKey.toUpperCase()] = MSG[messageKey];
     }
-  } 
+  }
 
   let toolboxXml = Code.buildToolbox();
 
@@ -506,24 +506,27 @@ Code.init = function () {
   }
 
   // old init -->   
-  auto_save_and_restore_blocks(); 
+  auto_save_and_restore_blocks();
   // setCheckbox();
 
   Code.bindClick('boardSelect',
-    function () { localStorage.setItem('board', this.value);
-    document.getElementById('board').textContent = document.getElementById('boardSelect').value;//MSG['title'];
-  });
+    function () {
+      localStorage.setItem('board', this.value);
+      document.getElementById('board').textContent = document.getElementById('boardSelect').value;//MSG['title'];
+    });
 
   Code.bindClick('lessonSelect',
     function () {
       let prev = Code.getLesson();
       localStorage.setItem('lesson', this.value);
-      if(prev != this.value) {
+      if (prev != this.value) {
         document.getElementById('title').textContent = document.getElementById('lessonSelect').value;//MSG['title'];
         let newTree = Code.buildToolbox(this.value);
         Code.workspace.updateToolbox(newTree);
         if (prev === 'racer') {
           Code.discard();
+        } else {
+          Code.switchLoops();
         }
         onresize();
 
@@ -710,7 +713,7 @@ Code.initSelects = function () {
 Code.getHex = function (flash = false) {
 
   let code = Code.getINO();
-  
+
   let board = Code.BOARD;
   if (board == 'uno') {
     var avr = 'arduino:avr:uno';
@@ -721,7 +724,7 @@ Code.getHex = function (flash = false) {
   let data = { sketch: code, board: avr };
 
   // console.log(JSON.stringify(data));
-  fetch(Code.COMPILE_URL + "/compile", { 
+  fetch(Code.COMPILE_URL + "/compile", {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     // mode: 'cors', // no-cors, *cors, same-origin
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -734,8 +737,8 @@ Code.getHex = function (flash = false) {
     // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
     body: JSON.stringify(data)// body data type must match "Content-Type" header    // encodeURIComponent(JSON.stringify(data));
   })
-  .then(response => response.json())
-  .then(data => {
+    .then(response => response.json())
+    .then(data => {
       // console.log(data);
       if (!data.success) {
         console.warn(0, data.msg, true);
@@ -748,53 +751,53 @@ Code.getHex = function (flash = false) {
         }
       } else {
         let hexstring = atob(data.hex);
-        return {'data': hexstring, 'msg': data.stdout};
+        return { 'data': hexstring, 'msg': data.stdout };
       }
     }
-  )
-  .then(hex => {
-    if (hex && flash) {
-      try {
-        let avrgirl = new AvrgirlArduino({
-          board: board,
-          debug: true
-        });
-    
-        avrgirl.flash(str2ab(hex.data), (error) => {
-          // gear.classList.remove('spinning');
-          // progress.textContent = "done!";
-          if (error) {
-            console.error("Flash ERROR:", error);
-            upload_result(error +'\n'+ hex.msg, false);
-          } else {
-            console.info('done correctly.');
-            upload_result(hex.msg)
-          }
-        });
-      } catch (error) {
-        console.error("AVR ERROR:", error);
-        upload_result(error, false);
-      }
+    )
+    .then(hex => {
+      if (hex && flash) {
+        try {
+          let avrgirl = new AvrgirlArduino({
+            board: board,
+            debug: true
+          });
 
-    } else {
-      console.log("HEX:", hex);
-      upload_result(hex.msg);
-    }
-  })
-  .catch(e => {
-    console.error("Fetch Error:", e);
-  });
+          avrgirl.flash(str2ab(hex.data), (error) => {
+            // gear.classList.remove('spinning');
+            // progress.textContent = "done!";
+            if (error) {
+              console.error("Flash ERROR:", error);
+              upload_result(error + '\n' + hex.msg, false);
+            } else {
+              console.info('done correctly.');
+              upload_result(hex.msg)
+            }
+          });
+        } catch (error) {
+          console.error("AVR ERROR:", error);
+          upload_result(error, false);
+        }
+
+      } else {
+        console.log("HEX:", hex);
+        upload_result(hex.msg);
+      }
+    })
+    .catch(e => {
+      console.error("Fetch Error:", e);
+    });
 };
 
-Code.flash = function() {
-  if (Code.getINO().includes('void loop')){
+Code.flash = function () {
+  if (Code.getINO().includes('void loop')) {
     Code.getHex(true);
   } else {
     console.error("Missing VOID LOOP");
   }
 }
 
-Code.compile = function() {
+Code.compile = function () {
   if (Code.getINO().includes('void loop')) {
     Code.getHex();
   } else {
@@ -802,18 +805,38 @@ Code.compile = function() {
   }
 }
 
-Code.getINO = function() {
-  if (Code.selected == 'blocks' && Code.checkRoots()) 
-    return Blockly.Arduino.workspaceToCode() 
-    return document.getElementById("content_arduino").value;
+Code.getINO = function () {
+  if (Code.selected == 'blocks' && Code.checkRoots())
+    return Blockly.Arduino.workspaceToCode()
+  return document.getElementById("content_arduino").value;
 }
+
+Code.switchLoops = function () {
+  let racerLoop = Code.workspace.newBlock('controls_setup');
+  racerLoop.initSvg();
+  racerLoop.render();
+
+  let botloop = Code.workspace.getBlocksByType('controls_loop')[0];
+  let content = botloop.getInputTargetBlock('LOOP');
+
+  botloop.getInput('LOOP').connection.disconnect();
+
+
+  let chcon = content.previousConnection;
+  let racerConnection = racerLoop.getInput('LOOP').connection;
+  racerConnection.connect(chcon);
+
+  botloop.dispose();
+  Code.workspace.centerOnBlock(racerLoop.id);
+}
+
 /**
  * 
  * @param {string} msg 
  * @param {boolean} success 
  */
 
-function upload_result(msg, success = true){
+function upload_result(msg, success = true) {
   let icon = '';
   let output = '';
   if (success) {
@@ -824,14 +847,14 @@ function upload_result(msg, success = true){
   output = `<pre>${msg}</pre>`;
   // document.getElementById("responseType").innerHTML = icon;
   document.getElementById("response").innerHTML = icon + output;
-  let modal = document.getElementById('arduinoOutput');
-  if (Code.selected == 'blocks') {
-    modal.style.marginLeft = (Code.workspace.getToolbox().width) + 'px';
-    modal.style.width = (Code.workspace.getToolbox().width - window.width) + 'px';
-  } else {
-    modal.style.marginLeft = '0px';
-    modal.style.width = (window.width) + 'px';
-  }
+  // let modal = document.getElementById('arduinoOutput');
+  // if (Code.selected == 'blocks') {
+  //   modal.style.marginLeft = (Code.workspace.getToolbox().width) + 'px';
+  //   modal.style.width = (Code.workspace.getToolbox().width - window.width) + 'px';
+  // } else {
+  //   modal.style.marginLeft = '0px';
+  //   modal.style.width = (window.width) + 'px';
+  // }
   document.getElementById("arduinoOutput").style.display = "block";
 }
 
@@ -841,7 +864,7 @@ Code.monitor = connectUSB;
  * Save blocks to local file.
  * better include Blob and FileSaver for browser compatibility
  */
-Code.save = function() {
+Code.save = function () {
   var xml = Blockly.Xml.workspaceToDom(Code.workspace);
   var data = Blockly.Xml.domToText(xml);
   var fileName = window.prompt('What would you like to name your file?', 'myBlocks');
@@ -851,10 +874,10 @@ Code.save = function() {
   // builder.append(data);
   // saveAs(builder.getBlob('text/plain;charset=utf-8'), 'blockduino.xml');
   console.log("saving blob");
-  if(fileName){
-    var blob = new Blob([data], {type: 'text/xml'});
+  if (fileName) {
+    var blob = new Blob([data], { type: 'text/xml' });
     saveAs(blob, fileName + ".xml");
-  } 
+  }
 };
 
 /**
@@ -957,12 +980,12 @@ var str2ab = function (str) {
   var encodedString = str;
   var bytes = new Uint8Array(encodedString.length);
   for (var i = 0; i < encodedString.length; ++i) {
-      bytes[i] = encodedString.charCodeAt(i);
+    bytes[i] = encodedString.charCodeAt(i);
   }
   return bytes.buffer;
 };
 
-Code.close = function(parentModal) {
+Code.close = function (parentModal) {
   document.getElementById(parentModal).style.display = "none";
 }
 

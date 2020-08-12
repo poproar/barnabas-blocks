@@ -233,7 +233,7 @@ span select {
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 9999999999; /* Sit on top */
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
@@ -261,7 +261,7 @@ span select {
 
 .modal-sheet {
   position: fixed;
-  z-index: 999;
+  z-index: 99999999999;
   bottom: 0;
   background-color: #fefefe;
   width: 100%;
@@ -272,7 +272,21 @@ span select {
 }
 .modal-sheet .modal-body {
   text-align: left;
-  width: 80%;
+  width: 100%;
+}
+
+.closeT {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeText:hover,
+.closeText:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 
