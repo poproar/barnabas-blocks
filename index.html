@@ -16,42 +16,11 @@
   <link rel='icon' href='./favicon.ico' type='image/x-icon'/ >
 </head>
 <body>
-  <div id="notSupported" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <span class="close" onclick='Code.close("notSupported")'>&times;</span>
-        <h2>Can not access your <span id="board">...</span></h2>
-      </div>
-      <div class="modal-body">
-        Sorry, <b>Web Serial</b> is not flagged "supported" in this browser, make sure you're
-        running MS Edge or Chrome 78 or later and have enabled the
-        <code style="white-space: nowrap;">#enable-experimental-web-platform-features</code> flag in
-        <code>chrome://flags</code>
-      </div>
-      <div class="modal-footer" style="text-align: right;">
-        <a href="http://" class="" target="_blank"
-          rel="noopener noreferrer">How to enable Experimental
-          Flags</a>
-      </div>
-    </div>
-  </div>
-
-  <div id="arduinoOutput" class="modal">
-    <div class="modal-sheet">
-      <div class="modal-body" id="response">
-        ...
-      </div>
-      <div class="modal-footer">
-        <span class="" onclick='Code.close("arduinoOutput")'>Close</span>
-      </div>
-      
-    </div>
-  </div>
   
   <table width="100%" height="100%">
     <tr id="titleRow">
       <td class="pageTitle">
-        <img style="top: 6px; position: relative;" src="./media/barney.svg" alt="bbot" width="40px">
+        <img style="top: 6px; position: relative;" src="./images/barney.svg" alt="bbot" width="40px">
         Barnabas&rlm; Blocks - 
         <span id="title">...</span>
       </td>
@@ -302,7 +271,7 @@
       <block type="lights_led">
         <value name="PIN">
           <block type="math_number">
-            <field name="NUM">7</field>
+            <field name="NUM">1</field>
           </block>
         </value>
         <value name="STATUS">
@@ -314,7 +283,7 @@
       <block type="sounds_tone">
         <value name="PIN">
           <block type="math_number">
-            <field name="NUM">6</field>
+            <field name="NUM">1</field>
           </block>
         </value>
         <value name="FREQ">
@@ -326,7 +295,7 @@
       <block type="sounds_noTone">
         <value name="PIN">
           <block type="math_number">
-            <field name="NUM">6</field>
+            <field name="NUM">1</field>
           </block>
         </value>
       </block>
@@ -335,7 +304,7 @@
       <block type="motors_servo">
         <value name="PIN">
           <block type="math_number">
-            <field name="NUM">6</field>
+            <field name="NUM">1</field>
           </block>
         </value>
         <value name="DEGREE">
@@ -369,12 +338,12 @@
       <block type="sensors_sonic">
         <value name="ECHO">
           <block type="math_number">
-            <field name="NUM">3</field>
+            <field name="NUM">0</field>
           </block>
         </value>
         <value name="TRIGGER">
           <block type="math_number">
-            <field name="NUM">4</field>
+            <field name="NUM">1</field>
           </block>
         </value>
       </block>
@@ -409,7 +378,7 @@
       <block type="lights_led">
         <value name="PIN">
           <block type="math_number">
-            <field name="NUM">7</field>
+            <field name="NUM">1</field>
           </block>
         </value>
         <value name="STATUS">
@@ -421,7 +390,7 @@
       <block type="sounds_tone">
         <value name="PIN">
           <block type="math_number">
-            <field name="NUM">6</field>
+            <field name="NUM">1</field>
           </block>
         </value>
         <value name="FREQ">
@@ -433,7 +402,7 @@
       <block type="sounds_noTone">
         <value name="PIN">
           <block type="math_number">
-            <field name="NUM">6</field>
+            <field name="NUM">1</field>
           </block>
         </value>
       </block>
@@ -453,6 +422,37 @@
       </block>
     </category>
   </xml>
+
+  <div id="notSupported" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close" onclick='Code.close("notSupported")'>&times;</span>
+        <h2>Can not access your <span id="board">...</span></h2>
+      </div>
+      <div class="modal-body">
+        Sorry, <b>Web Serial</b> is not flagged "supported" in this browser, make sure you're
+        running MS Edge or Chrome 78 or later and have enabled the
+        <code style="white-space: nowrap;">#enable-experimental-web-platform-features</code> flag in
+        <code>chrome://flags</code>
+      </div>
+      <div class="modal-footer" style="text-align: right;">
+        <a href="http://" class="" target="_blank"
+          rel="noopener noreferrer">How to enable Experimental
+          Flags</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="arduinoOutput" class="modal">
+    <div class="modal-sheet">
+      <div class="modal-body" id="response">
+        ...
+      </div>
+      <div class="modal-footer">
+        <span class="closeText" onclick='Code.close("arduinoOutput")'>Close</span>
+      </div>
+    </div>
+  </div>
   
   <script src="./js/avrgirl-arduino.global.js"></script>
   <script src="./js/FileSaver.min.js"></script>
