@@ -2,16 +2,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // wait
   {
     "type": "controls_wait",
-    "message0": "WAIT %1 seconds %2",
+    "message0": "WAIT seconds %1",
     "args0": [
-      {
-        "type": "field_image",
-        "src": "images/wait.png",
-        "width": 32,
-        "height": 32,
-        "alt": "*",
-        "flipRtl": false
-      },
       {
         "type": "input_value",
         "name": "DELAY_TIME",
@@ -258,16 +250,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // button
   {
     "type": "boolean_button",
-    "message0": "BUTTON %1 pin# %2",
+    "message0": "BUTTON pin# %1",
     "args0": [
-      {
-        "type": "field_image",
-        "src": "https://www.gstatic.com/codesite/ph/images/star_on.gif",
-        "width": 32,
-        "height": 32,
-        "alt": "Button",
-        "flipRtl": false
-      },
       {
         "type": "field_number",
         "name": "PIN",
@@ -368,7 +352,7 @@ Blockly.Blocks['boolean_onoff'] = {
 Blockly.Blocks['boolean_pressed'] = {
   init: function () {
       this.setHelpUrl('http://arduino.cc/en/Reference/Constants');
-      this.setColour('#c6a0ec');
+      this.setColour(180);
       this.appendDummyInput()
           .appendField(new Blockly.FieldDropdown([["Pressed", "HIGH"], ["Not Pressed", "LOW"]]), 'BOOL')
       this.setOutput(true, 'Boolean');
