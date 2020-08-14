@@ -90,6 +90,27 @@ Code.getLesson = function () {
 };
 
 /**
+ * Get the editor status of this user from storage.
+ * @return {string} User's editor.
+ */
+Code.getEditor = function () {
+  let editor = localStorage.getItem('editor');
+  if (editor === undefined || editor == null || editor === "") {
+    editor = 'blocks';
+    localStorage.setItem('editor', editor);
+  }
+  return editor;
+};
+
+Code.setEditor = function () {
+  let editor = localStorage.getItem('editor');
+  if (editor == 'blocks') {
+    localStorage.setItem('editor', 'editor');
+  } else
+    localStorage.setItem('editor', 'blocks');
+};
+
+/**
  * Is the current language (Code.LANG) an RTL language?
  * @return {boolean} True if RTL, false if LTR.
  */
@@ -231,20 +252,25 @@ Code.BOARD = Code.getBoard();
 Code.LESSON = Code.getLesson();
 
 /**
+ * Editor Status.
+ * @type {Boolean}
+ */
+Code.EDITOR = Code.getEditor();
+/**
  * List of tab names.
  * @private
  */
-Code.TABS_ = ['blocks', 'arduino', 'monitor', 'xml'];
+Code.TABS_ = ['blocks', 'arduino', 'monitor', 'xml', 'editor'];
 
 /**
  * List of tab names with casing, for display in the UI.
  * @private
  */
 Code.TABS_DISPLAY_ = [
-  'Blocks', 'Arduino', 'Serial Monitor', 'XML'
+  'Blocks', 'Arduino', 'Serial Monitor', 'XML', 'Editor'
 ];
 
-Code.selected = 'blocks';
+Code.selected = 'blocks'; //Code.EDITOR;
 
 /**
  * Switch the visible pane when a tab is clicked.
@@ -301,6 +327,11 @@ Code.tabClick = function (clickedName) {
   } else {
     codeMenuTab.className = 'tabon';
   }
+  // if (clickedName == 'monitor') {
+
+  // } else if (isConnected()= false) {
+
+  // }
   // Sync the menu's value with the clicked tab value if needed.
   var codeMenu = document.getElementById('code_menu');
   for (var i = 0; i < codeMenu.options.length; i++) {
@@ -340,10 +371,12 @@ Code.renderContent = function () {
  */
 Code.attemptCodeGeneration = function (generator) {
   var content = document.getElementById('content_' + Code.selected);
-  content.textContent = '';
+  // content.textContent = '';
+  content.value = '';
   if (Code.checkAllGeneratorFunctionsDefined(generator) && Code.checkRoots()) {
     var code = generator.workspaceToCode(Code.workspace);
-    content.textContent = code;
+    // content.textContent = code;
+    content.value = code;
     // Remove the 'prettyprinted' class, so that Prettify will recalculate.
     content.className = content.className.replace('prettyprinted', '');
   }
@@ -529,10 +562,8 @@ Code.init = function () {
           Code.switchLoops();
         }
         onresize();
-
       }
     });
-
 
   Code.tabClick(Code.selected);
 
@@ -545,6 +576,7 @@ Code.init = function () {
   Code.bindClick('runButton', Code.flash);
   Code.bindClick('compileButton', Code.compile);
   Code.bindClick('saveButton', Code.save);
+  Code.bindClick('editButton', Code.editText);
   Code.bindClick('monitorButton', Code.monitor);
 
   // Disable the link button if page isn't backed by App Engine storage.
@@ -570,7 +602,7 @@ Code.init = function () {
       // Prevent clicks on child codeMenu from triggering a tab click.
       return;
     }
-    Code.changeCodingLanguage();
+    Code.changeCodingLanguage();  
   });
 
   onresize();
@@ -808,7 +840,7 @@ Code.compile = function () {
 Code.getINO = function () {
   if (Code.selected == 'blocks' && Code.checkRoots())
     return Blockly.Arduino.workspaceToCode()
-  return document.getElementById("content_arduino").value;
+  return document.getElementById("content_arduino").innerHTML;
 }
 
 Code.switchLoops = function () {
@@ -879,6 +911,56 @@ Code.save = function () {
     saveAs(blob, fileName + ".xml");
   }
 };
+
+/**
+ * Save blocks to local file.
+ * better include Blob and FileSaver for browser compatibility
+ */
+Code.editText = function () {
+  var editButton = document.getElementById("editButton");
+  var textarea = document.getElementById("content_arduino");
+  var blocksTab = document.getElementById('tab_blocks');//className = 'taboff hide';
+  var arduinoTab = document.getElementById('tab_arduino');//className = 'taboff hide';
+  // var editorTab = document.getElementById('tab_editor');//className = 'taboff hide';
+  let editor = Code.getEditor();
+
+    // onresize();
+    if (editor == 'blocks') {
+      Code.setEditor();
+      editButton.innerHTML="BLOCKS"
+      blocksTab.classList.add("hide");
+      textarea.readOnly = false;
+      // arduinoTab.classList.toggle("hide");
+      // editorTab.classList.remove("hide");
+      Code.tabClick('arduino');
+    }
+    else if (confirm("Going back to blocks will remove any custom edits\n" + 
+                      "Do you wish to continue?")){
+      Code.setEditor();
+      editButton.innerHTML="EDIT TEXT"
+      blocksTab.classList.remove("hide");
+      // arduinoTab.classList.toggle("hide");
+      // editorTab.classList.add("hide");
+      textarea.readOnly = true;
+      Code.tabClick('blocks');
+      
+    }
+};
+
+Code.initEditor = function(init = true) {
+  // Code.selected = Code.EDITOR;
+  if (Code.EDITOR == 'editor') {
+    document.getElementById("editButton").innerHTML="BLOCKS"
+    document.getElementById('tab_blocks').classList.add("hide");
+    document.getElementById('tab_arduino').classList.add("hide");
+    document.getElementById('content_editor').innerHTML = Code.getINO();
+    // Code.attemptCodeGeneration(Blockly.Arduino);
+    // Code.tabClick(Code.EDITOR);
+  } else {
+    document.getElementById("editButton").innerHTML="EDIT TEXT"
+    document.getElementById('tab_editor').classList.add("hide");
+  }
+}
 
 /**
  * Discard all blocks from the workspace.

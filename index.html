@@ -85,6 +85,8 @@
             <td class="tabmin tab_collapse">&nbsp;</td>
             <td id="tab_arduino" class="taboff tab_collapse">Arduino</td>
             <td class="tabmin tab_collapse">&nbsp;</td>
+            <td id="tab_editor" class="taboff tab_collapse" style="display: none;">Editor</td>
+            <td class="tabmin tab_collapse">&nbsp;</td>
             <td id="tab_monitor" class="taboff tab_collapse">Monitor</td>
             <td class="tabmin tab_collapse">&nbsp;</td>
             <td id="tab_xml" class="taboff tab_collapse" style="display: none;">XML</td>
@@ -116,9 +118,10 @@
     </tr>
   </table>
   <div id="content_blocks" class="content"></div>
-  <textarea id="content_arduino" class="content prettyprint lang-cpp"></textarea>
+  <textarea id="content_arduino" class="content" readonly></textarea>
   <textarea id="content_xml" class="content" wrap="off"></textarea>
   <pre id="content_monitor" class="content prettyprint lang-cpp"></pre>
+  <textarea id="content_editor" class="content" wrap="on"></textarea>
 
 
   <xml xmlns="https://developers.google.com/blockly/xml" id="racer_toolbox" style="display: none">
