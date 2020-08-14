@@ -25,6 +25,8 @@ let inputStream;
 let outputStream;
 
 const monitor = document.getElementById('content_monitor');
+const btnMonitor = document.getElementById('monitorButton');
+
 
 /**
  * @name connect
@@ -55,6 +57,9 @@ async function connect() {
     // .pipeThrough(new TransformStream(new JSONTransformer()));
 
   reader = inputStream.getReader();
+  btnMonitor.innerText = 'CONNECTED';
+  btnMonitor.classList.add('ready');
+  btnMonitor.title = 'Click to DISCONNECT';
   monitor.textContent = 'Connected!...\n'
   readLoop();
 
@@ -87,6 +92,9 @@ async function disconnect() {
   port = null;
   monitor.textContent += '\nDisconnected';
   console.log('Port closed');
+  btnMonitor.innerText = 'CONNECT';
+  btnMonitor.classList.remove('ready');
+  btnMonitor.title = 'Click to CONNECT';
 }
 
 
@@ -96,8 +104,6 @@ async function disconnect() {
  */
 async function connectUSB() {
     if ('serial' in navigator) {
-        let btnMonitor = document.getElementById('monitorButton');
-
         if (port) {
             await disconnect();
             btnMonitor.innerText = 'CONNECT';

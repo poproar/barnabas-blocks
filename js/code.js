@@ -340,6 +340,13 @@ Code.tabClick = function (clickedName) {
       break;
     }
   }
+
+  if (clickedName == 'monitor') {
+    if (!port) connect();
+  } else {
+    if (port) disconnect();
+  } 
+
   Blockly.svgResize(Code.workspace);
 };
 
@@ -362,7 +369,9 @@ Code.renderContent = function () {
     PR.prettyPrint();
   }
   var btnMonitor = document.getElementById('monitorButton');
+  var clrMonitor = document.getElementById('clearMonitor');
   btnMonitor.style.display = (content.id == 'content_monitor') ? "" : "none";
+  clrMonitor.style.display = (content.id == 'content_monitor') ? "" : "none";
 };
 
 /**
@@ -578,6 +587,11 @@ Code.init = function () {
   Code.bindClick('saveButton', Code.save);
   Code.bindClick('editButton', Code.editText);
   Code.bindClick('monitorButton', Code.monitor);
+  Code.bindClick('clearMonitor', 
+    function () {
+      document.getElementById('content_monitor').textContent = '';
+    }
+  );
 
   // Disable the link button if page isn't backed by App Engine storage.
   var linkButton = document.getElementById('linkButton');
