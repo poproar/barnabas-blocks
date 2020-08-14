@@ -840,7 +840,7 @@ Code.compile = function () {
 Code.getINO = function () {
   if (Code.selected == 'blocks' && Code.checkRoots())
     return Blockly.Arduino.workspaceToCode()
-  return document.getElementById("content_arduino").innerHTML;
+  return document.getElementById("content_arduino").value;
 }
 
 Code.switchLoops = function () {
