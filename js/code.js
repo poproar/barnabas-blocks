@@ -1055,7 +1055,8 @@ const blockStyles =
     "colourPrimary": "#01579b",
     "colourSecondary": "#64C7FF",
     "colourTertiary": "#C5EAFF"
-  }
+  },
+  "operators_blocks": { "colourPrimary": "#759749" },
 }
 
 const categoryStyles =

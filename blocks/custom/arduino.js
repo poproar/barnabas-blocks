@@ -336,6 +336,146 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "tooltip": "Seeing with sound",
     "helpUrl": "http://www.arduino.cc/playground/ComponentLib/servo"
   },
+  {
+    "type": "math_arithmetic",
+    "message0": "%1 %2 %3",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "A",
+        "check": "Number"
+      },
+      {
+        "type": "field_dropdown",
+        "name": "OP",
+        "options": [
+          ["%{BKY_MATH_ADDITION_SYMBOL}", "ADD"],
+          ["%{BKY_MATH_SUBTRACTION_SYMBOL}", "MINUS"],
+          ["%{BKY_MATH_MULTIPLICATION_SYMBOL}", "MULTIPLY"],
+          ["%{BKY_MATH_DIVISION_SYMBOL}", "DIVIDE"],
+          ["%{BKY_MATH_MODULO_SYMBOL}", "MODULO"],
+          ["%{BKY_MATH_POWER_SYMBOL}", "POWER"],
+        ]
+      },
+      {
+        "type": "input_value",
+        "name": "B",
+        "check": "Number"
+      }
+    ],
+    "inputsInline": true,
+    "output": "Number",
+    "style": "operators_blocks",
+    "helpUrl": "%{BKY_MATH_ARITHMETIC_HELPURL}",
+    // "extensions": ["math_op_tooltip"]
+  },
+  {
+    "type": "math_single",
+    "message0": "%1 %2",
+    "args0": [
+      {
+        "type": "field_dropdown",
+        "name": "OP",
+        "options": [
+          ["%{BKY_MATH_SINGLE_OP_ROOT}", 'ROOT'],
+          ["%{BKY_MATH_SINGLE_OP_ABSOLUTE}", 'ABS'],
+          ['-', 'NEG'],
+        ]
+      },
+      {
+        "type": "input_value",
+        "name": "NUM",
+        "check": "Number"
+      }
+    ],
+    "output": "Number",
+    "style": "operators_blocks",
+    "helpUrl": "%{BKY_MATH_SINGLE_HELPURL}",
+    "extensions": ["math_op_tooltip"]
+  },
+  {
+    "type": "math_trig",
+    "message0": "%1 %2",
+    "args0": [
+      {
+        "type": "field_dropdown",
+        "name": "OP",
+        "options": [
+          ["%{BKY_MATH_TRIG_SIN}", "SIN"],
+          ["%{BKY_MATH_TRIG_COS}", "COS"],
+          ["%{BKY_MATH_TRIG_TAN}", "TAN"],
+        ]
+      },
+      {
+        "type": "input_value",
+        "name": "NUM",
+        "check": "Number"
+      }
+    ],
+    "output": "Number",
+    "style": "operators_blocks",
+    "helpUrl": "%{BKY_MATH_TRIG_HELPURL}",
+    "extensions": ["math_op_tooltip"]
+  },
+  {
+    "type": "math_constant",
+    "message0": "%1",
+    "args0": [
+      {
+        "type": "field_dropdown",
+        "name": "CONSTANT",
+        "options": [
+          ["\u03c0", "PI"],
+          ["e", "E"],
+          ["\u03c6", "GOLDEN_RATIO"],
+        ]
+      }
+    ],
+    "output": "Number",
+    "style": "operators_blocks",
+    "tooltip": "%{BKY_MATH_CONSTANT_TOOLTIP}",
+    "helpUrl": "%{BKY_MATH_CONSTANT_HELPURL}"
+  },
+  {
+    "type": "operators_map",
+    "message0": "MAP  - value %1 from LOW %2 HIGH %3 to MIN %4 MAX %5",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "VALUE",
+        "check": "Number"
+      },
+      {
+        "type": "input_value",
+        "name": "OLD_LOW",
+        "check": "Number",
+        "align": "RIGHT"
+      },
+      {
+        "type": "input_value",
+        "name": "OLD_HIGH",
+        "check": "Number",
+        "align": "RIGHT"
+      },
+      {
+        "type": "input_value",
+        "name": "NEW_LOW",
+        "check": "Number",
+        "align": "RIGHT"
+      },
+      {
+        "type": "input_value",
+        "name": "NEW_HIGH",
+        "check": "Number",
+        "align": "RIGHT"
+      }
+    ],
+    "inputsInline": false,
+    "output": "Number",
+    "style": "operators_blocks",
+    "helpUrl": "%{BKY_MATH_ARITHMETIC_HELPURL}",
+    // "extensions": ["math_op_tooltip"]
+  },
 ]);
 
 Blockly.Blocks['boolean_onoff'] = {
@@ -381,24 +521,6 @@ Blockly.Blocks['boolean_hilo'] = {
           .appendField(new Blockly.FieldDropdown([["HIGH", "HIGH"], ["LOW", "LOW"]]), 'BOOL')
       this.setOutput(true, 'Boolean');
       this.setTooltip('');
-  }
-};
-
-Blockly.Blocks['base_map'] = {
-  helpUrl: 'http://arduino.cc/en/Reference/map',
-  init: function () {
-      this.setColour(230);
-      this.appendValueInput("NUM", 'Number')
-          .appendField("Map ")
-          .setCheck('Number');
-      this.appendValueInput("DMAX", 'Number')
-          .appendField("value to [0-")
-          .setCheck('Number');
-      this.appendDummyInput()
-          .appendField("]");
-      this.setInputsInline(true);
-      this.setOutput(true);
-      this.setTooltip('Re-maps a number from [0-1024] to another.');
   }
 };
 
