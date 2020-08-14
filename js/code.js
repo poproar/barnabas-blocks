@@ -270,7 +270,7 @@ Code.TABS_DISPLAY_ = [
   'Blocks', 'Arduino', 'Serial Monitor', 'XML', 'Editor'
 ];
 
-Code.selected = 'blocks'; //Code.EDITOR;
+Code.selected = Code.EDITOR;
 
 /**
  * Switch the visible pane when a tab is clicked.
@@ -362,7 +362,7 @@ Code.renderContent = function () {
     var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
     xmlTextarea.value = xmlText;
     xmlTextarea.focus();
-  } else if (content.id == 'content_arduino') {
+  } else if (content.id == 'content_arduino' && Code.getEditor()=='blocks') {
     Code.attemptCodeGeneration(Blockly.Arduino);
   }
   if (typeof PR == 'object') {
@@ -548,7 +548,7 @@ Code.init = function () {
   }
 
   // old init -->   
-  auto_save_and_restore_blocks();
+  auto_backup_and_restore_blocks();
   // setCheckbox();
 
   Code.bindClick('boardSelect',
@@ -579,9 +579,7 @@ Code.init = function () {
   // Code.bindClick('trashButton',
   //     function() {Code.discard(); Code.renderContent();});
 
-  Code.bindClick('newButton',
-    function () { Code.discard(); Code.renderContent(); });
-
+  Code.bindClick('newButton', Code.new);
   Code.bindClick('runButton', Code.flash);
   Code.bindClick('compileButton', Code.compile);
   Code.bindClick('saveButton', Code.save);
@@ -626,6 +624,7 @@ Code.init = function () {
   window.setTimeout(Code.importPrettify, 1);
 
   // old init loadxml();
+  Code.initEditor();
 };
 
 Code.buildToolbox = function () {
@@ -906,25 +905,47 @@ function upload_result(msg, success = true) {
 
 Code.monitor = connectUSB;
 
+Code.new = function () {
+  var editor = Code.getEditor();
+  if (editor == 'blocks') {
+    Code.discard(); Code.renderContent();
+  } else {
+    document.getElementById("content_arduino").value = '';
+  }
+};
+
 /**
  * Save blocks to local file.
  * better include Blob and FileSaver for browser compatibility
  */
 Code.save = function () {
-  var xml = Blockly.Xml.workspaceToDom(Code.workspace);
-  var data = Blockly.Xml.domToText(xml);
-  var fileName = window.prompt('What would you like to name your file?', 'myBlocks');
+  let data = '';
+    let defaultName = 'myBlocks';
+    let fileType = 'text/xml';
+    let extension = '.xml';
 
-  // Store data in blob.
-  // var builder = new BlobBuilder();
-  // builder.append(data);
-  // saveAs(builder.getBlob('text/plain;charset=utf-8'), 'blockduino.xml');
-  console.log("saving blob");
-  if (fileName) {
-    var blob = new Blob([data], { type: 'text/xml' });
-    saveAs(blob, fileName + ".xml");
-  }
-};
+    let editor = Code.getEditor();
+    if (editor == 'blocks'){
+      var xml = Blockly.Xml.workspaceToDom(Code.workspace);
+      data = Blockly.Xml.domToText(xml);
+    } else {
+      data = document.getElementById("content_arduino").value;
+      defaultName = 'mySketch';
+      fileType = 'text/plain;charset=utf-8';
+      extension = '.ino';
+    }
+
+    var fileName = window.prompt('What would you like to name your file?', defaultName);
+  
+    // Store data in blob.
+    // var builder = new BlobBuilder();
+    // builder.append(data);
+    // saveAs(builder.getBlob('text/plain;charset=utf-8'), 'blockduino.xml');
+    if(fileName){
+      var blob = new Blob([data], {type: fileType});
+      saveAs(blob, fileName + extension);
+    } 
+  };
 
 /**
  * Save blocks to local file.
@@ -965,14 +986,12 @@ Code.initEditor = function(init = true) {
   // Code.selected = Code.EDITOR;
   if (Code.EDITOR == 'editor') {
     document.getElementById("editButton").innerHTML="BLOCKS"
-    document.getElementById('tab_blocks').classList.add("hide");
-    document.getElementById('tab_arduino').classList.add("hide");
-    document.getElementById('content_editor').innerHTML = Code.getINO();
-    // Code.attemptCodeGeneration(Blockly.Arduino);
-    // Code.tabClick(Code.EDITOR);
+    document.getElementById("tab_blocks").classList.add("hide");
+    document.getElementById("content_arduino").readOnly = false;
+    Code.tabClick('arduino');
   } else {
     document.getElementById("editButton").innerHTML="EDIT TEXT"
-    document.getElementById('tab_editor').classList.add("hide");
+    document.getElementById("content_arduino").readOnly = true;
   }
 }
 
