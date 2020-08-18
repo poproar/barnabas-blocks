@@ -303,7 +303,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // ultrasonic
   {
     "type": "sensors_sonic",
-    "message0": "ULTRASONIC %1 trigger# %2 echo# %3",
+    "message0": "ULTRASONIC trigger# %2 %1 echo# %3",
     "args0": [
       {
         "type": "field_image",
@@ -330,9 +330,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
       },
     ],
     "inputsInline": false,
-    "previousStatement": null,
-    "nextStatement": null,
     "colour": 180,
+    "output": "Number",
     "tooltip": "Seeing with sound",
     "helpUrl": "http://www.arduino.cc/playground/ComponentLib/servo"
   },
