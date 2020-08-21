@@ -333,7 +333,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     ],
     "inputsInline": false,
     "colour": 180,
-    "output": "Number",
+    "output": ["Number", "Long"],
     "tooltip": "Seeing with sound",
     "helpUrl": "http://www.arduino.cc/playground/ComponentLib/servo"
   },
@@ -498,7 +498,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "args0": [{
       "type": "field_label_serializable",
       "name": "TYPE",
-      "text": "%{BKY_VARIABLES_DEFAULT_TYPE}"
+      "text": console.log(this) 
     },
     {
       "type": "field_variable",
