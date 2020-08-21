@@ -1,4 +1,4 @@
-var number_types = ["Number","Int","Float","Long"];
+var number_types = ["Long","Number","Int","Float"];
 
 Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // wait
