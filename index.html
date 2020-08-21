@@ -12,6 +12,8 @@
   <script src="./js/blockly_compressed.js"></script>
   <script src="./js/blocks_compressed.js"></script>
   <script src="./js/arduino_compressed.js"></script>
+  <script src="./js/typedVarModal.js"></script>
+  <!-- <script src="https://unpkg.com/@blockly/plugin-typed-variable-modal"></script> -->
   <script src="./blocks/custom/arduino.js"></script>
   <link rel='icon' href='./favicon.ico' type='image/x-icon'/ >
 </head>
@@ -242,7 +244,7 @@
       </block>
       <block type="operators_map"></block>
     </category>
-    <category name="%{BKY_CATVARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE" class="racer"></category>
+    <category name="%{BKY_CATVARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="CREATE_TYPED_VARIABLE" class="racer"></category>
     <category name="Constants" categorystyle="constants" class="racer">
       <block type="math_number">
         <field name="NUM">123</field>

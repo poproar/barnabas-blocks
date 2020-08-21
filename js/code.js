@@ -625,6 +625,32 @@ Code.init = function () {
 
   // old init loadxml();
   Code.initEditor();
+  const varTypes = [['Int', "Int"],
+                    ['Long','Long'],
+                    ['Float','Float'],
+                    ['Boolean','Boolean'],
+                    ['String','String'],
+                  ];
+  Code.workspace.registerToolboxCategoryCallback('CREATE_TYPED_VARIABLE', createFlyout);
+  const typedVarModal = new TypedVariableModal(Code.workspace, 'callbackName', varTypes); 
+  typedVarModal.init();
+
+};
+
+const createFlyout = function(workspace) {
+  let xmlList = [];
+  // Add your button and give it a callback name.
+  const button = document.createElement('button');
+  button.setAttribute('text', 'Create Typed Variable');
+  button.setAttribute('callbackKey', 'callbackName');
+
+  xmlList.push(button);
+
+  // This gets all the variables that the user creates and adds them to the
+  // flyout.
+  const blockList = Blockly.VariablesDynamic.flyoutCategoryBlocks(workspace);
+  xmlList = xmlList.concat(blockList);
+  return xmlList;
 };
 
 Code.buildToolbox = function () {
@@ -1017,7 +1043,6 @@ document.write('<script src="./msg/js/' + Code.LANG + '.js"></script>\n');
 
 
 window.addEventListener('load', Code.init);
-
 
 const componentStyles =
 {
