@@ -861,18 +861,30 @@ Code.getHex = function (flash = false) {
 };
 
 Code.flash = function () {
-  if (Code.getINO().includes('void loop')) {
+  if (Code.getINO().includes('void setup')) {
     Code.getHex(true);
   } else {
-    Blockly.alert("Missing VOID LOOP");
+    let msg ='To Flash a program on to your device you need some primary functions.';
+    if (Code.selected == 'blocks') {
+      msg += '\nTry adding a starting block';
+    } else {
+      msg += '\nYou need at least a void setup() {} call to compile.';
+    }
+    Blockly.alert(msg);
   }
 }
 
 Code.compile = function () {
-  if (Code.getINO().includes('void loop')) {
+  if (Code.getINO().includes('void setup')) {
     Code.getHex();
   } else {
-    Blockly.alert("Missing VOID LOOP");
+    let msg ='Before we Compile be sure to add some primary functions.';
+    if (Code.selected == 'blocks') {
+      msg += '\nTry adding a starting block';
+    } else {
+      msg += '\nYou need at least a void setup() {} call to compile.';
+    }
+    Blockly.alert(msg);
   }
 }
 
