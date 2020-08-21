@@ -864,7 +864,7 @@ Code.flash = function () {
   if (Code.getINO().includes('void loop')) {
     Code.getHex(true);
   } else {
-    console.error("Missing VOID LOOP");
+    Blockly.alert("Missing VOID LOOP");
   }
 }
 
@@ -872,7 +872,7 @@ Code.compile = function () {
   if (Code.getINO().includes('void loop')) {
     Code.getHex();
   } else {
-    console.error("Missing VOID LOOP");
+    Blockly.alert("Missing VOID LOOP");
   }
 }
 

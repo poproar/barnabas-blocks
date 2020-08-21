@@ -498,7 +498,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "args0": [{
       "type": "field_label_serializable",
       "name": "TYPE",
-      "text": console.log(this) 
+      "text": ''
     },
     {
       "type": "field_variable",
