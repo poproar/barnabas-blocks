@@ -895,22 +895,26 @@ Code.getINO = function () {
 }
 
 Code.switchLoops = function () {
-  let racerLoop = Code.workspace.newBlock('controls_setup');
-  racerLoop.initSvg();
-  racerLoop.render();
+  let blocks = Code.workspace.getBlocksByType('controls_loop');
 
-  let botloop = Code.workspace.getBlocksByType('controls_loop')[0];
-  let content = botloop.getInputTargetBlock('LOOP');
+  if (blocks.length ==1) {
+    let racerLoop = Code.workspace.newBlock('controls_setup');
+    racerLoop.initSvg();
+    racerLoop.render();
 
-  botloop.getInput('LOOP').connection.disconnect();
+    let botloop = Code.workspace.getBlocksByType('controls_loop')[0];
+    let content = botloop.getInputTargetBlock('LOOP');
+
+    botloop.getInput('LOOP').connection.disconnect();
 
 
-  let chcon = content.previousConnection;
-  let racerConnection = racerLoop.getInput('LOOP').connection;
-  racerConnection.connect(chcon);
+    let chcon = content.previousConnection;
+    let racerConnection = racerLoop.getInput('LOOP').connection;
+    racerConnection.connect(chcon);
 
-  botloop.dispose();
-  Code.workspace.centerOnBlock(racerLoop.id);
+    botloop.dispose();
+    Code.workspace.centerOnBlock(racerLoop.id);
+  }
 }
 
 /**
