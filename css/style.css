@@ -363,3 +363,7 @@ span select {
   clear: both;
   display: table;
 }
+
+#content_editor {
+  border-top: 1px solid black;
+}

@@ -85,9 +85,9 @@
           <tr id="tabRow" height="1em">
             <td id="tab_blocks" class="tabon">...</td>
             <td class="tabmin tab_collapse">&nbsp;</td>
-            <td id="tab_arduino" class="taboff tab_collapse">Arduino</td>
+            <td id="tab_arduino" class="taboff tab_collapse" style="display: none;">Arduino</td>
             <td class="tabmin tab_collapse">&nbsp;</td>
-            <td id="tab_editor" class="taboff tab_collapse" style="display: none;">Editor</td>
+            <td id="tab_editor" class="taboff tab_collapse">Editor</td>
             <td class="tabmin tab_collapse">&nbsp;</td>
             <td id="tab_monitor" class="taboff tab_collapse">Monitor</td>
             <td class="tabmin tab_collapse">&nbsp;</td>
@@ -126,7 +126,7 @@
   <textarea id="content_arduino" class="content" readonly></textarea>
   <textarea id="content_xml" class="content" wrap="off"></textarea>
   <pre id="content_monitor" class="content prettyprint lang-cpp"></pre>
-  <textarea id="content_editor" class="content" wrap="on"></textarea>
+  <div id="content_editor" class="content"></div>
 
 
   <xml xmlns="https://developers.google.com/blockly/xml" id="racer_toolbox" style="display: none">
@@ -454,6 +454,7 @@
   <script src="./js/FileSaver.min.js"></script>
   <script src="./js/file_handling.js"></script>
   <script src="./js/usb_serial.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q==" crossorigin="anonymous"></script>
   <script src="./js/code.js"></script>
 </body>
 </html>
