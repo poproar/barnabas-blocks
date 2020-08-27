@@ -788,7 +788,7 @@ Code.getHex = function (flash = false) {
 
   let code = Code.getINO();
 
-  let board = Code.BOARD;
+  let board = Code.getBoard();
   if (board == 'uno') {
     var avr = 'arduino:avr:uno';
   } else {
