@@ -452,10 +452,6 @@ Code.checkRoots = function () {
     (Code.workspace.getToolbox().getFlyout().show(document.getElementById(lesson + '_controls')));
     Blockly.alert('YOU NEED A LOOP BLOCK');
   }
-  // move this to own function
-  // if (!Code.workspace.allInputsFilled()) {
-  //   Blockly.alert('Some blocks are missing...');
-  // }
   return singleRoot;
 }
 
@@ -470,12 +466,6 @@ Code.init = function () {
     }
   };
   Code.initSerial();
-  // // set up clipboard 
-  // var clipboard = new Clipboard('#copy-button');
-  // clipboard.on('success', function (e) {
-  //   Materialize.toast(Blockly.Msg.COPY_DONE, 4000);
-  // });
-
   Code.initLanguage();
   Code.initSelects();
 
@@ -540,10 +530,6 @@ Code.init = function () {
       }
     });
 
-  // Add to reserved word list: Local variables in execution environment (runJS)
-  // and the infinite loop detection function.
-  // Blockly.JavaScript.addReservedWords('code,timeouts,checkTimeout');
-
   Code.loadBlocks('');
 
   if ('BlocklyStorage' in window) {
@@ -551,9 +537,7 @@ Code.init = function () {
     BlocklyStorage.backupOnUnload(Code.workspace);
   }
 
-  // old init -->   
   auto_backup_and_restore_blocks();
-  // setCheckbox();
 
   Code.bindClick('boardSelect',
     function () {
@@ -579,9 +563,6 @@ Code.init = function () {
     });
 
   Code.tabClick(Code.selected);
-
-  // Code.bindClick('trashButton',
-  //     function() {Code.discard(); Code.renderContent();});
 
   Code.bindClick('newButton', Code.new);
   Code.bindClick('runButton', Code.flash);
@@ -629,6 +610,8 @@ Code.init = function () {
 
   // old init loadxml();
   Code.initEditor();
+
+  // prepare for variable types
   const varTypes = [['Int', "Int"],
                     ['Long','Long'],
                     ['Float','Float'],
@@ -675,14 +658,6 @@ Code.initSerial = function () {
     // Get the modal
     let modal = document.getElementById("notSupported");
     modal.style.display = "block";
-
-    // Get the <span> element that closes the modal
-    // let span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks on <span> (x), close the modal
-    // span.onclick = function () {
-    //   modal.style.display = "none";
-    // }
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function (event) {
@@ -744,9 +719,7 @@ Code.initLanguage = function () {
 
   document.getElementById('linkButton').title = MSG['linkTooltip']; //Blockly.Msg.LOAD_XML)
   document.getElementById('runButton').title = MSG['runTooltip'];
-  // document.getElementById('trashButton').title = MSG['trashTooltip'];
   document.getElementById('newButton').title = MSG['trashTooltip'];
-  // document.getElementById('monitorButton').title = MSG['trashTooltip'];
 
 };
 
@@ -759,27 +732,6 @@ Code.initSelects = function () {
   }
 };
 
-// /**
-//  * Execute the user's code.
-//  * Just a quick and dirty eval.  Catch infinite loops.
-//  */
-// Code.runJS = function() {
-//   Blockly.JavaScript.INFINITE_LOOP_TRAP = 'checkTimeout();\n';
-//   var timeouts = 0;
-//   var checkTimeout = function() {
-//     if (timeouts++ > 1000000) {
-//       throw MSG['timeout'];
-//     }
-//   };
-//   var code = Blockly.JavaScript.workspaceToCode(Code.workspace);
-//   Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
-//   try {
-//     eval(code);
-//   } catch (e) {
-//     alert(MSG['badCode'].replace('%1', e));
-//   }
-// };
-
 /**
  * Send code to server for hex
  * 
@@ -788,7 +740,7 @@ Code.getHex = function (flash = false) {
 
   let code = Code.getINO();
 
-  let board = Code.BOARD;
+  let board = Code.getBoard();
   if (board == 'uno') {
     var avr = 'arduino:avr:uno';
   } else {
@@ -800,15 +752,9 @@ Code.getHex = function (flash = false) {
   // console.log(JSON.stringify(data));
   fetch(Code.COMPILE_URL + "/compile", {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    // mode: 'cors', // no-cors, *cors, same-origin
-    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    // credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json'
-      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    // redirect: 'follow', // manual, *follow, error
-    // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
     body: JSON.stringify(data)// body data type must match "Content-Type" header    // encodeURIComponent(JSON.stringify(data));
   })
     .then(response => response.json())
@@ -846,6 +792,8 @@ Code.getHex = function (flash = false) {
             // progress.textContent = "done!";
             if (error) {
               console.error("Flash ERROR:", error);
+              //typicall wrong board
+              // avrgirl.connection.serialPort.close();
               upload_result(error + '\n' + hex.msg, false);
             } else {
               console.info('done correctly.');
@@ -941,16 +889,7 @@ function upload_result(msg, success = true) {
     icon = '<i class="material-icons" style="font-size:48px;color:red">error</i>';
   }
   output = `<pre>${msg}</pre>`;
-  // document.getElementById("responseType").innerHTML = icon;
   document.getElementById("response").innerHTML = icon + output;
-  // let modal = document.getElementById('arduinoOutput');
-  // if (Code.selected == 'blocks') {
-  //   modal.style.marginLeft = (Code.workspace.getToolbox().width) + 'px';
-  //   modal.style.width = (Code.workspace.getToolbox().width - window.width) + 'px';
-  // } else {
-  //   modal.style.marginLeft = '0px';
-  //   modal.style.width = (window.width) + 'px';
-  // }
   document.getElementById("arduinoOutput").style.display = "block";
 }
 
@@ -1007,8 +946,6 @@ Code.editText = function () {
   var textarea = document.getElementById("content_arduino");
   var blocksTab = document.getElementById('tab_blocks');//className = 'taboff hide';
   var arduinoTab = document.getElementById('tab_arduino');//className = 'taboff hide';
-  var editorTab = document.getElementById('tab_editor');//className = 'taboff hide';
-  // var editorTab = document.getElementById('tab_editor');//className = 'taboff hide';
   let editor = Code.getEditor();
 
     // onresize();
@@ -1019,12 +956,7 @@ Code.editText = function () {
       textarea.readOnly = false;
       Code.ace.setReadOnly(false);
       // arduinoTab.classList.toggle("hide");
-      // editorTab.classList.remove("hide");
-      // Code.tabClick('arduino');
       Code.tabClick('editor');
-      // arduinoTab.classList.toggle("hide");
-      // editorTab.classList.remove("hide");
-      Code.tabClick('arduino');
     }
     else if (confirm("Going back to blocks will remove any custom edits\n" + 
                       "Do you wish to continue?")){
@@ -1032,7 +964,6 @@ Code.editText = function () {
       editButton.innerHTML="EDIT TEXT"
       blocksTab.classList.remove("hide");
       // arduinoTab.classList.toggle("hide");
-      // editorTab.classList.add("hide");
       textarea.readOnly = true;
       Code.ace.setReadOnly(true);
       Code.tabClick('blocks');
@@ -1184,6 +1115,7 @@ const getMethods = (obj) => {
 
 // console.log(getMethods(Blockly.Variables))
 
+// en custom MSG
 var MSG = {
   title: "Code",
   blocks: "Blocks",
