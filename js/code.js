@@ -983,13 +983,13 @@ Code.initEditor = function(init = true) {
   document.getElementById('content_editor').style.fontSize='14px';
 
   if (Code.EDITOR == 'editor') {
-    document.getElementById("editButton").innerHTML="BLOCKS"
+    document.getElementById("editButton").innerHTML="BLOCK CODE"
     document.getElementById("tab_blocks").classList.add("hide");
     document.getElementById("content_arduino").readOnly = false;
     Code.ace.setReadOnly(false);
     Code.tabClick('editor');
   } else {
-    document.getElementById("editButton").innerHTML="EDIT TEXT"
+    document.getElementById("editButton").innerHTML="TEXT CODE"
     document.getElementById("content_arduino").readOnly = true;
     Code.ace.setReadOnly(true);
   }
