@@ -163,9 +163,6 @@ Blockly.Blocks['custom_tone'] = {
     this.appendValueInput("FREQ")
       .setCheck("Number")
       .appendField(Blockly.Msg.INOUT_TONE_APPENDTEXT_FREQ);
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.INOUT_TONE_APPENDTEXT_DURATION)
-      .appendField(new Blockly.FieldTextInput("300"),"DURATION");
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -187,6 +184,20 @@ Blockly.Blocks['tone'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.INOUT_TONE_TOOLTIP);
+  }
+};
+
+Blockly.Blocks['noTone'] = {
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.INOUT_TONE_HELPURL);
+    this.setColour(Blockly.Blocks.inout.HUE);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.INOUT_NOTONE_APPENDTEXT_PIN)
+      .appendField(new Blockly.FieldDropdown(profile.default.digital), "PIN");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.INOUT_NOTONE_TOOLTIP);
   }
 };
 

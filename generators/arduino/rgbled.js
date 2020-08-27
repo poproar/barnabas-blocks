@@ -28,10 +28,10 @@ goog.provide('Blockly.Arduino.rgbled');
 
 goog.require('Blockly.Arduino');
 
-Blockly.Arduino.rgbled_begin = function() {
-  var num = this.getFieldValue('NUM');
-  var pin = this.getFieldValue('PIN');
-  var brightness = this.getFieldValue('BRIGHTNESS');
+Blockly.Arduino['rgbled_begin'] = function(block) {
+  var num = block.getFieldValue('NUM');
+  var pin = block.getFieldValue('PIN');
+  var brightness = block.getFieldValue('BRIGHTNESS');
 
   Blockly.Arduino.definitions_['define_include_neopixel'] = '#include <Adafruit_NeoPixel.h>\n'
   Blockly.Arduino.definitions_['define_rgbled'] = 'Adafruit_NeoPixel rgbled = Adafruit_NeoPixel(' + num + ',' + pin + ',NEO_RGB + NEO_KHZ400);\n';
@@ -47,32 +47,32 @@ function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
 function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
 function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
 
-Blockly.Arduino.rgbled_setpixelcolor = function() {
-  var target = this.getFieldValue('TARGET');
-  var colour_rgb = this.getFieldValue('RGB');
+Blockly.Arduino['rgbled_setpixelcolor'] = function(block) {
+  var target = block.getFieldValue('TARGET');
+  var colour_rgb = block.getFieldValue('RGB');
   var code = 'rgbled.setPixelColor(' + target + ',rgbled.Color(' +hexToR(colour_rgb)+','+hexToG(colour_rgb)+',' + hexToB(colour_rgb)+'));\n';
   return code;
 };
 
-Blockly.Arduino.rgbled_setpixelcolor2 = function() {
-  var target = Blockly.Arduino.valueToCode(this, 'TARGET', Blockly.Arduino.ORDER_ATOMIC) || '0'
-  var colour_rgb = this.getFieldValue('RGB');
+Blockly.Arduino['rgbled_setpixelcolor2'] = function(block) {
+  var target = Blockly.Arduino.valueToCode(block, 'TARGET', Blockly.Arduino.ORDER_ATOMIC) || '0'
+  var colour_rgb = block.getFieldValue('RGB');
 
   var code = 'rgbled.setPixelColor(' + target + ',rgbled.Color(' +hexToR(colour_rgb)+','+hexToG(colour_rgb)+',' + hexToB(colour_rgb)+'));\n';
   return code;
 };
 
-Blockly.Arduino.rgbled_custom_setpixelcolor = function() {
-  var target = Blockly.Arduino.valueToCode(this, 'TARGET', Blockly.Arduino.ORDER_ATOMIC) || '0'
-  var r = Blockly.Arduino.valueToCode(this, 'R', Blockly.Arduino.ORDER_ATOMIC) || '255'
-  var g = Blockly.Arduino.valueToCode(this, 'G', Blockly.Arduino.ORDER_ATOMIC) || '0'
-  var b = Blockly.Arduino.valueToCode(this, 'B', Blockly.Arduino.ORDER_ATOMIC) || '0'
+Blockly.Arduino['rgbled_custom_setpixelcolor'] = function(block) {
+  var target = Blockly.Arduino.valueToCode(block, 'TARGET', Blockly.Arduino.ORDER_ATOMIC) || '0'
+  var r = Blockly.Arduino.valueToCode(block, 'R', Blockly.Arduino.ORDER_ATOMIC) || '255'
+  var g = Blockly.Arduino.valueToCode(block, 'G', Blockly.Arduino.ORDER_ATOMIC) || '0'
+  var b = Blockly.Arduino.valueToCode(block, 'B', Blockly.Arduino.ORDER_ATOMIC) || '0'
 
   var code = 'rgbled.setPixelColor(' + target + ', rgbled.Color(' + r + ',' + g +',' + b + '));\n';
   return code;
 };
 
-Blockly.Arduino.rgbled_show = function() {
+Blockly.Arduino['rgbled_show'] = function(block) {
   var code = 'rgbled.show();\n';
   return code;
 };

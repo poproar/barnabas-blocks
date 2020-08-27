@@ -54,7 +54,7 @@ Blockly.Arduino['variables_set'] = function(block) {
       Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
   var varName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('VAR'),
       Blockly.Variables.NAME_TYPE);
-  var variables = Blockly.Variables.allVariablesAndTypes(this.workspace);
+  var variables = Blockly.Variables.allDeveloperVariables(this.workspace);
   var code;
   for (var x = 0; x < variables.length; x++) {
     if(variables[x][0] == varName && variables[x][1] == 'Array'){
@@ -66,5 +66,13 @@ Blockly.Arduino['variables_set'] = function(block) {
     }
   }
   return varName + ' = ' + argument0 + ';\n';
+};
 
+Blockly.Arduino['variables_rset'] = function(block) {
+  // Variable setter.
+  var argument0 = Blockly.Arduino.valueToCode(block, 'VALUE',
+      Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
+  var varName = Blockly.Arduino.variableDB_.getName(
+      block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
+  return varName + ' = ' + argument0 + ';\n';
 };

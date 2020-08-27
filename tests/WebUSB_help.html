@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)http://main.lv/writeup/webusb_example.md -->
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="./WebUSB_help_files/monokai_sublime.css">
+  <link rel="stylesheet" href="./WebUSB_help_files/main.css">
+  <!-- <script type="text/javascript" async="" src="./WebUSB_help_files/analytics.js"></script> -->
+  <script src="./WebUSB_help_files/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <title>WebUSB example</title>
+  <meta name="keyword" content="linux,webusb,usb,usbmon,ch341,pl2101">
+
+  <!-- Global Site Tag (gtag.js) - Google Analytics -->
+  <script async="" src="./WebUSB_help_files/js"></script>
+
+</head>
+
+<body>
+  <nav>
+    <a href="http://main.lv/index.md" class="headerlink">Main</a>|
+    <a href="http://main.lv/writeup.md" class="headerlink">WriteUp</a>|
+    <a href="http://git.main.lv/" class="headerlink">Projects</a>|
+    <a href="telnet://main.lv">BBS</a>|
+    <a href="http://archive.main.lv/">Archive</a>|
+    <a href="http://main.lv/links.md" class="headerlink">Links</a>|
+    <a href="http://main.lv/about.md" class="headerlink">About</a>
+  </nav>
+  <div class="content">
+
+    <h1>WebUSB example</h1>
+    <ul id="table-of-content">
+      <ul>
+        <li><a href="#toc-1">Hardware requirements</a></li>
+        <li><a href="#toc-2">Using example</a></li>
+        <li><a href="#toc-3">Gathering info</a></li>
+        <li><a href="#toc-4">Setting up udev</a></li>
+        <li><a href="#toc-5">Programming</a>
+          <ul>
+            <li><a href="#toc-6">Get request to access device</a></li>
+            <li><a href="#toc-7">Recieving data</a></li>
+            <li><a href="#toc-8">Sending data</a></li>
+            <li><a href="#toc-9">CH341 chip request table</a></li>
+            <li><a href="#toc-10">PL2301 chip request table</a></li>
+            <li><a href="#toc-11">Python snippet to decode request type</a></li>
+          </ul>
+        </li>
+        <li><a href="#toc-12">Sniffing USB traffic</a>
+          <ul>
+            <li><a href="#toc-13">Setting usbmon</a></li>
+            <li><a href="#toc-14">Sniffed traffic example</a></li>
+          </ul>
+        </li>
+        <li><a href="#toc-15">Thx</a></li>
+        <li><a href="#toc-16">Source</a></li>
+        <li><a href="#toc-17">Links</a></li>
+      </ul>
+      <!--</li>-->
+    </ul>
+    <h2 id="toc-1">Hardware requirements</h2>
+    <p>Modern browser have some cool API's like WebUSB that allows from browser
+      acces USB stack. Here is a steps to try it out. As internet doesnt have
+      any basic example of stuff how things works, here is all info needed to
+      make first WebUSB requests running. On most basic devices out there.
+      USB serail interface is cheap to get on any online shop here is quite
+      common chip models CH341,PL2303.</p>
+    <p>TODO</p>
+    <ul>
+      <li>describe initialisation phase</li>
+      <li>Describe how to send data on CH341</li>
+      <li>Describe how to recieve data on CH341</li>
+    </ul>
+    <h2 id="toc-2">Using example</h2>
+    <p>Source is located in <a
+        href="http://git.main.lv/cgit.cgi/webusb.git/tree/">http://git.main.lv/cgit.cgi/webusb.git/tree/</a></p>
+    <p>There is 2 files <em>index.html</em> and <em>webusb.js</em> both with messy code inside.
+      To run exmaple download files or clone git repository</p>
+    <pre><code class="hljs nginx"><span class="hljs-title">git</span> clone <span class="hljs-url">http://git.main.lv/cgit.cgi/webusb.git</span>
+</code></pre>
+    <p>Open <em>index.html</em> and run sequence</p>
+    <ul>
+      <li>Request permissions </li>
+      <li>Open </li>
+      <li>Claim Interface </li>
+      <li>Config </li>
+      <li>Set baudrate </li>
+      <li>EP1 Out 32 </li>
+      <li>BulkOut </li>
+    </ul>
+    <p>Best option is to open developers console to see logs and results of actions.
+      And connect to other end of serial other serial converter. Then is possible
+      to see output from <em>EP1 Out 32</em> input box to other device. And with BulkOut
+      recieve results from other device and save it to inputbox.</p>
+    <h2 id="toc-3">Gathering info</h2>
+    <p>Linux provides utilities to list all usb device connections.</p>
+    <pre><code class="hljs nginx"><span class="hljs-title">lsusb</span>
+</code></pre>
+    <p>Output will be something like:</p>
+    <pre><code class="hljs cpp">Bus <span class="hljs-number">002</span> Device <span class="hljs-number">027</span>: ID <span class="hljs-number">1</span>bcf:<span class="hljs-number">0007</span> Sunplus Innovation Technology Inc. Optical Mouse
+Bus <span class="hljs-number">002</span> Device <span class="hljs-number">026</span>: ID <span class="hljs-number">067</span>b:<span class="hljs-number">2303</span> Prolific Technology, Inc. PL2303 Serial Port
+Bus <span class="hljs-number">002</span> Device <span class="hljs-number">001</span>: ID <span class="hljs-number">1</span>d6b:<span class="hljs-number">0002</span> Linux Foundation <span class="hljs-number">2.0</span> root hub
+</code></pre>
+    <p>Our PL2303 device is connected and is on a bus 2.0</p>
+    <p>When USB device is connected to bus linux logs some information. When USB
+      device is there in dmesg you can find out some info.</p>
+    <pre><code class="hljs nginx"><span class="hljs-title">dmesg</span> | tail
+</code></pre>
+    <p>Most important part is to find device bus id in our case it is "2-1:1.0"</p>
+    <pre><code class="hljs cpp">[<span class="hljs-number">190298.876894</span>] usb <span class="hljs-number">2</span>-<span class="hljs-number">1</span>: USB disconnect, device number <span class="hljs-number">26</span>
+[<span class="hljs-number">190298.877195</span>] pl2303 ttyUSB0: pl2303 converter now disconnected from ttyUSB0
+[<span class="hljs-number">190298.877245</span>] pl2303 <span class="hljs-number">2</span>-<span class="hljs-number">1</span>:<span class="hljs-number">1.0</span>: device disconnected
+[<span class="hljs-number">190301.871959</span>] usb <span class="hljs-number">2</span>-<span class="hljs-number">1</span>: <span class="hljs-keyword">new</span> full-speed USB device number <span class="hljs-number">28</span> <span class="hljs-keyword">using</span> xhci_hcd
+[<span class="hljs-number">190302.012793</span>] usb <span class="hljs-number">2</span>-<span class="hljs-number">1</span>: New USB device found, idVendor=<span class="hljs-number">067</span>b, idProduct=<span class="hljs-number">2303</span>, bcdDevice= <span class="hljs-number">3.00</span>
+[<span class="hljs-number">190302.012799</span>] usb <span class="hljs-number">2</span>-<span class="hljs-number">1</span>: New USB device strings: Mfr=<span class="hljs-number">1</span>, Product=<span class="hljs-number">2</span>, SerialNumber=<span class="hljs-number">0</span>
+[<span class="hljs-number">190302.012802</span>] usb <span class="hljs-number">2</span>-<span class="hljs-number">1</span>: Product: USB-Serial Controller
+[<span class="hljs-number">190302.012804</span>] usb <span class="hljs-number">2</span>-<span class="hljs-number">1</span>: Manufacturer: Prolific Technology Inc.
+[<span class="hljs-number">190302.013632</span>] pl2303 <span class="hljs-number">2</span>-<span class="hljs-number">1</span>:<span class="hljs-number">1.0</span>: pl2303 converter detected
+[<span class="hljs-number">190302.014426</span>] usb <span class="hljs-number">2</span>-<span class="hljs-number">1</span>: pl2303 converter now attached to ttyUSB0
+</code></pre>
+    <h2 id="toc-4">Setting up udev</h2>
+    <p>Use usb bus id to unbind driver. If its not done there will be no permission
+      error, or device busy error. Use one of lines to unbind device driver by usb
+      bus id.</p>
+    <pre><code class="hljs vhdl">echo <span class="hljs-string">"2-2:1.0"</span> &gt; /sys/<span class="hljs-keyword">bus</span>/usb/drivers/pl2303/unbind
+echo <span class="hljs-string">"2-2:1.0"</span> &gt; /sys/<span class="hljs-keyword">bus</span>/usb/drivers/ch341/unbind
+</code></pre>
+    <p>If you have other errors related to not able to connect to device then or no
+      permsision. Add file to udev rules in /etc/udev/rules.d directory</p>
+    <p>/etc/udev/rules.d/88-hello-usb.rules</p>
+    <p>Here is examples of USB ids for PL2303 and CH341</p>
+    <pre><code class="hljs mathematica">SUBSYSTEMS==<span class="hljs-string">"usb"</span>, ATTR<span class="hljs-list">{idVendor}</span>==<span class="hljs-string">"067b"</span>, ATTR<span class="hljs-list">{idProduct}</span>==<span class="hljs-string">"2303"</span>, MODE:=<span class="hljs-string">"0666"</span>
+SUBSYSTEMS==<span class="hljs-string">"usb"</span>, ATTR<span class="hljs-list">{idVendor}</span>==<span class="hljs-string">"1a86"</span>, ATTR<span class="hljs-list">{idProduct}</span>==<span class="hljs-string">"7523"</span>, MODE:=<span class="hljs-string">"0666"</span>
+</code></pre>
+    <p>As rulles is not loaded after file are created or new entries are added.
+      Need to restart udev daemon so new rulles are added to current running rulles.</p>
+    <pre><code class="hljs vhdl">udevadm control <span class="hljs-comment">--reload-rules &amp;&amp; udevadm trigger</span>
+</code></pre>
+    <h2 id="toc-5">Programming</h2>
+    <p>Most of modern browsers provide javascript API for accesing USB its called
+      WebUSB API.</p>
+    <h3 id="toc-6">Get request to access device</h3>
+    <p>First thing that is needed to do is request devices. Popup windows to select
+      device will appear.</p>
+    <pre><code class="js hljs lua">serial.requestPort = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span> {
+    const filters = [
+      { vendorId:<span class="hljs-number">0x067b</span>, productId:<span class="hljs-number">0x2303</span> }, //cp210
+      { vendorId:<span class="hljs-number">0x1a86</span>, productId:<span class="hljs-number">0x7523</span> }, //ch341
+    ];
+    <span class="hljs-keyword">return</span> navigator.usb.requestDevice({ <span class="hljs-string">'filters'</span>: filters }).<span class="hljs-keyword">then</span>(
+      device =&gt; new serial.Port(device)
+    );
+  }
+</code></pre>
+    <h3 id="toc-7">Recieving data</h3>
+    <p>To recieve date control request need to be created.
+      Request constructed according to suported protocol that may differ
+      from device to device.</p>
+    <p>PL2303 and CH3421 have totaly different interfeises. Steps to initialise
+      device also differs.</p>
+    <pre><code class="js hljs lua">serial.Port.prototype.vendorRead = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span></span> {
+    console.log(<span class="hljs-string">"Read val="</span>+value);
+      <span class="hljs-keyword">return</span> this.device.controlTransferIn({
+      <span class="hljs-string">'requestType'</span>: <span class="hljs-string">'vendor'</span>,
+      <span class="hljs-string">'recipient'</span>: <span class="hljs-string">'device'</span>,
+      <span class="hljs-string">'request'</span>:serial.VENDOR_READ_REQUEST,
+      <span class="hljs-string">'value'</span>:value,
+      <span class="hljs-string">'index'</span>:<span class="hljs-number">0</span>,
+    },<span class="hljs-number">1</span>);
+  };
+</code></pre>
+    <h3 id="toc-8">Sending data</h3>
+    <pre><code class="js hljs lua">serial.Port.prototype.vendorWrite = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value,index)</span></span> {
+    console.log(<span class="hljs-string">"Write idx "</span>+index+<span class="hljs-string">" val = "</span>+value)
+      <span class="hljs-keyword">return</span> this.device.controlTransferOut({
+            <span class="hljs-string">'requestType'</span>: <span class="hljs-string">'vendor'</span>,
+            <span class="hljs-string">'recipient'</span>: <span class="hljs-string">'device'</span>,
+            <span class="hljs-string">'request'</span>: serial.VENDOR_WRITE_REQUEST,
+            <span class="hljs-string">'value'</span>: value,
+            <span class="hljs-string">'index'</span>: index,
+    });
+  };
+</code></pre>
+    <h3 id="toc-9">CH341 chip request table</h3>
+    <p>Check kernel soruce for more registers that is minimal request
+      list to run the code</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Request type</th>
+          <th>Recepient</th>
+          <th>Direction</th>
+          <th>Request</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>vendor</td>
+          <td>device</td>
+          <td>out</td>
+          <td>CH341_REQ_WRITE_REG</td>
+          <td>0x9a</td>
+        </tr>
+        <tr>
+          <td>vendor</td>
+          <td>device</td>
+          <td>in</td>
+          <td>CH341_REQ_READ_REG</td>
+          <td>0x95</td>
+        </tr>
+        <tr>
+          <td>vendor</td>
+          <td>device</td>
+          <td>out</td>
+          <td>CH341_REQ_MODEM_CTRL</td>
+          <td>0xa4</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="toc-10">PL2301 chip request table</h3>
+    <p>Check linux kernel source for more requests</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Request type</th>
+          <th>Recepient</th>
+          <th>Direction</th>
+          <th>Request</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>device</td>
+          <td>vendor</td>
+          <td>out</td>
+          <td>CP210_VENDOR_WRITE_REQUEST</td>
+          <td>0x01</td>
+        </tr>
+        <tr>
+          <td>device</td>
+          <td>vendor</td>
+          <td>in</td>
+          <td>CP210_VENDOR_READ_REQUEST</td>
+          <td>0x01</td>
+        </tr>
+        <tr>
+          <td>interface</td>
+          <td>class</td>
+          <td>in</td>
+          <td>CP210_GET_LINE_REQUEST</td>
+          <td>0x21</td>
+        </tr>
+        <tr>
+          <td>interface</td>
+          <td>class</td>
+          <td>out</td>
+          <td>CP210_SET_LINE_REQUEST</td>
+          <td>0x20</td>
+        </tr>
+        <tr>
+          <td>interface</td>
+          <td>class</td>
+          <td>out</td>
+          <td>CP210_SET_CONTROL_REQUEST</td>
+          <td>0x22</td>
+        </tr>
+        <tr>
+          <td>interface</td>
+          <td>class</td>
+          <td>out</td>
+          <td>CP210_BREAK_REQUEST</td>
+          <td>0x23</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="toc-11">Python snippet to decode request type</h3>
+    <p>Sometime there is mentioned request type in kernel source.
+      For PL2303 driver source just give hex equvalent of it, so its need
+      to be decoded to create USB packet for js.</p>
+    <pre><code class="python hljs"><span class="hljs-keyword">import</span> sys
+
+i = int(sys.argv[<span class="hljs-number">1</span>],<span class="hljs-number">16</span>)
+print(i)
+d1 = i&amp;<span class="hljs-number">0x1f</span>
+print(<span class="hljs-string">"Recepient        "</span>+str(d1)),
+<span class="hljs-keyword">if</span> d1 == <span class="hljs-number">0</span>:
+  print(<span class="hljs-string">" device"</span>)
+<span class="hljs-keyword">elif</span> d1 == <span class="hljs-number">1</span>:
+  print(<span class="hljs-string">" interface"</span>)
+<span class="hljs-keyword">elif</span> d1 == <span class="hljs-number">2</span>:
+  print(<span class="hljs-string">" endpoint"</span>)
+<span class="hljs-keyword">elif</span> d1 == <span class="hljs-number">3</span>:
+  print(<span class="hljs-string">" other"</span>)
+<span class="hljs-keyword">else</span>:
+  print(<span class="hljs-string">" Unknown"</span>)
+
+d2 = ((i&gt;&gt;<span class="hljs-number">5</span>)&amp;<span class="hljs-number">0x3</span>)
+print(<span class="hljs-string">"Request type     "</span>+str(d2)),
+<span class="hljs-keyword">if</span> d2 == <span class="hljs-number">0</span>:
+  print(<span class="hljs-string">" standart"</span>)
+<span class="hljs-keyword">elif</span> d2 == <span class="hljs-number">1</span>:
+  print(<span class="hljs-string">" class"</span>)
+<span class="hljs-keyword">elif</span> d2 == <span class="hljs-number">2</span>:
+  print(<span class="hljs-string">" vendor"</span>)
+<span class="hljs-keyword">elif</span> d2 == <span class="hljs-number">3</span>:
+  print(<span class="hljs-string">" reserved"</span>)
+<span class="hljs-keyword">else</span>:
+  print(<span class="hljs-string">" Unknown"</span>)
+
+d3 = ((i&gt;&gt;<span class="hljs-number">7</span>)&amp;<span class="hljs-number">0x1</span>)
+print(<span class="hljs-string">"Direction        "</span>+str(d3)),
+<span class="hljs-keyword">if</span> d3 == <span class="hljs-number">0</span>:
+  print(<span class="hljs-string">" Out"</span>)
+<span class="hljs-keyword">elif</span> d3 == <span class="hljs-number">1</span>:
+  print(<span class="hljs-string">" In"</span>)
+<span class="hljs-keyword">else</span>:
+  print(<span class="hljs-string">" Unknown"</span>)
+</code></pre>
+    <h2 id="toc-12">Sniffing USB traffic</h2>
+    <p>Linux provides infrastructure to see USB transactions. Its allow to
+      debug or sniff some USB trafic, so in case if there is some unknown
+      parts how USB initialisation is working, you have change to figure out
+      by seeing sequenc of commands sent to USB interface.</p>
+    <h3 id="toc-13">Setting usbmon</h3>
+    <pre><code class="hljs lua">mount -t debugfs none_debugs /sys/kernel/<span class="hljs-built_in">debug</span>
+modprobe usbmon
+ls /sys/kernel/<span class="hljs-built_in">debug</span>/usb/usbmon
+</code></pre>
+    <p>To see all usb interfaces with detailed info</p>
+    <pre><code class="hljs lua">cat /sys/kernel/<span class="hljs-built_in">debug</span>/usb/devices
+</code></pre>
+    <p>Here is quick look whant kind of interfaces device have, endpoint numner,
+      used power.</p>
+    <pre><code class="hljs cpp">T:  Bus=<span class="hljs-number">01</span> Lev=<span class="hljs-number">04</span> Prnt=<span class="hljs-number">43</span> Port=<span class="hljs-number">03</span> Cnt=<span class="hljs-number">02</span> Dev<span class="hljs-preprocessor">#= <span class="hljs-number">45</span> Spd=<span class="hljs-number">12</span>   MxCh= <span class="hljs-number">0</span></span>
+D:  Ver= <span class="hljs-number">1.10</span> Cls=ff(vend.) Sub=<span class="hljs-number">00</span> Prot=<span class="hljs-number">00</span> MxPS= <span class="hljs-number">8</span> <span class="hljs-preprocessor">#Cfgs=  <span class="hljs-number">1</span></span>
+P:  Vendor=<span class="hljs-number">1</span>a86 ProdID=<span class="hljs-number">7523</span> Rev= <span class="hljs-number">2.54</span>
+S:  Product=USB2<span class="hljs-number">.0</span>-Serial
+C:* <span class="hljs-preprocessor">#Ifs= <span class="hljs-number">1</span> Cfg#= <span class="hljs-number">1</span> Atr=<span class="hljs-number">80</span> MxPwr= <span class="hljs-number">96</span>mA</span>
+I:* If<span class="hljs-preprocessor">#= <span class="hljs-number">0</span> Alt= <span class="hljs-number">0</span> #EPs= <span class="hljs-number">3</span> Cls=ff(vend.) Sub=<span class="hljs-number">01</span> Prot=<span class="hljs-number">02</span> Driver=ch341</span>
+E:  Ad=<span class="hljs-number">82</span>(I) Atr=<span class="hljs-number">02</span>(Bulk) MxPS=  <span class="hljs-number">32</span> Ivl=<span class="hljs-number">0</span>ms
+E:  Ad=<span class="hljs-number">02</span>(O) Atr=<span class="hljs-number">02</span>(Bulk) MxPS=  <span class="hljs-number">32</span> Ivl=<span class="hljs-number">0</span>ms
+E:  Ad=<span class="hljs-number">81</span>(I) Atr=<span class="hljs-number">03</span>(Int.) MxPS=   <span class="hljs-number">8</span> Ivl=<span class="hljs-number">1</span>ms
+</code></pre>
+    <pre><code class="hljs pf">cat /sys/kernel/<span class="hljs-keyword">debug</span>/usb/usbmon/<span class="hljs-number">1</span>u &gt; /tmp/<span class="hljs-number">1</span>.mon.<span class="hljs-keyword">out</span>
+</code></pre>
+    <h3 id="toc-14">Sniffed traffic example</h3>
+    <p>example of sniffed trafic from usbmon</p>
+    <pre><code class="hljs cpp">ffff8c3203c21000 <span class="hljs-number">2726380350</span> S Co:<span class="hljs-number">2</span>:<span class="hljs-number">022</span>:<span class="hljs-number">0</span> s <span class="hljs-number">40</span> <span class="hljs-number">9</span>a <span class="hljs-number">1312</span> b282 <span class="hljs-number">0000</span> <span class="hljs-number">0</span>
+ffff8c3203c21000 <span class="hljs-number">2726380459</span> C Co:<span class="hljs-number">2</span>:<span class="hljs-number">022</span>:<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>
+ffff8c3203c21000 <span class="hljs-number">2726380480</span> S Co:<span class="hljs-number">2</span>:<span class="hljs-number">022</span>:<span class="hljs-number">0</span> s <span class="hljs-number">40</span> <span class="hljs-number">9</span>a <span class="hljs-number">2518</span> <span class="hljs-number">00</span>c3 <span class="hljs-number">0000</span> <span class="hljs-number">0</span>
+ffff8c3203c21000 <span class="hljs-number">2726380636</span> C Co:<span class="hljs-number">2</span>:<span class="hljs-number">022</span>:<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>
+</code></pre>
+    <table>
+      <thead>
+        <tr>
+          <th>Urb address</th>
+          <th>Timestamp</th>
+          <th>Urb Event</th>
+          <th>Transfer &amp; Control diredtion</th>
+          <th>Bus number</th>
+          <th>Device number</th>
+          <th>Endpoint number</th>
+          <th>Urb status</th>
+          <th>Request type</th>
+          <th>Request</th>
+          <th>Value</th>
+          <th>Index</th>
+          <th>Length</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ffff8c3203c21000</td>
+          <td>2726380350</td>
+          <td>S</td>
+          <td>Co</td>
+          <td>2</td>
+          <td>022</td>
+          <td>0</td>
+          <td>s</td>
+          <td>40</td>
+          <td>9a</td>
+          <td>1312</td>
+          <td>b282</td>
+          <td>0000</td>
+        </tr>
+        <tr>
+          <td>ffff8c3203c21000</td>
+          <td>2726380459</td>
+          <td>C</td>
+          <td>Co</td>
+          <td>2</td>
+          <td>022</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>ffff8c3203c21000</td>
+          <td>2726380480</td>
+          <td>S</td>
+          <td>Co</td>
+          <td>2</td>
+          <td>022</td>
+          <td>0</td>
+          <td>s</td>
+          <td>40</td>
+          <td>9a</td>
+          <td>2518</td>
+          <td>00c3</td>
+          <td>0000</td>
+        </tr>
+        <tr>
+          <td>ffff8c3203c21000</td>
+          <td>2726380636</td>
+          <td>C</td>
+          <td>Co</td>
+          <td>2</td>
+          <td>022</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="toc-15">Thx</h2>
+    <p><a href="https://github.com/daGrevis">daGrevis</a> - gave tips about using await/async in js<br>
+      <a href="https://github.com/jurgenzz">jurgenzz</a> - help solving await/async issues<br>
+      <a href="https://developers.lv/">#developers.lv</a> - having patiens for listening to js nonsence from js-newbie
+    </p>
+    <h2 id="toc-16">Source</h2>
+    <p><a href="http://git.main.lv/cgit.cgi/webusb.git/tree/">http://git.main.lv/cgit.cgi/webusb.git/tree/</a></p>
+    <h2 id="toc-17">Links</h2>
+    <p>[1] <a href="https://www.mankier.com/8/usbmon">https://www.mankier.com/8/usbmon</a><br>
+      [2] <a
+        href="https://www.kernel.org/doc/Documentation/usb/usbmon.txt">https://www.kernel.org/doc/Documentation/usb/usbmon.txt</a><br>
+      [3] <a
+        href="https://elinux.org/images/1/17/USB_Debugging_and_Profiling_Techniques.pdf">https://elinux.org/images/1/17/USB_Debugging_and_Profiling_Techniques.pdf</a><br>
+      [4] <a
+        href="https://developer.mozilla.org/en-US/docs/Web/API/USB">https://developer.mozilla.org/en-US/docs/Web/API/USB</a><br>
+      [5] <a
+        href="https://developer.mozilla.org/en-US/docs/Web/API/USBDevice">https://developer.mozilla.org/en-US/docs/Web/API/USBDevice</a><br>
+      [6] <a
+        href="https://github.com/ultibohub/Core/blob/master/source/rtl/ultibo/drivers/pl2303.pas">https://github.com/ultibohub/Core/blob/master/source/rtl/ultibo/drivers/pl2303.pas</a><br>
+      [7] <a
+        href="https://github.com/torvalds/linux/blob/master/drivers/usb/serial/pl2303.c">https://github.com/torvalds/linux/blob/master/drivers/usb/serial/pl2303.c</a><br>
+      [8] <a
+        href="https://www.beyondlogic.org/usbnutshell/usb1.shtml">https://www.beyondlogic.org/usbnutshell/usb1.shtml</a>
+    </p>
+
+
+
+  </div>
+
+
+</body>
+
+</html>

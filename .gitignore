@@ -2,9 +2,13 @@
 ._*
 Thumbs.db
 Desktop.ini
+.env
+.vscode
 
 # Project files
 ino_project
+.env
+launch.json
 
 # Closure library needed for uncompressed development
 /closure-library

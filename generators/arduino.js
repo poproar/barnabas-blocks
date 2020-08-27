@@ -26,11 +26,13 @@
 goog.provide('Blockly.Arduino');
 
 goog.require('Blockly.Generator');
+goog.require('Blockly.utils.global');
+goog.require('Blockly.utils.string');
 
 
 /**
  * Arduino code generator.
- * @type !Blockly.Generator
+ * @type {!Blockly.Generator}
  */
 Blockly.Arduino = new Blockly.Generator('Arduino');
 
@@ -82,7 +84,6 @@ var profile = {
   arduino: {
     description: "Arduino standard-compatible board",
     digital: [["0","0"],["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"], ["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["A5", "A5"]],
-    grove_digital: [["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"]],
     analog: [["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["A5", "A5"]],
     grove_analog: [["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"]],
     pwm: [["3", "3"], ["5", "5"], ["6", "6"], ["9", "9"], ["10", "10"], ["11", "11"]],
@@ -111,10 +112,13 @@ profile["default"] = profile["arduino"];
  * @param {!Blockly.Workspace} workspace Workspace to generate code from.
  */
 Blockly.Arduino.init = function(workspace) {
-  // Create a dictionary of definitions to be printed before setups.
+  // Create a dictionary of definitions to be printed before the code.
   Blockly.Arduino.definitions_ = Object.create(null);
-  // Create a dictionary of setups to be printed before the code.
+  // Create a dictionary mapping desired function names in definitions_
+  // to actual function names (to avoid collisions with user functions).
+  Blockly.Arduino.functionNames_ = Object.create(null);
   Blockly.Arduino.setups_ = Object.create(null);
+  Blockly.Arduino.loop_ = Object.create(null);
 
   if (!Blockly.Arduino.variableDB_) {
     Blockly.Arduino.variableDB_ =
@@ -123,26 +127,51 @@ Blockly.Arduino.init = function(workspace) {
     Blockly.Arduino.variableDB_.reset();
   }
 
+  Blockly.Arduino.variableDB_.setVariableMap(workspace.getVariableMap());
+
   var defvars = [];
-//  var variables = Blockly.Variables.allVariables(workspace);
-  var variables = Blockly.Variables.allVariablesAndTypes(workspace);
-  var datatype = {Number:'int',Long:'long',Float:'float',Byte:'byte',Boolean:'boolean',Char:'char',String:'String',Array:'int',Volatile_Int:'volatile int',Word:'word',Double:'double',Unsigned_Int:'unsigned int',Unsigned_Long:'unsigned long'};
-  for (var x = 0; x < variables.length; x++) {
-    if(variables[x][1] == ""){
-      defvars[x] = 'int ' + ' ' + variables[x][0] + ';\n';
-      //Blockly.Arduino.variableDB_.getName(variables[x],
-      //Blockly.Variables.NAME_TYPE) + ';\n';
-      Blockly.Arduino.definitions_[variables[x][0]] = defvars[x];
-    }else{
-      //defvars[x] = 'int ' +
-      defvars[x] = datatype[variables[x][1]]
-        + ' ' + variables[x][0] + ';\n';
-        //Blockly.Arduino.variableDB_.getName(variables[x],
-        //Blockly.Variables.NAME_TYPE) + ';\n';
-      Blockly.Arduino.definitions_[variables[x][0]] = defvars[x];
-    }
+  // Add developer variables (not created or named by the user).
+  var devVarList = Blockly.Variables.allDeveloperVariables(workspace);
+  for (var i = 0; i < devVarList.length; i++) {
+    defvars.push(Blockly.Arduino.variableDB_.getName(devVarList[i],
+        Blockly.Names.DEVELOPER_VARIABLE_TYPE));
   }
-  //Blockly.Arduino.definitions_['variables'] = defvars.join('\n');
+
+//  OLDER CODE :
+//  var variables = Blockly.Variables.allVariables(workspace);
+//   // var variables = Blockly.Variables.allVariablesAndTypes(workspace);
+//   var datatype = {Number:'int',Long:'long',Float:'float',Byte:'byte',Boolean:'boolean',Char:'char',String:'String',Array:'int',Volatile_Int:'volatile int',Word:'word',Double:'double',Unsigned_Int:'unsigned int',Unsigned_Long:'unsigned long'};
+//   for (var x = 0; x < variables.length; x++) {
+//     if(variables[x][1] == ""){
+//       defvars[x] = 'int ' + ' ' + variables[x][0] + ';\n';
+//       //Blockly.Arduino.variableDB_.getName(variables[x],
+//       //Blockly.Variables.NAME_TYPE) + ';\n';
+//       Blockly.Arduino.definitions_[variables[x][0]] = defvars[x];
+//     }else{
+//       //defvars[x] = 'int ' +
+//       defvars[x] = datatype[variables[x][1]]
+//         + ' ' + variables[x][0] + ';\n';
+//         //Blockly.Arduino.variableDB_.getName(variables[x],
+//         //Blockly.Variables.NAME_TYPE) + ';\n';
+//       Blockly.Arduino.definitions_[variables[x][0]] = defvars[x];
+//     }
+//   }
+//   //Blockly.Arduino.definitions_['variables'] = defvars.join('\n');
+// };
+// END OLDER CODE
+
+  // Add user variables, but only ones that are being used.
+  var variables = Blockly.Variables.allUsedVarModels(workspace);
+  for (var i = 0; i < variables.length; i++) {
+    defvars.push(Blockly.Arduino.variableDB_.getName(variables[i].getId(),
+        Blockly.VARIABLE_CATEGORY_NAME));
+  }
+
+  // Declare all of the variables.
+  if (defvars.length) {
+    Blockly.Arduino.definitions_['variables'] =
+        'var ' + defvars.join(', ') + ';';
+  }
 };
 
 /**
@@ -152,9 +181,21 @@ Blockly.Arduino.init = function(workspace) {
  */
 Blockly.Arduino.finish = function(code) {
   // Indent every line.
-  code = '  ' + code.replace(/\n/g, '\n  ');
+  // code = '  ' + code.replace(/\n/g, '\n  '); // comment?
+  code = code.replace(/\n/g, '\n  ');
   code = code.replace(/\n\s+$/, '\n');
-  code = 'void loop() \n{\n' + code + '\n}';
+  code = '\n\n/***** OUTSIDE BLOCKS *****\n{\n' + code + '}\n** END OUTSIDE BLOCKS ********/';
+
+  var loop = Blockly.Arduino.loop_;
+
+  if(Object.keys(loop).length==0){
+    alert("Your loop is empty!");
+    loop = '';
+  } else {
+    loop = '  ' + loop.replace(/\n/g, '\n  ');
+    loop = loop.replace(/\n\s+$/, '\n');
+    loop = 'void loop() \n{\n' + loop + '}';
+  }
 
   // Convert the definitions dictionary into a list.
   var imports = [];
@@ -175,7 +216,7 @@ Blockly.Arduino.finish = function(code) {
   }
 
   var allDefs = imports.join('\n') + '\n\n' + definitions.join('\n') + '\nvoid setup() \n{\n  '+setups.join('\n  ') + '\n}'+ '\n\n';
-  return allDefs.replace(/\n\n+/g, '\n\n').replace(/\n*$/, '\n\n\n') + code;
+  return allDefs.replace(/\n\n+/g, '\n\n').replace(/\n*$/, '\n\n\n') + loop + code;
 };
 
 /**

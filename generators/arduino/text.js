@@ -28,29 +28,29 @@ goog.provide('Blockly.Arduino.texts');
 goog.require('Blockly.Arduino');
 
 
-Blockly.Arduino.text = function() {
+Blockly.Arduino['text'] = function (block) {
   // Text value.
-  var code = Blockly.Arduino.quote_(this.getFieldValue('TEXT'));
+  var code = Blockly.Arduino.quote_(block.getFieldValue('TEXT'));
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
-Blockly.Arduino.text_commentout = function() {
-  var branch = Blockly.Arduino.statementToCode(this, 'COMMENTOUT');
+Blockly.Arduino['text_commentout'] = function (block) {
+  var branch = Blockly.Arduino.statementToCode(block, 'COMMENTOUT');
   var code;
   code = '/*\n' + branch + '\n*/\n';
   return code;
 };
 
-Blockly.Arduino.text_length = function() {
+Blockly.Arduino['text_length'] = function (block) {
   // String length.
-  var argument0 = Blockly.Arduino.valueToCode(this, 'VALUE',
-                                                 Blockly.Arduino.ORDER_FUNCTION_CALL) || '\'\'';
+  var argument0 = Blockly.Arduino.valueToCode(block, 'VALUE',
+    Blockly.Arduino.ORDER_FUNCTION_CALL) || '\'\'';
   return [argument0 + '.length()', Blockly.Arduino.ORDER_MEMBER];
 };
 
-Blockly.Arduino.text_charAt = function(){
-  var argument0 = Blockly.Arduino.valueToCode(this,'VALUE',Blockly.Arduino.ORDER_ATOMIC) || "";
-  var index = Blockly.Arduino.valueToCode(this,'INDEX',Blockly.Arduino.ORDER_ATOMIC) || 0;
+Blockly.Arduino['text_charAt'] = function (block) {
+  var argument0 = Blockly.Arduino.valueToCode(block, 'VALUE', Blockly.Arduino.ORDER_ATOMIC) || "";
+  var index = Blockly.Arduino.valueToCode(block, 'INDEX', Blockly.Arduino.ORDER_ATOMIC) || 0;
   var code = argument0 + '.charAt(' + index + ')'
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };

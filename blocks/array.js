@@ -162,7 +162,7 @@ Blockly.Blocks['array_create_with_item'] = {
   init: function() {
     this.setColour(Blockly.Blocks.array.HUE);
     this.appendDummyInput()
-      .appendField(Blockly.Msg.ARRAY_CREATE_WITH_ITEM_TITLE);
+        .appendField(Blockly.Msg.ARRAY_CREATE_WITH_ITEM_TITLE);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.ARRAY_CREATE_WITH_ITEM_TOOLTIP);
@@ -178,7 +178,7 @@ Blockly.Blocks['array_create_with_container'] = {
   init: function() {
     this.setColour(Blockly.Blocks.array.HUE);
     this.appendDummyInput()
-      .appendField(Blockly.Msg.ARRAY_CREATE_WITH_CONTAINER_TITLE_ADD);
+        .appendField(Blockly.Msg.ARRAY_CREATE_WITH_CONTAINER_TITLE_ADD);
     this.appendStatementInput('STACK');
     this.setTooltip(Blockly.Msg.ARRAY_CREATE_WITH_CONTAINER_TOOLTIP);
     this.contextMenu = false;
@@ -190,11 +190,11 @@ Blockly.Blocks['array_getIndex'] = {
     this.setHelpUrl(Blockly.Msg.ARRAY_GETINDEX);
     this.setColour(Blockly.Blocks.array.HUE);
     this.appendValueInput("ITEM")
-      .setCheck('Array')
-      .appendField(Blockly.Msg.ARRAY_GETINDEX_ITEM);
+        .setCheck('Array')
+        .appendField(Blockly.Msg.ARRAY_GETINDEX_ITEM);
     this.appendValueInput("AT")
-      .setCheck("Number")
-      .appendField(Blockly.Msg.ARRAY_GETINDEX_AT);
+        .setCheck("Number")
+        .appendField(Blockly.Msg.ARRAY_GETINDEX_AT);
     this.setInputsInline(true);
     this.setOutput(true);
     this.setTooltip(Blockly.Msg.ARRAY_GETINDEX_TOOLTIP);

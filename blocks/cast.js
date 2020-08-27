@@ -1,6 +1,6 @@
-//http://www.seeedstudio.com/wiki/GROVE_System
-//http://www.seeedstudio.com/depot/index.php?main_page=advanced_search_result&search_in_description=1&keyword=grovefamily
-//support starter bundle example http://www.seeedstudio.com/wiki/GROVE_-_Starter_Kit_V1.1b
+// http://www.seeedstudio.com/wiki/GROVE_System
+// http://www.seeedstudio.com/depot/index.php?main_page=advanced_search_result&search_in_description=1&keyword=grovefamily
+// support starter bundle example http://www.seeedstudio.com/wiki/GROVE_-_Starter_Kit_V1.1b
 
 /**
  * @license
@@ -38,21 +38,21 @@ Blockly.Blocks['cast_number'] = {
     this.setHelpUrl(Blockly.Msg.CAST_NUMBER_HELPURL);
     this.setColour(Blockly.Blocks.cast.HUE);
     this.appendDummyInput()
-      .appendField(Blockly.Msg.CAST_NUMBER_TITLE)
-      .appendField(new Blockly.FieldDropdown([
-        [Blockly.Msg.VARIABLES_TYPE_NUMBER,"(int)"],
-        [Blockly.Msg.VARIABLES_TYPE_UNSIGNED_INT,"(unsigned int)"],
-        [Blockly.Msg.VARIABLES_TYPE_BYTE,"(byte)"],
-        [Blockly.Msg.VARIABLES_TYPE_WORD,"(word)"],
-        [Blockly.Msg.VARIABLES_TYPE_LONG,"(long)"],
-        [Blockly.Msg.VARIABLES_TYPE_UNSIGNED_LONG,"(unsigned long)"],
-        [Blockly.Msg.VARIABLES_TYPE_FLOAT,"(float)"],
-        [Blockly.Msg.VARIABLES_TYPE_DOUBLE,"(double)"],
-        [Blockly.Msg.VARIABLES_TYPE_CHAR,"(char)"]
-      ]), "TYPE");
+        .appendField(Blockly.Msg.CAST_NUMBER_TITLE)
+        .appendField(new Blockly.FieldDropdown([
+          [Blockly.Msg.VARIABLES_TYPE_NUMBER,"(int)"],
+          [Blockly.Msg.VARIABLES_TYPE_UNSIGNED_INT,"(unsigned int)"],
+          [Blockly.Msg.VARIABLES_TYPE_BYTE,"(byte)"],
+          [Blockly.Msg.VARIABLES_TYPE_WORD,"(word)"],
+          [Blockly.Msg.VARIABLES_TYPE_LONG,"(long)"],
+          [Blockly.Msg.VARIABLES_TYPE_UNSIGNED_LONG,"(unsigned long)"],
+          [Blockly.Msg.VARIABLES_TYPE_FLOAT,"(float)"],
+          [Blockly.Msg.VARIABLES_TYPE_DOUBLE,"(double)"],
+          [Blockly.Msg.VARIABLES_TYPE_CHAR,"(char)"]
+        ]), "TYPE");
     this.appendValueInput("VAR")
-      .setCheck(profile.common.number_type)
-      .appendField(Blockly.Msg.VARIALBLE);
+        .setCheck(profile.common.number_type)
+        .appendField(Blockly.Msg.VARIALBLE);
     this.setInputsInline(true);
     this.setOutput(true, profile.common.number_type);
     this.setTooltip(Blockly.Msg.CAST_NUMBER_TOOLTIP);

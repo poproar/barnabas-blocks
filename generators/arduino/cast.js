@@ -27,9 +27,9 @@ goog.provide('Blockly.Arduino.cast');
 
 goog.require('Blockly.Arduino');
 
-Blockly.Arduino.cast_number = function() {
-  var type = this.getFieldValue('TYPE');
-  var varialbe = Blockly.Arduino.valueToCode(this, 'VAR', Blockly.Arduino.ORDER_ATOMIC) || '0'
+Blockly.Arduino['cast_number'] = function(block) {
+  var type = block.getFieldValue('TYPE');
+  var varialbe = Blockly.Arduino.valueToCode(block, 'VAR', Blockly.Arduino.ORDER_ATOMIC) || '0'
 
   var code = type + ' ' + varialbe;
   return [code, Blockly.Arduino.ORDER_ATOMIC];

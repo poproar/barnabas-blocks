@@ -5,9 +5,10 @@
 
 'use strict';
 
-var TABS_ = ['blocks', 'arduino'];
+var TABS_ = ['blocks', 'arduino', 'hex', 'log'];
 
 var selected = 'blocks';
+var ed = false;
 
 /**
  * Switch the visible pane when a tab is clicked.
@@ -18,6 +19,10 @@ function tabClick(clickedName) {
   for (var i = 0; i < TABS_.length; i++) {
     var name = TABS_[i];
     document.getElementById('tab_' + name).className = 'taboff';
+    // remove this after testing
+    if (window.localStorage.devMode === 'undefined') {
+      document.getElementById('tab_hex').className = 'taboff hide';
+    }
     document.getElementById('content_' + name).style.visibility = 'hidden';
   }
 
@@ -36,13 +41,17 @@ function tabClick(clickedName) {
 function renderContent() {
   var content = document.getElementById('content_' + selected);
   var button = document.getElementById('copy-button');
+  var bugIcon = document.getElementById('verify-button');
+  var pencilIcon = document.getElementById('edit-button');
   // Initialize the pane.
   if (content.id == 'content_blocks') {
     // If the workspace was changed by the XML tab, Firefox will have performed
     // an incomplete rendering due to Blockly being invisible.  Rerender.
     Blockly.mainWorkspace.render();
     button.style.display = "none";
-  } else if (content.id == 'content_arduino') {
+    bugIcon.style.display = "none";
+    pencilIcon.style.display = "none";
+  } else if (content.id == 'content_arduino' && content.readOnly) {
     // content.innerHTML = Blockly.Arduino.workspaceToCode();
     var arduinoTextarea = document.getElementById('content_arduino');
     arduinoTextarea.value = Blockly.Arduino.workspaceToCode();
@@ -56,6 +65,8 @@ function renderContent() {
     // arduinoTextarea.focus();
     // }
     button.style.display = "";
+    bugIcon.style.display = "";
+    pencilIcon.style.display = "";
   }
 }
 
@@ -156,8 +167,19 @@ function buildtoolBox() {
   // base += "category_interrupts,";
   base += "category_sep";
 
+  // let lesson = window.localStorage.lesson;
+  // let racer ="";
+  // racer += "category_math,";
+  // racer += "category_text,";
+  // racer += "category_serial,";
+  // racer += "category_variables,";
+  // racer += "category_functions,";
+  // // base += "category_interrupts,";
+  // racer += "category_sep";
+
+
   var option = window.localStorage.toolboxids;
-  if (option === undefined){
+  if (option === undefined) {
     change_lang();
   }
 
@@ -167,6 +189,11 @@ function buildtoolBox() {
   } else {
     loadIds = base + ',' + option;
   }
+
+  // if (lesson ==="racer")
+  // {
+  //   loadIds = base + ',' + racer;
+  // }
 
   //window.localStorage.toolboxids = loadIds;
 
@@ -190,6 +217,32 @@ function setCheckbox() {
       $('#chbox_' + options[i]).prop('checked', true);
     }
   }
+  var dev = window.localStorage.devMode;
+  if (dev == 'on') {
+    $('#devMode').prop('checked', true);
+    $('#get-hex').removeClass('hide');
+  }
+  var board = window.localStorage.board;
+  if (board === undefined || board === "") {
+    board = 'nano';
+  }
+  if (board == "nano") {
+    document.getElementById("board-show").innerText = "NOGGIN";
+  } else {
+    document.getElementById("board-show").innerText = "UNO";
+  }
+  $("#board-select").data("board", board);
+
+  var lesson = window.localStorage.lesson;
+  if (lesson === undefined || lesson === "") {
+    lesson = 'bot';
+  }
+  if (lesson == "bot") {
+    document.getElementById("lesson-show").innerText = "ROBOT";
+  } else {
+    document.getElementById("lesson-show").innerText = "RACER";
+  }
+  $("#lesson-select").data("lesson", lesson);
 }
 
 function loadxml() {
@@ -276,6 +329,18 @@ function getParam() {
 }
 
 function setScript() {
+
+  if (!('serial' in navigator)) {
+    $('#notSupported').openModal({
+      dismissible: true, // Modal can be dismissed by clicking outside of the modal
+      opacity: .5, // Opacity of modal background
+      in_duration: 300, // Transition in duration
+      out_duration: 200, // Transition out duration
+      // ready: function() { alert('Ready'); }, // Callback for Modal open
+      // complete: function() { alert('Closed'); } // Callback for Modal close
+    });
+  }
+
   var script = document.createElement('script');
   script.type = 'text/javascript';
   script.id = 'msg';
@@ -287,6 +352,7 @@ function setScript() {
     if (typeof param === "undefined") param = "en";
     param = param.replace("#", "");
   }
+
   script.src = filepath["msg_" + param];
   var str = "#select-lang-" + param;
   $(str).prop('checked', true);
@@ -306,12 +372,15 @@ function setCharacter() {
 
   $("#tab_blocks").text(Blockly.Msg.BLOCKS);
   $("#tab_arduino").text(Blockly.Msg.ARDUINO);
+  $("#tab_hex").text(Blockly.Msg.HEX);
+  $("#tab_log").text(Blockly.Msg.LOG);
 
   $("#get-app").attr("data-tooltip", "Upload to Bot");// Blockly.Msg.DOWNLOAD_CHROME_APP
   $("#go-to-sample").attr("data-tooltip", Blockly.Msg.GO_TO_SAMPLE);
   $("#change-lang").attr("data-tooltip", Blockly.Msg.CHANGE_LANG);
   $("#dialog-lang-title").text(Blockly.Msg.DIALOG_LANG_TITLE);
   $("#dialog-block-title").text(Blockly.Msg.DIALOG_BLOCK_TITLE);
+  $("#get-hex").attr("data-tooltip", Blockly.Msg.UPLOAD);
 
   $("#button_import").text(Blockly.Msg.BUTTON_IMPORT);
   $("#button_export").text(Blockly.Msg.BUTTON_EXPORT);
@@ -356,6 +425,11 @@ function change_lang() {
   $.cookie("lang", val, {
     expires: 7
   });
+
+  window.localStorage.board = $("#board-select").data("board");
+  window.localStorage.lesson = $("#lesson-select").data("lesson");
+  window.localStorage.devMode = $('#devMode:checked').val();
+
   var loc = window.location;
   window.location = loc.protocol + '//' + loc.host + loc.pathname + '?lang=' + val;
 }

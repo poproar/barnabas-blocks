@@ -28,21 +28,21 @@ goog.provide('Blockly.Arduino.array');
 
 goog.require('Blockly.Arduino');
 
-Blockly.Arduino.array_create_with = function() {
+Blockly.Arduino['array_create_with'] = function(block) {
   // Create a list with any number of elements of any type.
-  var code = new Array(this.itemCount_);
-  for (var n = 0; n < this.itemCount_; n++) {
-    code[n] = Blockly.Arduino.valueToCode(this, 'ADD' + n,
+  var code = new Array(block.itemCount_);
+  for (var n = 0; n < block.itemCount_; n++) {
+    code[n] = Blockly.Arduino.valueToCode(block, 'ADD' + n,
                                              Blockly.Arduino.ORDER_COMMA) || 'null';
   }
   code = '{' + code.join(', ') + '}';
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
-Blockly.Arduino.array_getIndex = function() {
-  var at = Blockly.Arduino.valueToCode(this, 'AT',
+Blockly.Arduino['array_getIndex'] = function(block) {
+  var at = Blockly.Arduino.valueToCode(block, 'AT',
                                           Blockly.Arduino.ORDER_UNARY_NEGATION) || '1';
-  var list = Blockly.Arduino.valueToCode(this, 'ITEM',
+  var list = Blockly.Arduino.valueToCode(block, 'ITEM',
                                             Blockly.Arduino.ORDER_MEMBER) || '[]';
 
   if (Blockly.isNumber(at)) {
