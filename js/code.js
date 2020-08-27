@@ -7,6 +7,7 @@
 /**
  * @fileoverview JavaScript for Blockly's Code demo.
  * @author fraser@google.com (Neil Fraser)
+ * @modifications andrew@barnabasrobotics.com
  */
 'use strict';
 
@@ -364,6 +365,8 @@ Code.renderContent = function () {
     xmlTextarea.focus();
   } else if (content.id == 'content_arduino' && Code.getEditor()=='blocks') {
     Code.attemptCodeGeneration(Blockly.Arduino);
+  } else if (content.id == 'content_editor' && Code.getEditor()=='blocks') {
+    Code.attemptCodeGeneration(Blockly.Arduino);
   }
   if (typeof PR == 'object') {
     PR.prettyPrint();
@@ -388,6 +391,8 @@ Code.attemptCodeGeneration = function (generator) {
     content.value = code;
     // Remove the 'prettyprinted' class, so that Prettify will recalculate.
     content.className = content.className.replace('prettyprinted', '');
+    Code.ace.setValue(code);
+    Code.ace.gotoLine(1);
   }
 };
 
@@ -634,6 +639,8 @@ Code.init = function () {
   Code.workspace.registerToolboxCategoryCallback('CREATE_TYPED_VARIABLE', createFlyout);
   const typedVarModal = new TypedVariableModal(Code.workspace, 'callbackName', varTypes); 
   typedVarModal.init();
+  // Code.workspace.zoomCenter(-2);
+  // Code.workspace.zoomToFit();
 
 };
 
@@ -819,6 +826,10 @@ Code.getHex = function (flash = false) {
           let message = data.stderr.replace(regex, "");
           console.error(message);
           upload_result(message, false)
+          regex = /\d+\:\d+/g;
+          let rowcol = message.match(regex);
+          let row = rowcol[0].substring(0,rowcol[0].indexOf(':'));
+          Code.ace.gotoLine(row);
         }
       } else {
         let hexstring = atob(data.hex);
@@ -891,7 +902,8 @@ Code.compile = function () {
 Code.getINO = function () {
   if (Code.selected == 'blocks' && Code.checkRoots())
     return Blockly.Arduino.workspaceToCode()
-  return document.getElementById("content_arduino").value;
+  // return document.getElementById("content_arduino").value;
+  return Code.ace.getValue();
 }
 
 Code.switchLoops = function () {
@@ -998,7 +1010,7 @@ Code.editText = function () {
   var textarea = document.getElementById("content_arduino");
   var blocksTab = document.getElementById('tab_blocks');//className = 'taboff hide';
   var arduinoTab = document.getElementById('tab_arduino');//className = 'taboff hide';
-  // var editorTab = document.getElementById('tab_editor');//className = 'taboff hide';
+  var editorTab = document.getElementById('tab_editor');//className = 'taboff hide';
   let editor = Code.getEditor();
 
     // onresize();
@@ -1007,9 +1019,11 @@ Code.editText = function () {
       editButton.innerHTML="BLOCKS"
       blocksTab.classList.add("hide");
       textarea.readOnly = false;
+      Code.ace.setReadOnly(false);
       // arduinoTab.classList.toggle("hide");
       // editorTab.classList.remove("hide");
-      Code.tabClick('arduino');
+      // Code.tabClick('arduino');
+      Code.tabClick('editor');
     }
     else if (confirm("Going back to blocks will remove any custom edits\n" + 
                       "Do you wish to continue?")){
@@ -1019,21 +1033,33 @@ Code.editText = function () {
       // arduinoTab.classList.toggle("hide");
       // editorTab.classList.add("hide");
       textarea.readOnly = true;
+      Code.ace.setReadOnly(true);
       Code.tabClick('blocks');
       
     }
 };
 
+Code.ace = ace.edit("content_editor");
+
 Code.initEditor = function(init = true) {
   // Code.selected = Code.EDITOR;
+  Code.ace.setTheme("ace/theme/textmate");
+  Code.ace.session.setMode("ace/mode/c_cpp");
+  Code.ace.setShowPrintMargin(false);
+  // Code.ace.session.setUseSoftTabs(true);
+  Code.ace.session.setTabSize(2);
+  document.getElementById('content_editor').style.fontSize='14px';
+
   if (Code.EDITOR == 'editor') {
     document.getElementById("editButton").innerHTML="BLOCKS"
     document.getElementById("tab_blocks").classList.add("hide");
     document.getElementById("content_arduino").readOnly = false;
-    Code.tabClick('arduino');
+    Code.ace.setReadOnly(false);
+    Code.tabClick('editor');
   } else {
     document.getElementById("editButton").innerHTML="EDIT TEXT"
     document.getElementById("content_arduino").readOnly = true;
+    Code.ace.setReadOnly(true);
   }
 }
 

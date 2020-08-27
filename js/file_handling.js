@@ -8,7 +8,8 @@ function backup_blocks() {
       var xml = Blockly.Xml.workspaceToDom(Code.workspace);
       window.localStorage.setItem('arduino', Blockly.Xml.domToText(xml));
     } else {
-      window.localStorage.setItem('arduino', document.getElementById("content_arduino").value);
+      // window.localStorage.setItem('arduino', document.getElementById("content_arduino").value);
+      window.localStorage.setItem('arduino', Code.ace.getValue());
     }
   }
 }
@@ -23,7 +24,9 @@ function restore_blocks() {
       var xml = Blockly.Xml.textToDom(window.localStorage.arduino);
       Blockly.Xml.domToWorkspace(xml, Code.workspace);
     } else {
-      document.getElementById("content_arduino").value = window.localStorage.arduino;
+      // document.getElementById("content_arduino").value = window.localStorage.arduino;
+      Code.ace.setValue(window.localStorage.arduino);
+      Code.ace.gotoLine(1);
     }
   }
 }
@@ -59,7 +62,9 @@ function load(event) {
         Blockly.Xml.domToWorkspace(xml, Code.workspace);
       } else {
         document.getElementById("content_arduino").value = target.result;
-        Code.tabClick('arduino');
+        Code.ace.setValue(target.result);
+        Code.ace.gotoLine(1);
+        Code.tabClick('editor');
       }
     }
     // Reset value of input after loading because Chrome will not fire
