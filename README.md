@@ -19,53 +19,20 @@ The core was started as a fork from [BlocklyDuino](https://github.com/makewithar
 
 ### Demo
 
-This is a web tool. You can give it a try at https://code.barnabasrobotics.com.
+This is a web tool for teaching [Barnabas Robotics Curriculum](https://lessons.barnabasrobotics.com). You can give it a try at https://code.barnabasrobotics.com.
 
-If you want to install it locally:
-
-git clone https://github.com/BarnabasRobotics/Online-BlocklyDuinoEditor.git
-
-You can then use a local server in your IDE or an extension with your browser and going to a url like localhost/public/blockly/demos/blocklyduino/index.html for use.
-
-### Run locally on your web browser
-
-1. Open browser to BlocklyDuino, Drag and Drop blocks to make arduino program.
-2. Select 'Arduino' tab to copy source code to Arduino IDE
+### Creating New Blocks
+1. While old chromeduino blocks still exist in blocks a new directory blocks/custom has been added.
+you can create new files and add them to the index file or simply append them to the arduino.js file. 
+1. For code generation you can also append that to arduino.js in blocks/custom but it is recommended to add your new generator in the generators/arduino directory and insert that to your index file.
 
 Uploading the code to an arduino is currently a work in progress with eyes on [WebUSB](https://wicg.github.io/webusb/) or [WebSerial](https://github.com/WICG/serial)
-
-
-### Integrated Arduino upload
-
-To avoid the tedious step of manually pasting code to the Arduino IDE, you can run a mini webserver that uses
-the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to upload the code to a connected Arduino board on Windows, Mac OS X and Linux systems.
-Invoke this command from the BlocklyDuino root folder:
-
-```
-python arduino_web_server.py
-```
-
-You can optionally specify the port with `--port=COM3` (or `--port=/dev/tty.foo` on Linux and Mac); if you don't, it will try and guess which port to use.
-
-When the webserver is running, you can access BlocklyDuino itself on [http://127.0.0.1:8080/](http://127.0.0.1:8080/).
-
-### Usage
-
-1. Open browser to BlocklyDuino, drag and drop blocks to make an Arduino program
-2. Select the 'Arduino' tab and copy all of the source code into an existing or new project in the Arduino IDE
-3. Press the 'Upload' button in the Arduino IDE to burn the code into a connected Arduino board
-
-OR (if running `ino_web_server.py`):
-
-1. Open browser to BlocklyDuino, drag and drop blocks to make an Arduino program.
-2. Select the 'Arduino' tab and press the 'Upload' button. (press the 'Reset' button to upload an empty program)
-
-### ChangeLog
-
-Check changelog [here](https://github.com/BlocklyDuino/BlocklyDuino/blob/master/CHANGELOG.txt)
+With special thanks to @noopkat https://github.com/noopkat/avrgirl-arduino we can now flash to our Barnabas Noggin
 
 ### Authors and Contributors
 Fred Lin @gasolin is the creator of BlocklyDuino.
+
+Suz Hinton @noopkat for avrgirl.
 
 BlocklyDuino is a **web-based visual programming editor for [Arduino](http://www.arduino.cc/)**.
 
@@ -74,9 +41,6 @@ BlocklyDuino is based on [Blockly](https://developers.google.com/blockly/), the 
 Thanks Neil Fraser, Q.Neutron from [Blockly](https://developers.google.com/blockly/)
 
 The project is also inspired by [ardublock](https://github.com/taweili/ardublock) and [modkit](http://www.modk.it/)
-Thanks Dale Low (gumbypp) for contribute the python server to pipe BlocklyDuino source to arduino board.
-
-Thanks Arduino and Seeeduino guys for Arduino and [Grove](http://www.seeedstudio.com/wiki/GROVE_System) blocks.
 
 [makewitharduino](https://github.com/makewitharduino/Online-BlocklyDuinoEditor) is work by @okhiroyuki
 
@@ -84,7 +48,7 @@ There has been some interesting [chatter on Chromeduino](https://github.com/spac
 
 ### License
 
-Copyright (C) 2012~2015 Fred Lin gasolin+blockly@gmail.com
+Copyright (C) 2020
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,9 +56,7 @@ Copyright (C) 2012~2015 Fred Lin gasolin+blockly@gmail.com
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
 
-
 # Blockly [![Build Status]( https://travis-ci.org/google/blockly.svg?branch=master)](https://travis-ci.org/google/blockly)
-
 
 Google's Blockly is a web-based, visual programming editor.  Users can drag
 blocks together to build programs.  All code is free and open source.
