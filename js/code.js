@@ -7,7 +7,6 @@
 /**
  * @fileoverview JavaScript for Blockly's Code demo.
  * @author fraser@google.com (Neil Fraser)
- * @modifications andrew@barnabasrobotics.com
  */
 'use strict';
 
@@ -639,9 +638,6 @@ Code.init = function () {
   Code.workspace.registerToolboxCategoryCallback('CREATE_TYPED_VARIABLE', createFlyout);
   const typedVarModal = new TypedVariableModal(Code.workspace, 'callbackName', varTypes); 
   typedVarModal.init();
-  // Code.workspace.zoomCenter(-2);
-  // Code.workspace.zoomToFit();
-
 };
 
 const createFlyout = function(workspace) {
@@ -904,6 +900,7 @@ Code.getINO = function () {
     return Blockly.Arduino.workspaceToCode()
   // return document.getElementById("content_arduino").value;
   return Code.ace.getValue();
+  return document.getElementById("content_arduino").value;
 }
 
 Code.switchLoops = function () {
@@ -1011,6 +1008,7 @@ Code.editText = function () {
   var blocksTab = document.getElementById('tab_blocks');//className = 'taboff hide';
   var arduinoTab = document.getElementById('tab_arduino');//className = 'taboff hide';
   var editorTab = document.getElementById('tab_editor');//className = 'taboff hide';
+  // var editorTab = document.getElementById('tab_editor');//className = 'taboff hide';
   let editor = Code.getEditor();
 
     // onresize();
@@ -1024,6 +1022,9 @@ Code.editText = function () {
       // editorTab.classList.remove("hide");
       // Code.tabClick('arduino');
       Code.tabClick('editor');
+      // arduinoTab.classList.toggle("hide");
+      // editorTab.classList.remove("hide");
+      Code.tabClick('arduino');
     }
     else if (confirm("Going back to blocks will remove any custom edits\n" + 
                       "Do you wish to continue?")){
