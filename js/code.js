@@ -951,7 +951,7 @@ Code.editText = function () {
     // onresize();
     if (editor == 'blocks') {
       Code.setEditor();
-      editButton.innerHTML="BLOCKS"
+      editButton.innerHTML="BLOCK CODE"
       blocksTab.classList.add("hide");
       textarea.readOnly = false;
       Code.ace.setReadOnly(false);
@@ -961,7 +961,7 @@ Code.editText = function () {
     else if (confirm("Going back to blocks will remove any custom edits\n" + 
                       "Do you wish to continue?")){
       Code.setEditor();
-      editButton.innerHTML="EDIT TEXT"
+      editButton.innerHTML="TEXT CODE"
       blocksTab.classList.remove("hide");
       // arduinoTab.classList.toggle("hide");
       textarea.readOnly = true;
