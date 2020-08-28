@@ -901,6 +901,7 @@ Code.new = function () {
     Code.discard(); Code.renderContent();
   } else {
     document.getElementById("content_arduino").value = '';
+    Code.ace.setValue('');
   }
 };
 
