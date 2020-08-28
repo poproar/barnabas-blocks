@@ -919,7 +919,7 @@ Code.save = function () {
       var xml = Blockly.Xml.workspaceToDom(Code.workspace);
       data = Blockly.Xml.domToText(xml);
     } else {
-      data = document.getElementById("content_arduino").value;
+      data = Code.ace.getValue();
       defaultName = 'mySketch';
       fileType = 'text/plain;charset=utf-8';
       extension = '.ino';
