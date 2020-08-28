@@ -1051,12 +1051,17 @@ const sampleColours =
 const blockStyles =
 {
   "list_blocks": sampleColours,
-  "logic_blocks": {
-    "colourPrimary": "#01579b",
-    "colourSecondary": "#64C7FF",
-    "colourTertiary": "#C5EAFF"
-  },
+  // "logic_blocks": {
+  //   "colourPrimary": "#01579b",
+  //   "colourSecondary": "#64C7FF",
+  //   "colourTertiary": "#C5EAFF"
+  // },
   "operators_blocks": { "colourPrimary": "#759749" },
+  "math_blocks": { "colourPrimary": "#759749" },
+  "procedure_blocks": { "colourPrimary": 60 },
+  "control_blocks": { "colourPrimary": 60 },
+  "logic_blocks": { "colourPrimary": "#ffa555"},
+  "loop_blocks": { "colourPrimary": 60 },
 }
 
 const categoryStyles =
