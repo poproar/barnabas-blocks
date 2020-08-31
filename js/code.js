@@ -550,12 +550,14 @@ Code.init = function () {
       let prev = Code.getLesson();
       localStorage.setItem('lesson', this.value);
       if (prev != this.value) {
-        document.getElementById('title').textContent = document.getElementById('lessonSelect').value;//MSG['title'];
+        // document.getElementById('title').textContent = document.getElementById('lessonSelect').value;//MSG['title'];
         let newTree = Code.buildToolbox(this.value);
         Code.workspace.updateToolbox(newTree);
         if (prev === 'racer') {
+          document.getElementById('title').textContent = "BOT";
           Code.discard();
         } else {
+          document.getElementById('title').textContent = "Advanced";
           Code.switchLoops();
         }
         onresize();
