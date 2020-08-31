@@ -716,6 +716,11 @@ Code.initLanguage = function () {
   // Inject language strings.
   document.title += ' ' + MSG['title'];
   document.getElementById('title').textContent = Code.getLesson() || document.getElementById('lessonSelect').value;//MSG['title'];
+  if (Code.getLesson() == 'bot') {
+    document.getElementById('title').textContent = 'bot';
+  } else {
+    document.getElementById('title').textContent = 'advanced';
+  }
   document.getElementById('board').textContent = document.getElementById('boardSelect').value;//MSG['title'];
   document.getElementById('tab_blocks').textContent = MSG['blocks'];
 
